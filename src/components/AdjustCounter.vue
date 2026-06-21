@@ -3,6 +3,7 @@
     <button
       class="bg-neutral-300 text-neutral-600 rounded-full font-bold px-1 py-1 hover:bg-neutral-400 hover:text-neutral-100 disabled:bg-neutral-200 disabled:text-neutral-400"
       :disabled="counter <= min"
+      :aria-label="decreaseLabel"
       data-cy="counter-decrease"
       @click="decreaseValue"
     >
@@ -13,6 +14,8 @@
         <FormattedNumberInput
           v-model:value="counterDisplay"
           class="text-center"
+          :id="inputId"
+          :aria-label="inputLabel"
         />
       </slot>
     </span>
@@ -20,6 +23,7 @@
     <button
       class="bg-neutral-300 text-neutral-600 rounded-full font-bold px-1 py-1 hover:bg-neutral-400 hover:text-neutral-100 disabled:bg-neutral-200 disabled:text-neutral-400"
       :disabled="max !== undefined && counter >= max"
+      :aria-label="increaseLabel"
       data-cy="counter-increase"
       @click="increaseValue"
     >
@@ -48,6 +52,22 @@ const props = defineProps({
   unit: {
     type: String,
     required: false,
+  },
+  inputId: {
+    type: String,
+    required: false,
+  },
+  inputLabel: {
+    type: String,
+    required: false,
+  },
+  decreaseLabel: {
+    type: String,
+    default: "Decrease value",
+  },
+  increaseLabel: {
+    type: String,
+    default: "Increase value",
   },
   step: {
     type: Number,

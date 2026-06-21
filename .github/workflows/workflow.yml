@@ -23,19 +23,25 @@ jobs:
           node-version: 18
           cache: "npm"
       - name: Install dependencies
-        run: npm install
+        run: npm ci
       - name: Run tests
-        run: npm run vitest
+        run: npm run vitest -- --run
 
   cypress-run:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18
+          cache: "npm"
       - name: Cypress run
         uses: cypress-io/github-action@v6
         with:
-          start: npm run cy:e2e:run
+          start: npm run dev -- --port 8261
+          wait-on: http://localhost:8261
 
   deploy:
     needs:
@@ -55,7 +61,7 @@ jobs:
           node-version: 18
           cache: "npm"
       - name: Install dependencies
-        run: npm install
+        run: npm ci
       - name: Build
         run: npm run build
       - name: Setup Pages

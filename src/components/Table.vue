@@ -58,7 +58,7 @@
         <td class="grey lighten-4"></td>
         <td class="grey lighten-4"></td>
       </tr>
-      <tr class="border-b-2" data-cy="household-taxable-income-row">
+      <tr class="border-b-2">
         <td class="pl-2 py-3">Expenses</td>
         <td class="whitespace-nowrap">{{ renderCellValue(expenses) }}</td>
         <td class="grey lighten-4"></td>
@@ -72,7 +72,7 @@
         <td class="grey lighten-4"></td>
         <td class="grey lighten-4"></td>
       </tr>
-      <tr class="border-b-2">
+      <tr class="border-b-2" data-cy="household-taxable-income-row">
         <td class="pl-2 py-3">Household taxable income</td>
         <td class="whitespace-nowrap">
           {{ renderCellValue(taxableIncome) }}

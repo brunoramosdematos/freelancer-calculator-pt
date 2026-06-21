@@ -522,54 +522,71 @@ const useTaxesStore = defineStore({
     },
   },
   actions: {
-    setIncome(value: number) {
+    setIncome(value: number, syncUrl = true) {
       if (value <= 0) {
         this.income = null;
       } else {
         this.income = value ? value : 0;
         if (this.expensesAuto) {
-          this.setExpenses(this.expensesNeeded);
+          this.setExpenses(this.expensesNeeded, syncUrl);
         }
       }
-      updateUrlQuery({ income: this.income });
+      if (syncUrl) {
+        updateUrlQuery({ income: this.income });
+      }
     },
-    setSsDiscount(value: number) {
+    setSsDiscount(value: number, syncUrl = true) {
       this.ssDiscount = value;
-      updateUrlQuery({ ssDiscount: this.ssDiscount });
+      if (syncUrl) {
+        updateUrlQuery({ ssDiscount: this.ssDiscount });
+      }
     },
-    setIncomeFrequency(frequency: FrequencyChoices) {
+    setIncomeFrequency(frequency: FrequencyChoices, syncUrl = true) {
       this.incomeFrequency = frequency;
-      updateUrlQuery({ incomeFrequency: this.incomeFrequency });
+      if (syncUrl) {
+        updateUrlQuery({ incomeFrequency: this.incomeFrequency });
+      }
     },
-    setDisplayFrequency(frequency: FrequencyChoices) {
+    setDisplayFrequency(frequency: FrequencyChoices, syncUrl = true) {
       this.displayFrequency = frequency;
-      updateUrlQuery({ displayFrequency: this.displayFrequency });
+      if (syncUrl) {
+        updateUrlQuery({ displayFrequency: this.displayFrequency });
+      }
     },
-    setNrMonthsDisplay(nrMonthsDisplay: number) {
+    setNrMonthsDisplay(nrMonthsDisplay: number, syncUrl = true) {
       this.nrMonthsDisplay = nrMonthsDisplay;
-      updateUrlQuery({ nrMonthsDisplay: this.nrMonthsDisplay });
+      if (syncUrl) {
+        updateUrlQuery({ nrMonthsDisplay: this.nrMonthsDisplay });
+      }
     },
-    setNrDaysOff(nrDaysOff: number) {
+    setNrDaysOff(nrDaysOff: number, syncUrl = true) {
       this.nrDaysOff = nrDaysOff;
-      updateUrlQuery({ nrDaysOff: this.nrDaysOff });
+      if (syncUrl) {
+        updateUrlQuery({ nrDaysOff: this.nrDaysOff });
+      }
     },
     setCurrentTaxRankYear(
       taxRankYear: (typeof SUPPORTED_TAX_RANK_YEARS)[number],
+      syncUrl = true,
     ) {
       this.currentTaxRankYear = taxRankYear;
-      updateUrlQuery({ currentTaxRankYear: this.currentTaxRankYear });
+      if (syncUrl) {
+        updateUrlQuery({ currentTaxRankYear: this.currentTaxRankYear });
+      }
     },
-    setExpenses(value: number) {
+    setExpenses(value: number, syncUrl = true) {
       if (value < 0) {
         this.expenses = 0;
       } else {
         this.expenses = value;
       }
-      updateUrlQuery({ expenses: this.expenses });
+      if (syncUrl) {
+        updateUrlQuery({ expenses: this.expenses });
+      }
     },
-    setExpensesManual(value: number) {
+    setExpensesManual(value: number, syncUrl = true) {
       this.expensesAuto = false;
-      this.setExpenses(value);
+      this.setExpenses(value, syncUrl);
     },
     setExpensesAuto() {
       this.expensesAuto = true;
@@ -578,57 +595,71 @@ const useTaxesStore = defineStore({
         expenses: undefined,
       });
     },
-    setSsFirstYear(value: boolean) {
+    setSsFirstYear(value: boolean, syncUrl = true) {
       this.ssFirstYear = value;
-      updateUrlQuery({ ssFirstYear: this.ssFirstYear });
-    },
-    setBenefitsOfYouthIrs(value: boolean) {
-      this.benefitsOfYouthIrs = value;
-      updateUrlQuery({ benefitsOfYouthIrs: this.benefitsOfYouthIrs });
-    },
-    setYearOfYouthIrs(year: number) {
-      if (this.isYearOfYouthIrsValid(year)) {
-        this.yearOfYouthIrs = year;
-        updateUrlQuery({ yearOfYouthIrs: this.yearOfYouthIrs });
+      if (syncUrl) {
+        updateUrlQuery({ ssFirstYear: this.ssFirstYear });
       }
     },
-    setFirstYear(value: boolean) {
+    setBenefitsOfYouthIrs(value: boolean, syncUrl = true) {
+      this.benefitsOfYouthIrs = value;
+      if (syncUrl) {
+        updateUrlQuery({ benefitsOfYouthIrs: this.benefitsOfYouthIrs });
+      }
+    },
+    setYearOfYouthIrs(year: number, syncUrl = true) {
+      if (this.isYearOfYouthIrsValid(year)) {
+        this.yearOfYouthIrs = year;
+        if (syncUrl) {
+          updateUrlQuery({ yearOfYouthIrs: this.yearOfYouthIrs });
+        }
+      }
+    },
+    setFirstYear(value: boolean, syncUrl = true) {
       this.firstYear = value;
       if (value === true && this.secondYear === true) {
         this.secondYear = false;
-        updateUrlQuery({
-          firstYear: this.firstYear,
-          secondYear: this.secondYear,
-        });
-      } else {
+        if (syncUrl) {
+          updateUrlQuery({
+            firstYear: this.firstYear,
+            secondYear: this.secondYear,
+          });
+        }
+      } else if (syncUrl) {
         updateUrlQuery({ firstYear: this.firstYear });
       }
     },
-    setSecondYear(value: boolean) {
+    setSecondYear(value: boolean, syncUrl = true) {
       this.secondYear = value;
       if (value === true) {
         this.firstYear = false;
-        updateUrlQuery({
-          firstYear: this.firstYear,
-          secondYear: this.secondYear,
-        });
-      } else {
+        if (syncUrl) {
+          updateUrlQuery({
+            firstYear: this.firstYear,
+            secondYear: this.secondYear,
+          });
+        }
+      } else if (syncUrl) {
         updateUrlQuery({ secondYear: this.secondYear });
       }
     },
-    setRnh(value: boolean) {
+    setRnh(value: boolean, syncUrl = true) {
       this.rnh = value;
-      updateUrlQuery({ rnh: this.rnh });
+      if (syncUrl) {
+        updateUrlQuery({ rnh: this.rnh });
+      }
     },
-    setAssessmentScenario(value: AssessmentScenario) {
+    setAssessmentScenario(value: AssessmentScenario, syncUrl = true) {
       if (!ASSESSMENT_SCENARIOS.includes(value)) {
         return;
       }
 
       this.assessmentScenario = value;
-      updateUrlQuery({ assessmentScenario: this.assessmentScenario });
+      if (syncUrl) {
+        updateUrlQuery({ assessmentScenario: this.assessmentScenario });
+      }
     },
-    setNumberOfDependents(value: number) {
+    setNumberOfDependents(value: number, syncUrl = true) {
       const total = normalizeNonNegativeInteger(value);
       const young = Math.min(this.dependentsAged3OrUnder, total);
       const middle = Math.min(this.dependentsAged4To6, total - young);
@@ -636,13 +667,15 @@ const useTaxesStore = defineStore({
       this.numberOfDependents = total;
       this.dependentsAged3OrUnder = young;
       this.dependentsAged4To6 = middle;
-      updateUrlQuery({
-        numberOfDependents: this.numberOfDependents,
-        dependentsAged3OrUnder: this.dependentsAged3OrUnder,
-        dependentsAged4To6: this.dependentsAged4To6,
-      });
+      if (syncUrl) {
+        updateUrlQuery({
+          numberOfDependents: this.numberOfDependents,
+          dependentsAged3OrUnder: this.dependentsAged3OrUnder,
+          dependentsAged4To6: this.dependentsAged4To6,
+        });
+      }
     },
-    setDependentsAged3OrUnder(value: number) {
+    setDependentsAged3OrUnder(value: number, syncUrl = true) {
       const young = Math.min(
         normalizeNonNegativeInteger(value),
         this.numberOfDependents,
@@ -654,24 +687,28 @@ const useTaxesStore = defineStore({
 
       this.dependentsAged3OrUnder = young;
       this.dependentsAged4To6 = middle;
-      updateUrlQuery({
-        numberOfDependents: this.numberOfDependents,
-        dependentsAged3OrUnder: this.dependentsAged3OrUnder,
-        dependentsAged4To6: this.dependentsAged4To6,
-      });
+      if (syncUrl) {
+        updateUrlQuery({
+          numberOfDependents: this.numberOfDependents,
+          dependentsAged3OrUnder: this.dependentsAged3OrUnder,
+          dependentsAged4To6: this.dependentsAged4To6,
+        });
+      }
     },
-    setDependentsAged4To6(value: number) {
+    setDependentsAged4To6(value: number, syncUrl = true) {
       const middle = Math.min(
         normalizeNonNegativeInteger(value),
         this.numberOfDependents - this.dependentsAged3OrUnder,
       );
 
       this.dependentsAged4To6 = middle;
-      updateUrlQuery({
-        numberOfDependents: this.numberOfDependents,
-        dependentsAged3OrUnder: this.dependentsAged3OrUnder,
-        dependentsAged4To6: this.dependentsAged4To6,
-      });
+      if (syncUrl) {
+        updateUrlQuery({
+          numberOfDependents: this.numberOfDependents,
+          dependentsAged3OrUnder: this.dependentsAged3OrUnder,
+          dependentsAged4To6: this.dependentsAged4To6,
+        });
+      }
     },
     setParameterFromUrl(
       value: any,
@@ -691,7 +728,7 @@ const useTaxesStore = defineStore({
         return false;
       }
 
-      setter(value);
+      setter(value, false);
       return true;
     },
     setParametersFromURL(params: object) {
@@ -709,6 +746,11 @@ const useTaxesStore = defineStore({
         Number.isInteger(value) && value >= 0;
       const assessmentScenarioValidator = (value: string) =>
         ASSESSMENT_SCENARIOS.includes(value as AssessmentScenario);
+
+      this.assessmentScenario = AssessmentScenario.Individual;
+      this.numberOfDependents = 0;
+      this.dependentsAged3OrUnder = 0;
+      this.dependentsAged4To6 = 0;
 
       this.setParameterFromUrl(
         params["assessmentScenario"],

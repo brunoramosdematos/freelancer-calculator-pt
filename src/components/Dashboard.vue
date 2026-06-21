@@ -111,12 +111,18 @@
       </fieldset>
       <div class="ml-3 md:ml-0 mt-5">
         <div class="flex justify-start items-center space-x-4">
-          <p class="text-sm w-fit">Number of dependents</p>
+          <label for="number-of-dependents-input" class="text-sm w-fit">
+            Number of dependents
+          </label>
           <AdjustCounter
             :value="store.numberOfDependents"
             @update:value="store.setNumberOfDependents"
             :min="0"
             unit="dependents"
+            input-id="number-of-dependents-input"
+            input-label="Number of dependents"
+            decrease-label="Decrease number of dependents"
+            increase-label="Increase number of dependents"
             data-cy="number-of-dependents"
           />
         </div>
@@ -126,24 +132,36 @@
             added dependents are treated as aged 7+ until classified below.
           </p>
           <div class="flex justify-start items-center space-x-4">
-            <p class="text-sm w-fit">Aged 3 or under</p>
+            <label for="dependents-aged-3-or-under-input" class="text-sm w-fit">
+              Aged 3 or under
+            </label>
             <AdjustCounter
               :value="store.dependentsAged3OrUnder"
               @update:value="store.setDependentsAged3OrUnder"
               :min="0"
               :max="store.numberOfDependents"
               unit="dependents"
+              input-id="dependents-aged-3-or-under-input"
+              input-label="Dependents aged 3 or under"
+              decrease-label="Decrease dependents aged 3 or under"
+              increase-label="Increase dependents aged 3 or under"
               data-cy="dependents-aged-3-or-under"
             />
           </div>
           <div class="flex justify-start items-center space-x-4">
-            <p class="text-sm w-fit">Aged 4-6</p>
+            <label for="dependents-aged-4-to-6-input" class="text-sm w-fit">
+              Aged 4-6
+            </label>
             <AdjustCounter
               :value="store.dependentsAged4To6"
               @update:value="store.setDependentsAged4To6"
               :min="0"
               :max="store.numberOfDependents - store.dependentsAged3OrUnder"
               unit="dependents"
+              input-id="dependents-aged-4-to-6-input"
+              input-label="Dependents aged 4 to 6"
+              decrease-label="Decrease dependents aged 4 to 6"
+              increase-label="Increase dependents aged 4 to 6"
               data-cy="dependents-aged-4-to-6"
             />
           </div>

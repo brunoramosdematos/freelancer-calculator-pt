@@ -504,6 +504,20 @@ describe("Taxes Store", () => {
     expect(taxesStore.dependentsAged4To6).toBe(0);
   });
 
+  it("hydrates old simulations with new tax state defaults", () => {
+    taxesStore.setAssessmentScenario(AssessmentScenario.JointSingleIncome);
+    taxesStore.setNumberOfDependents(3);
+    taxesStore.setDependentsAged3OrUnder(1);
+    taxesStore.setDependentsAged4To6(1);
+
+    taxesStore.setParametersFromURL({ income: "50000" });
+
+    expect(taxesStore.assessmentScenario).toBe(AssessmentScenario.Individual);
+    expect(taxesStore.numberOfDependents).toBe(0);
+    expect(taxesStore.dependentsAged3OrUnder).toBe(0);
+    expect(taxesStore.dependentsAged4To6).toBe(0);
+  });
+
   it("resets assessment scenario and dependent state", () => {
     taxesStore.setAssessmentScenario(AssessmentScenario.JointSingleIncome);
     taxesStore.setNumberOfDependents(3);
