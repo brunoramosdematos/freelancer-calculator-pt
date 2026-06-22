@@ -6,6 +6,7 @@
   "scripts": {
     "dev": "vite --host",
     "build": "vite build",
+    "verify:production-build": "node scripts/verify-production-build.mjs",
     "preview": "vite preview",
     "vitest": "vitest",
     "coverage": "vitest run --coverage",

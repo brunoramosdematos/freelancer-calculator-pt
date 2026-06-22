@@ -27,7 +27,7 @@
               : 'text-lg sm:text-xl md:text-2-xl lg:text-3xl xl:text-4xl'
           "
         >
-          Remote freelancer from Portugal 🇵🇹
+          Freelancer Calculator Portugal 🇵🇹
         </h4>
         <p
           class="md:mt-3 md:mb-5 text-sm md:text-xl text-neutral-600 font-light"

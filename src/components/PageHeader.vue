@@ -3,7 +3,11 @@
     <nav class="flex justify-between items-center px-5">
       <div class="flex items-center justify-start gap-5">
         <router-link class="flex items-center justify-center space-x-3" to="/">
-          <img src="@/assets/world.svg" class="h-7" />
+          <img
+            src="@/assets/world.svg"
+            class="h-7"
+            alt="Freelancer Calculator Portugal"
+          />
           <span> simulator </span>
         </router-link>
         <router-link
@@ -21,11 +25,13 @@
       <div>
         <a
           v-if="breakpoint.mdAndUp"
-          className="cursor-pointer p-3"
+          class="cursor-pointer p-3"
           target="_blank"
-          href="https://github.com/franciscobmacedo/remotefreelancept"
+          rel="noopener noreferrer"
+          href="https://github.com/brunoramosdematos/freelancer-calculator-pt"
+          aria-label="Open Freelancer Calculator Portugal source code on GitHub"
         >
-          <img src="@/assets/github-mark.svg" class="h-7" />
+          <img src="@/assets/github-mark.svg" class="h-7" alt="" />
         </a>
       </div>
     </nav>

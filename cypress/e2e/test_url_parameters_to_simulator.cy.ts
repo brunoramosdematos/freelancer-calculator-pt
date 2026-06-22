@@ -1,7 +1,7 @@
 describe("simulator loads", () => {
   it("successfully loads the home page", () => {
     cy.visit("/#/"); // change URL to match your dev URL
-    cy.contains("h4", " Remote freelancer from Portugal 🇵🇹");
+    cy.contains("h4", "Freelancer Calculator Portugal 🇵🇹");
   });
 });
 

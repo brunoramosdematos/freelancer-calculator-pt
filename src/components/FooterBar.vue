@@ -48,11 +48,13 @@
           <div class="flex justify-center">
             <a
               v-if="breakpoint.smAndDown"
-              className="cursor-pointer text-center text-blue-500 p-3 rounded-full shadow-sm hover:shadow-xl"
+              class="cursor-pointer text-center text-blue-500 p-3 rounded-full shadow-sm hover:shadow-xl"
               target="_blank"
-              href="https://github.com/franciscobmacedo/remotefreelancept"
+              rel="noopener noreferrer"
+              href="https://github.com/brunoramosdematos/freelancer-calculator-pt"
+              aria-label="Open Freelancer Calculator Portugal source code on GitHub"
             >
-              <img src="@/assets/github-mark.svg" />
+              <img src="@/assets/github-mark.svg" alt="" />
             </a>
           </div>
         </div>
@@ -62,10 +64,7 @@
 </template>
 <script lang="ts" setup>
 import { storeToRefs } from "pinia";
-import { 
-  useTaxesStore,
-  YEAR_BUSINESS_DAYS
- } from "@/store";
+import { useTaxesStore, YEAR_BUSINESS_DAYS } from "@/store";
 import { useBreakpoint } from "@/composables/breakpoints";
 import { XMarkIcon } from "@heroicons/vue/24/outline";
 import { ref } from "vue";

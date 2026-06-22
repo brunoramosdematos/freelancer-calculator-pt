@@ -1,73 +1,79 @@
-# Remote Freelancer from Portugal 🇵🇹
+# Freelancer Calculator Portugal
 
-Simulate your earnings (year, month or day) and breakdown how much taxes you're going to pay as a freelancer working from Portugal.
+Open-source calculator for estimating net income, Portuguese IRS and Social
+Security for freelancers. The app is a Vue 3 / Vite static SPA with hash
+routing, Pinia state, Vitest unit tests and Cypress E2E coverage.
 
-live at https://freelancept.fmacedo.com/
+Planned production URL: https://freelancerpt.brunomatos.dev/
 
-![preview](img/preview.gif)
+Repository: https://github.com/brunoramosdematos/freelancer-calculator-pt
 
-## Contributing
+## Scope
 
-Contributions are welcome. Although I enjoy helping people with their financial burdens, I do have limited time to work on this. Feel free to open an issue or submit a pull request. If you're not sure where to start, mention me in the comments!
+The simulator currently supports tax years 2023, 2024, 2025 and 2026. It models
+two assessment scenarios: individual assessment with no spouse or partner in the
+simulation, and joint assessment for a married/de-facto household where the
+freelancer is the only taxable income earner. It also supports dependent counts
+and the age buckets needed for the implemented dependent deduction.
 
-## Local setup (with node)
+Calculations are estimates and do not replace accounting, legal or tax advice.
+Users should validate their own situation with Autoridade Tributaria e Aduaneira
+or a qualified professional.
 
-### Instal dependencies
+## Local Setup
 
+Install dependencies reproducibly:
+
+```bash
+npm ci
 ```
-npm install
-```
 
-### Compiles and hot-reloads for development
+Run the development server:
 
-```
+```bash
 npm run dev
 ```
 
-### Compiles and minifies for production
+Build production assets:
 
-```
+```bash
 npm run build
 ```
 
-### Tests
+Verify the built production artifact:
 
-**vitest**
-
-```
-npm run vitest
+```bash
+npm run verify:production-build
 ```
 
-**cypress end to end**
+Run unit tests:
 
-open:
-
-```
-npm run cy:e2e:open
+```bash
+npm run vitest -- --run
 ```
 
-run:
+Run Cypress E2E tests:
 
-```
+```bash
 npm run cy:e2e:run
 ```
 
-## Local setup (with docker)
+## Deployment
 
-run as dev (with auto-reload):
+GitHub Pages deployment is handled by the repository workflow in
+`.github/workflows/workflow.yml`. Vitest and Cypress must pass before the deploy
+job builds the app, verifies the production artifact and uploads `./dist` to
+Pages.
 
-```
-docker compose up --build -V
-```
+Manual GitHub Pages, custom-domain and DNS setup is documented in
+[docs/DEPLOYMENT.md](docs/DEPLOYMENT.md).
 
-build a production image (image named as `remotefreelancept:latest`) (listening on `:80`):
+## Upstream Attribution
 
-```
-docker build -t remotefreelancept:latest .
-```
+This repository is a maintained derivative of the original open-source project
+by Francisco Macedo:
 
-Run tests (vitest):
+https://github.com/franciscobmacedo/remotefreelancept
 
-```
-docker build -t remotefreelancept:test --target=test .
-```
+The project remains MIT licensed. See [LICENSE](LICENSE) for the preserved
+copyright notices.

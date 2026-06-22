@@ -1,15 +1,16 @@
 name: tests and deploy
 
-on: [push]
+on:
+  pull_request:
+    branches:
+      - main
+  push:
+    branches:
+      - main
+  workflow_dispatch:
 
 permissions:
   contents: read
-  pages: write
-  id-token: write
-
-concurrency:
-  group: "pages"
-  cancel-in-progress: true
 
 jobs:
   vitest:
@@ -40,6 +41,7 @@ jobs:
       - name: Cypress run
         uses: cypress-io/github-action@v6
         with:
+          install-command: npm ci
           start: npm run dev -- --port 8261
           wait-on: http://localhost:8261
 
@@ -48,6 +50,13 @@ jobs:
       - vitest
       - cypress-run
     if: github.ref == 'refs/heads/main'
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
+    concurrency:
+      group: "pages"
+      cancel-in-progress: true
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
@@ -64,6 +73,8 @@ jobs:
         run: npm ci
       - name: Build
         run: npm run build
+      - name: Verify production build
+        run: npm run verify:production-build
       - name: Setup Pages
         uses: actions/configure-pages@v5
       - name: Upload artifact
