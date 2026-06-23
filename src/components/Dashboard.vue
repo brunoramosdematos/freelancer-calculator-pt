@@ -217,25 +217,99 @@
         </InfoButton>
       </div>
 
-      <div class="flex ml-3 md:ml-0 justify-start items-center mt-2 space-x-4">
-        <p class="text-sm w-fit">Adjust your contribution to social security</p>
-        <AdjustCounter
-          v-model:value="ssDiscountPosition"
-          :min="0"
-          :max="ssDiscountChoices.length - 1"
-          data-cy="ss-discount"
+      <div class="ml-3 md:ml-0 mt-2">
+        <div class="flex justify-start items-center space-x-4">
+          <p class="text-sm w-fit">Adjust Social Security calculation base</p>
+          <AdjustCounter
+            v-model:value="ssDiscountPosition"
+            :min="0"
+            :max="ssDiscountChoices.length - 1"
+            decrease-label="Decrease Social Security base adjustment"
+            increase-label="Increase Social Security base adjustment"
+            data-cy="ss-discount"
+          >
+            {{ ssDiscountDisplay }}
+          </AdjustCounter>
+          <InfoButton
+            link="https://www.seg-social.pt/documents/10152/15974914/1009%20Trabalhador%20independente%20-%20novo%20regime/87b6e00c-523d-4718-8a88-942ea804c18a"
+          >
+            <p class="text-sm w-72 text-center">
+              The selected percentage applies to the simulator's 70% relevant
+              income base, not directly to the final contribution. The adjusted
+              base is capped at 12 IAS, the EUR 20 minimum monthly contribution
+              can also prevent reductions, and the adjustment has no monetary
+              effect while the first 12 months exemption is enabled. This is an
+              annualised monthly estimate and does not model individual
+              quarterly declarations. Click to see official information.
+            </p>
+          </InfoButton>
+        </div>
+        <div
+          class="mt-2 max-w-xl rounded-md bg-neutral-100 px-3 py-2 text-xs text-neutral-600"
+          role="status"
+          aria-live="polite"
+          data-cy="ss-adjustment-summary"
         >
-          {{ ssDiscountDisplay }}
-        </AdjustCounter>
-        <InfoButton
-          link="https://www.seg-social.pt/documents/10152/15974914/1009%20Trabalhador%20independente%20-%20novo%20regime/87b6e00c-523d-4718-8a88-942ea804c18a"
-        >
-          <p class="text-sm w-64 text-center">
-            You can adjust your income for social security tax calculations with
-            a minimum of -25% and a maximum of +25%. This will probably afect
-            your retirement pension. Click to see more.
+          <dl class="grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-1">
+            <div class="flex justify-between gap-2">
+              <dt>Relevant monthly income at 70%</dt>
+              <dd
+                class="font-medium text-neutral-800 whitespace-nowrap"
+                data-cy="ss-relevant-income-before-adjustment"
+              >
+                {{ asCurrency(store.ssRelevantIncomeBeforeAdjustment, 2) }}
+              </dd>
+            </div>
+            <div class="flex justify-between gap-2">
+              <dt>Selected adjustment</dt>
+              <dd
+                class="font-medium text-neutral-800 whitespace-nowrap"
+                data-cy="ss-selected-adjustment"
+              >
+                {{ ssDiscountDisplay }}
+              </dd>
+            </div>
+            <div class="flex justify-between gap-2">
+              <dt>Adjusted relevant monthly income</dt>
+              <dd
+                class="font-medium text-neutral-800 whitespace-nowrap"
+                data-cy="ss-adjusted-relevant-income"
+              >
+                {{ asCurrency(store.ssAdjustedRelevantIncome, 2) }}
+              </dd>
+            </div>
+            <div class="flex justify-between gap-2">
+              <dt>Contribution base applied</dt>
+              <dd
+                class="font-medium text-neutral-800 whitespace-nowrap"
+                data-cy="ss-contribution-base"
+              >
+                {{ asCurrency(store.ssContributionBase, 2) }}
+              </dd>
+            </div>
+            <div class="flex justify-between gap-2">
+              <dt>12-IAS cap</dt>
+              <dd
+                class="font-medium text-neutral-800 whitespace-nowrap"
+                data-cy="ss-contribution-base-cap"
+              >
+                {{ asCurrency(store.ssContributionBaseCap, 2) }}
+              </dd>
+            </div>
+            <div class="flex justify-between gap-2">
+              <dt>Final monthly SS contribution</dt>
+              <dd
+                class="font-medium text-neutral-800 whitespace-nowrap"
+                data-cy="ss-final-monthly-contribution"
+              >
+                {{ asCurrency(store.ssPay.month, 2) }}
+              </dd>
+            </div>
+          </dl>
+          <p class="mt-2" data-cy="ss-adjustment-status-message">
+            {{ ssAdjustmentStatusMessage }}
           </p>
-        </InfoButton>
+        </div>
       </div>
       <div
         class="flex h-5 ml-3 md:ml-0 justify-start items-center mt-6 sm:space-x-2 md:space-x-4"
@@ -489,17 +563,33 @@ const setFrequency = (frequencyChoice: string) => {
   store.setDisplayFrequency(FrequencyChoices[frequencyChoice]);
 };
 
+const formatSignedPercentage = (value: number) => {
+  return `${value > 0 ? "+" : ""}${value * 100}%`;
+};
+
 // ssDiscount
-const ssDiscountChoices = [
-  -0.25, -0.2, -0.15, -0.1, -0.05, 0, +0.05, +0.1, +0.15, +0.2, +0.25,
-];
+const ssDiscountChoices = computed(() => store.ssDiscountChoices);
 const ssDiscountPosition = ref(
-  store.ssDiscountChoices.indexOf(store.ssDiscount),
+  Math.max(store.ssDiscountChoices.indexOf(store.ssDiscount), 0),
 );
 watch(
   () => ssDiscountPosition.value,
   (newPosition) => {
-    store.setSsDiscount(ssDiscountChoices[newPosition]);
+    const selectedDiscount = store.ssDiscountChoices[newPosition];
+
+    if (selectedDiscount !== undefined) {
+      store.setSsDiscount(selectedDiscount);
+    }
+  },
+);
+watch(
+  () => store.ssDiscount,
+  (newDiscount) => {
+    const newPosition = store.ssDiscountChoices.indexOf(newDiscount);
+
+    if (newPosition !== -1 && newPosition !== ssDiscountPosition.value) {
+      ssDiscountPosition.value = newPosition;
+    }
   },
 );
 watch(
@@ -511,7 +601,31 @@ watch(
   },
 );
 const ssDiscountDisplay = computed(() => {
-  return `${store.ssDiscount > 0 ? "+" : ""}${store.ssDiscount * 100}%`;
+  return formatSignedPercentage(store.ssDiscount);
+});
+const ssAdjustmentStatusMessage = computed(() => {
+  if (store.ssFirstYear) {
+    return "Social Security exemption is enabled, so the adjustment has no monetary effect while the first 12 months exemption applies.";
+  }
+
+  if (store.ssIsAtMinimumContribution) {
+    return "Minimum monthly contribution reached. Further reductions do not change your Social Security contribution.";
+  }
+
+  if (store.ssIsContributionBaseCapped) {
+    const firstDiscountBelowCap =
+      store.ssFirstAvailableDiscountBelowContributionBaseCap;
+
+    if (firstDiscountBelowCap === null) {
+      return "Maximum contribution base reached. All available adjustments produce the same capped Social Security contribution.";
+    }
+
+    return `Maximum contribution base reached. The selected adjustment does not change your Social Security contribution. ${formatSignedPercentage(
+      firstDiscountBelowCap,
+    )} is the first available adjustment that changes the result.`;
+  }
+
+  return "The selected adjustment changes the 70% relevant-income base before the 21.4% rate is applied.";
 });
 
 const setFirstYear = (value: boolean) => {

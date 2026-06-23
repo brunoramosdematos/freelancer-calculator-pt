@@ -197,6 +197,127 @@ describe("Taxes Store", () => {
     );
   });
 
+  describe("Social Security adjustment transparency", () => {
+    let socialSecurityStore: ReturnType<typeof useTaxesStore>;
+
+    const configureMonthlyIncome = (income: number) => {
+      socialSecurityStore = useTaxesStore(createPinia());
+      socialSecurityStore.expensesAuto = true;
+      socialSecurityStore.expenses = 0;
+      socialSecurityStore.setCurrentTaxRankYear(2026);
+      socialSecurityStore.setIncomeFrequency(FrequencyChoices.Month);
+      socialSecurityStore.setDisplayFrequency(FrequencyChoices.Month);
+      socialSecurityStore.setNrMonthsDisplay(12);
+      socialSecurityStore.setNrDaysOff(0);
+      socialSecurityStore.setIncome(income);
+      socialSecurityStore.setSsDiscount(0);
+      socialSecurityStore.setSsFirstYear(false);
+    };
+
+    beforeEach(() => {
+      configureMonthlyIncome(11_000);
+    });
+
+    it("exposes the 2026 cap and relevant income before adjustment", () => {
+      expect(socialSecurityStore.ssContributionBaseCap).toBeCloseTo(6_445.56);
+      expect(socialSecurityStore.ssRelevantIncomeBeforeAdjustment).toBeCloseTo(
+        7_700,
+      );
+    });
+
+    it.each([
+      { discount: 0, expectedMonthlyContribution: 1_379.34984 },
+      { discount: -0.05, expectedMonthlyContribution: 1_379.34984 },
+      { discount: -0.1, expectedMonthlyContribution: 1_379.34984 },
+      { discount: -0.15, expectedMonthlyContribution: 1_379.34984 },
+      { discount: -0.2, expectedMonthlyContribution: 1_318.24 },
+      { discount: -0.25, expectedMonthlyContribution: 1_235.85 },
+    ])(
+      "keeps the existing 2026 SS result for $discount adjustment",
+      ({ discount, expectedMonthlyContribution }) => {
+        socialSecurityStore.setSsDiscount(discount);
+
+        expect(socialSecurityStore.ssPay.month).toBeCloseTo(
+          expectedMonthlyContribution,
+        );
+      },
+    );
+
+    it("identifies -20% as the first available choice below the 12-IAS cap", () => {
+      expect(
+        socialSecurityStore.ssFirstAvailableDiscountBelowContributionBaseCap,
+      ).toBe(-0.2);
+    });
+
+    it.each([0.05, 0.1, 0.15, 0.2, 0.25])(
+      "keeps positive adjustment %s capped",
+      (discount) => {
+        socialSecurityStore.setSsDiscount(discount);
+
+        expect(socialSecurityStore.ssIsContributionBaseCapped).toBe(true);
+        expect(socialSecurityStore.ssContributionBase).toBeCloseTo(
+          socialSecurityStore.ssContributionBaseCap,
+        );
+        expect(socialSecurityStore.ssPay.month).toBeCloseTo(1_379.34984);
+      },
+    );
+
+    it("lets positive and negative adjustments change SS for lower income above the minimum", () => {
+      configureMonthlyIncome(2_000);
+      const baseContribution = socialSecurityStore.ssPay.month;
+
+      socialSecurityStore.setSsDiscount(0.05);
+
+      expect(socialSecurityStore.ssIsContributionBaseCapped).toBe(false);
+      expect(socialSecurityStore.ssIsAtMinimumContribution).toBe(false);
+      expect(socialSecurityStore.ssPay.month).toBeGreaterThan(baseContribution);
+
+      socialSecurityStore.setSsDiscount(-0.05);
+
+      expect(socialSecurityStore.ssIsContributionBaseCapped).toBe(false);
+      expect(socialSecurityStore.ssIsAtMinimumContribution).toBe(false);
+      expect(socialSecurityStore.ssPay.month).toBeLessThan(baseContribution);
+    });
+
+    it("keeps extremely high income capped even at -25%", () => {
+      configureMonthlyIncome(50_000);
+      socialSecurityStore.setSsDiscount(-0.25);
+
+      expect(socialSecurityStore.ssIsContributionBaseCapped).toBe(true);
+      expect(
+        socialSecurityStore.ssFirstAvailableDiscountBelowContributionBaseCap,
+      ).toBeNull();
+      expect(socialSecurityStore.ssPay.month).toBeCloseTo(1_379.34984);
+    });
+
+    it("keeps the first-year exemption at zero", () => {
+      socialSecurityStore.setSsDiscount(-0.2);
+      socialSecurityStore.setSsFirstYear(true);
+
+      expect(socialSecurityStore.ssPay.year).toBe(0);
+      expect(socialSecurityStore.ssPay.month).toBe(0);
+      expect(socialSecurityStore.ssPay.day).toBe(0);
+      expect(socialSecurityStore.ssCalculatedMonthlyContribution).toBeCloseTo(
+        1_318.24,
+      );
+    });
+
+    it("keeps minimum-contribution behavior unchanged", () => {
+      configureMonthlyIncome(100);
+
+      expect(socialSecurityStore.ssCalculatedMonthlyContribution).toBeCloseTo(
+        14.98,
+      );
+      expect(socialSecurityStore.ssIsAtMinimumContribution).toBe(true);
+      expect(socialSecurityStore.ssPay.month).toBe(20);
+
+      socialSecurityStore.setSsDiscount(-0.25);
+
+      expect(socialSecurityStore.ssIsAtMinimumContribution).toBe(true);
+      expect(socialSecurityStore.ssPay.month).toBe(20);
+    });
+  });
+
   describe("should calculate the correct specific deductions", () => {
     const taxesStore = useTaxesStore(createPinia());
 

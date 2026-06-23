@@ -4,7 +4,7 @@ Open-source calculator for estimating net income, Portuguese IRS and Social
 Security for freelancers. The app is a Vue 3 / Vite static SPA with hash
 routing, Pinia state, Vitest unit tests and Cypress E2E coverage.
 
-Planned production URL: https://freelancerpt.brunomatos.dev/
+Production URL: https://freelancerpt.brunomatos.dev/
 
 Repository: https://github.com/brunoramosdematos/freelancer-calculator-pt
 

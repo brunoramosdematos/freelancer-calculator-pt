@@ -151,6 +151,68 @@
           {{ renderCellValue(irsPay.day) }}
         </td>
       </tr>
+      <tr>
+        <td colspan="4" class="text-center bg-blue-50 py-3">
+          <b>Social Security calculation</b>
+        </td>
+      </tr>
+      <tr class="border-b-2" data-cy="ss-relevant-income-row">
+        <td class="pl-2 py-3">Relevant income at 70%</td>
+        <td class="grey lighten-4"></td>
+        <td
+          class="whitespace-nowrap"
+          data-cy="ss-relevant-income-before-adjustment-value"
+        >
+          {{ renderCellValue(ssRelevantIncomeBeforeAdjustment) }}
+        </td>
+        <td class="grey lighten-4"></td>
+      </tr>
+      <tr class="border-b-2" data-cy="ss-selected-adjustment-row">
+        <td class="pl-2 py-3">Selected adjustment</td>
+        <td class="grey lighten-4"></td>
+        <td class="whitespace-nowrap" data-cy="ss-selected-adjustment-value">
+          {{ renderPercentage(ssDiscount) }}
+        </td>
+        <td class="grey lighten-4"></td>
+      </tr>
+      <tr class="border-b-2" data-cy="ss-adjusted-relevant-income-row">
+        <td class="pl-2 py-3">Adjusted relevant income</td>
+        <td class="grey lighten-4"></td>
+        <td
+          class="whitespace-nowrap"
+          data-cy="ss-adjusted-relevant-income-value"
+        >
+          {{ renderCellValue(ssAdjustedRelevantIncome) }}
+        </td>
+        <td class="grey lighten-4"></td>
+      </tr>
+      <tr class="border-b-2" data-cy="ss-contribution-base-cap-row">
+        <td class="pl-2 py-3">Maximum base of 12 IAS</td>
+        <td class="grey lighten-4"></td>
+        <td class="whitespace-nowrap" data-cy="ss-contribution-base-cap-value">
+          {{ renderCellValue(ssContributionBaseCap) }}
+        </td>
+        <td class="grey lighten-4"></td>
+      </tr>
+      <tr class="border-b-2" data-cy="ss-contribution-base-row">
+        <td class="pl-2 py-3">Contribution base applied</td>
+        <td class="grey lighten-4"></td>
+        <td class="whitespace-nowrap" data-cy="ss-contribution-base-value">
+          {{ renderCellValue(ssContributionBase) }}
+        </td>
+        <td class="grey lighten-4"></td>
+      </tr>
+      <tr class="border-b-2" data-cy="ss-final-monthly-contribution-row">
+        <td class="pl-2 py-3">Final monthly Social Security contribution</td>
+        <td class="grey lighten-4"></td>
+        <td
+          class="whitespace-nowrap"
+          data-cy="ss-final-monthly-contribution-value"
+        >
+          {{ renderCellValue(ssPay.month) }}
+        </td>
+        <td class="grey lighten-4"></td>
+      </tr>
       <tr class="bg-blue-100">
         <td class="pl-2 py-3">Social security</td>
         <td class="whitespace-nowrap">
@@ -208,6 +270,11 @@ const {
   youthIrsDiscount,
   benefitsOfYouthIrs,
   rnh,
+  ssAdjustedRelevantIncome,
+  ssContributionBase,
+  ssContributionBaseCap,
+  ssDiscount,
+  ssRelevantIncomeBeforeAdjustment,
 } = storeToRefs(useTaxesStore());
 
 const decimalCases = computed(() => {
@@ -216,6 +283,9 @@ const decimalCases = computed(() => {
 
 const renderCellValue = (value: number) => {
   return value ? asCurrency(value, decimalCases.value) : "-";
+};
+const renderPercentage = (value: number) => {
+  return `${value > 0 ? "+" : ""}${(value * 100).toFixed(0)}%`;
 };
 const showTaxRanksTable = ref(false);
 </script>

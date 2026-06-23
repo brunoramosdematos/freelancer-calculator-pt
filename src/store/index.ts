@@ -297,6 +297,47 @@ const useTaxesStore = defineStore({
       }
       return result;
     },
+    ssRelevantIncomeBeforeAdjustment() {
+      return this.grossIncome.month * 0.7;
+    },
+    ssAdjustedRelevantIncome() {
+      return this.ssRelevantIncomeBeforeAdjustment * (1 + this.ssDiscount);
+    },
+    ssContributionBaseCap() {
+      return this.maxSsIncome;
+    },
+    ssContributionBase() {
+      return Math.min(
+        this.ssContributionBaseCap,
+        this.ssAdjustedRelevantIncome,
+      );
+    },
+    ssCalculatedMonthlyContribution() {
+      return this.ssTax * this.ssContributionBase;
+    },
+    ssFinalMonthlyContribution() {
+      if (this.ssFirstYear) {
+        return 0;
+      }
+
+      return Math.max(this.ssCalculatedMonthlyContribution, 20);
+    },
+    ssIsContributionBaseCapped() {
+      return this.ssAdjustedRelevantIncome >= this.ssContributionBaseCap;
+    },
+    ssIsAtMinimumContribution() {
+      return !this.ssFirstYear && this.ssCalculatedMonthlyContribution < 20;
+    },
+    ssFirstAvailableDiscountBelowContributionBaseCap(): number | null {
+      const sortedChoices = [...this.ssDiscountChoices].sort((a, b) => b - a);
+      const firstAvailableDiscount = sortedChoices.find(
+        (choice) =>
+          this.ssRelevantIncomeBeforeAdjustment * (1 + choice) <
+          this.ssContributionBaseCap,
+      );
+
+      return firstAvailableDiscount ?? null;
+    },
     ssPay() {
       if (this.ssFirstYear) {
         return {
@@ -305,18 +346,10 @@ const useTaxesStore = defineStore({
           day: 0,
         };
       }
-      // We first calculate 70% of the gross income, with the discount applied,
-      // then we compare it to the maximum SS income, and we take the minimum
-      const monthSS =
-        this.ssTax *
-        Math.min(
-          this.maxSsIncome,
-          this.grossIncome.month * 0.7 * (1 + this.ssDiscount),
-        );
-      const yearSSPay = Math.max(12 * monthSS, 20 * 12);
+      const yearSSPay = this.ssFinalMonthlyContribution * 12;
       return {
         year: yearSSPay,
-        month: Math.max(monthSS, 20),
+        month: this.ssFinalMonthlyContribution,
         day: yearSSPay / (YEAR_BUSINESS_DAYS - this.nrDaysOff),
       };
     },
