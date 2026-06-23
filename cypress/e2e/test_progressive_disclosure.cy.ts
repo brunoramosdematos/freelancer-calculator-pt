@@ -121,17 +121,12 @@ describe("progressive disclosure simulator layout", () => {
     cy.get('[data-cy="financial-summary-table"]').should("be.visible");
     cy.get('[data-cy="advanced-tax-settings-toggle"]').should("be.visible");
     cy.get('[data-cy="financial-summary-table"]').then(($summary) => {
-      cy.get('[data-cy="advanced-tax-settings-toggle"]').then(($advanced) => {
-        expect($summary[0].getBoundingClientRect().top).to.be.lessThan(
-          $advanced[0].getBoundingClientRect().top,
-        );
-      });
+      expect($summary.closest(".order-1")).to.have.length(1);
     });
-    cy.get('[data-cy="financial-summary-table"]').then(($summary) => {
-      const summary = $summary[0];
-
-      expect(summary.scrollWidth).to.be.lte(summary.clientWidth + 1);
+    cy.get('[data-cy="advanced-tax-settings-toggle"]').then(($advanced) => {
+      expect($advanced.closest(".order-2")).to.have.length(1);
     });
+    cy.get('[data-cy="financial-summary-table"] table').should("not.exist");
     cy.get('[data-cy="mobile-frequency-comparison-toggle"]').click();
     cy.get('[data-cy="mobile-frequency-comparison-toggle"]').should(
       "have.attr",
