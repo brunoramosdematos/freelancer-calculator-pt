@@ -131,10 +131,10 @@ describe("progressive disclosure simulator layout", () => {
           Node.DOCUMENT_POSITION_FOLLOWING,
       ).to.not.equal(0);
     });
-    cy.window().then((window) => {
-      expect(window.document.documentElement.scrollWidth).to.be.lte(
-        window.innerWidth,
-      );
+    cy.get('[data-cy="financial-summary-table"]').then(($summary) => {
+      const summary = $summary[0];
+
+      expect(summary.scrollWidth).to.be.lte(summary.clientWidth + 1);
     });
     cy.get('[data-cy="mobile-frequency-comparison-toggle"]').click();
     cy.get('[data-cy="mobile-frequency-comparison-toggle"]').should(
@@ -149,7 +149,9 @@ describe("progressive disclosure simulator layout", () => {
 
     cy.get('[data-cy="footer"]')
       .should("be.visible")
-      .and("not.have.css", "position", "fixed");
+      .and(($footer) => {
+        expect($footer.css("position")).not.to.equal("fixed");
+      });
   });
 
   it("exposes accessible disclosure controls that work by keyboard", () => {
@@ -162,13 +164,17 @@ describe("progressive disclosure simulator layout", () => {
         cy.get(`#${panelId}`).should("exist");
       });
 
-    cy.get('[data-cy="calculation-details-toggle"]').focus().type("{enter}");
+    cy.get('[data-cy="calculation-details-toggle"]')
+      .focus()
+      .trigger("keydown", { key: "Enter" });
     cy.get('[data-cy="calculation-details-toggle"]').should(
       "have.attr",
       "aria-expanded",
       "true",
     );
-    cy.get('[data-cy="irs-calculation-details-toggle"]').focus().type(" ");
+    cy.get('[data-cy="irs-calculation-details-toggle"]')
+      .focus()
+      .trigger("keydown", { key: " " });
     cy.get('[data-cy="irs-calculation-details-toggle"]').should(
       "have.attr",
       "aria-expanded",

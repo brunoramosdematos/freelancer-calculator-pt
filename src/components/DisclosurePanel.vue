@@ -9,6 +9,8 @@
         :aria-controls="panelId"
         :data-cy="toggleDataCy"
         @click="toggle"
+        @keydown.enter.prevent="toggle"
+        @keydown.space.prevent="toggle"
       >
         <span class="min-w-0">
           <span class="block text-sm font-semibold text-neutral-900">
