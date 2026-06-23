@@ -120,16 +120,12 @@ describe("progressive disclosure simulator layout", () => {
 
     cy.get('[data-cy="financial-summary-table"]').should("be.visible");
     cy.get('[data-cy="advanced-tax-settings-toggle"]').should("be.visible");
-    cy.get("body").then(($body) => {
-      const summary = $body.find('[data-cy="financial-summary-table"]')[0];
-      const advanced = $body.find(
-        '[data-cy="advanced-tax-settings-toggle"]',
-      )[0];
-
-      expect(
-        summary.compareDocumentPosition(advanced) &
-          Node.DOCUMENT_POSITION_FOLLOWING,
-      ).to.not.equal(0);
+    cy.get('[data-cy="financial-summary-table"]').then(($summary) => {
+      cy.get('[data-cy="advanced-tax-settings-toggle"]').then(($advanced) => {
+        expect($summary[0].getBoundingClientRect().top).to.be.lessThan(
+          $advanced[0].getBoundingClientRect().top,
+        );
+      });
     });
     cy.get('[data-cy="financial-summary-table"]').then(($summary) => {
       const summary = $summary[0];
@@ -166,7 +162,7 @@ describe("progressive disclosure simulator layout", () => {
 
     cy.get('[data-cy="calculation-details-toggle"]')
       .focus()
-      .trigger("keydown", { key: "Enter" });
+      .trigger("keydown", { key: "Enter", code: "Enter", keyCode: 13 });
     cy.get('[data-cy="calculation-details-toggle"]').should(
       "have.attr",
       "aria-expanded",
@@ -174,7 +170,7 @@ describe("progressive disclosure simulator layout", () => {
     );
     cy.get('[data-cy="irs-calculation-details-toggle"]')
       .focus()
-      .trigger("keydown", { key: " " });
+      .trigger("keydown", { key: " ", code: "Space", keyCode: 32 });
     cy.get('[data-cy="irs-calculation-details-toggle"]').should(
       "have.attr",
       "aria-expanded",

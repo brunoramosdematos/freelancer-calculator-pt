@@ -9,8 +9,7 @@
         :aria-controls="panelId"
         :data-cy="toggleDataCy"
         @click="toggle"
-        @keydown.enter.prevent="toggle"
-        @keydown.space.prevent="toggle"
+        @keydown="onButtonKeydown"
       >
         <span class="min-w-0">
           <span class="block text-sm font-semibold text-neutral-900">
@@ -100,5 +99,14 @@ const toggle = () => {
   }
 
   emit("update:open", nextValue);
+};
+
+const onButtonKeydown = (event: KeyboardEvent) => {
+  if (event.key !== "Enter" && event.key !== " " && event.key !== "Spacebar") {
+    return;
+  }
+
+  event.preventDefault();
+  toggle();
 };
 </script>
