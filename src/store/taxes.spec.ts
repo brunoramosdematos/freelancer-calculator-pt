@@ -630,6 +630,7 @@ describe("Taxes Store", () => {
     taxesStore.setNumberOfDependents(3);
     taxesStore.setDependentsAged3OrUnder(1);
     taxesStore.setDependentsAged4To6(1);
+    taxesStore.setSecondYear(true);
 
     taxesStore.setParametersFromURL({ income: "50000" });
 
@@ -637,6 +638,17 @@ describe("Taxes Store", () => {
     expect(taxesStore.numberOfDependents).toBe(0);
     expect(taxesStore.dependentsAged3OrUnder).toBe(0);
     expect(taxesStore.dependentsAged4To6).toBe(0);
+    expect(taxesStore.firstYear).toBe(false);
+    expect(taxesStore.secondYear).toBe(false);
+  });
+
+  it("hydrates legacy activity-year URL flags after resetting defaults", () => {
+    taxesStore.setFirstYear(true);
+
+    taxesStore.setParametersFromURL({ income: "50000", secondYear: "true" });
+
+    expect(taxesStore.firstYear).toBe(false);
+    expect(taxesStore.secondYear).toBe(true);
   });
 
   it("resets assessment scenario and dependent state", () => {

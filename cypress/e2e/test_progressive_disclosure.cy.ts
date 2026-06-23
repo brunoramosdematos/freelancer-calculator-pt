@@ -93,7 +93,7 @@ describe("progressive disclosure simulator layout", () => {
     cy.get('[data-cy="youth-irs"] input[type="checkbox"]').should("be.checked");
   });
 
-  it("maps the activity-year radio group and old URLs correctly", () => {
+  it("maps the activity-year radio group to the legacy URL flags", () => {
     cy.visit("/#/?income=50000&firstYear=true");
     openAdvancedTaxSettings();
     cy.get('[data-cy="first-year"] input:first-of-type').should("be.checked");
@@ -108,8 +108,15 @@ describe("progressive disclosure simulator layout", () => {
     cy.get('[data-cy="activity-year-none"] input:first-of-type').should(
       "be.checked",
     );
+  });
 
+  it("hydrates legacy second-year URLs from a clean page load", () => {
     cy.visit("/#/?income=50000&secondYear=true");
+
+    cy.get('[data-cy="advanced-tax-settings-toggle"]').should(
+      "contain",
+      "Second fiscal year",
+    );
     openAdvancedTaxSettings();
     cy.get('[data-cy="second-year"] input:first-of-type').should("be.checked");
   });

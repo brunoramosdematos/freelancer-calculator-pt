@@ -784,6 +784,8 @@ const useTaxesStore = defineStore({
       this.numberOfDependents = 0;
       this.dependentsAged3OrUnder = 0;
       this.dependentsAged4To6 = 0;
+      this.firstYear = false;
+      this.secondYear = false;
 
       this.setParameterFromUrl(
         params["assessmentScenario"],
