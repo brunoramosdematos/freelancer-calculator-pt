@@ -32,6 +32,7 @@ describe("pass income to url parameters", () => {
     cy.contains("p", simulationName);
     cy.get('[data-cy="open-simulation"]').click();
     cy.url().should("include", "?income=55000");
+    cy.url().should("not.include", "expenses=");
     cy.url().should("include", "assessmentScenario=joint-single-income");
     cy.url().should("include", "numberOfDependents=2");
     cy.url().should("include", "dependentsAged3OrUnder=1");

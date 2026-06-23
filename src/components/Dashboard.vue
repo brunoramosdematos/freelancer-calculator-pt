@@ -1,34 +1,54 @@
 <template>
   <div class="mt-6 grid grid-cols-1 gap-6 lg:grid-cols-12 lg:gap-8">
-    <div class="order-2 space-y-4 lg:order-1 lg:col-span-5">
-      <SimulationSettings />
-      <AdvancedTaxSettings
-        @view-social-security-calculation="openSocialSecurityDetails"
-      />
+    <div
+      data-cy="dashboard-settings-column"
+      class="contents lg:order-1 lg:col-span-5 lg:block lg:space-y-4"
+    >
+      <div class="order-2 lg:order-none">
+        <SimulationSettings />
+      </div>
+      <div class="order-3 lg:order-none">
+        <AdvancedTaxSettings
+          @view-social-security-calculation="openSocialSecurityDetails"
+        />
+      </div>
     </div>
 
-    <div class="order-1 lg:order-2 lg:col-span-7">
-      <ResultsSummary />
-    </div>
+    <div
+      data-cy="dashboard-results-column"
+      class="contents lg:order-2 lg:col-span-7 lg:block lg:space-y-4"
+    >
+      <div class="order-1 lg:order-none">
+        <ResultsSummary />
+      </div>
 
-    <div class="order-3 space-y-4 lg:col-span-7 lg:col-start-6">
-      <DisclosurePanel
-        id="income-breakdown-chart"
-        title="Income breakdown chart"
-        summary="Visual split of net income, IRS and Social Security"
-        toggle-data-cy="income-breakdown-chart-toggle"
-        panel-data-cy="income-breakdown-chart-panel"
-        :unmount-content="true"
+      <div
+        data-cy="income-breakdown-chart-container"
+        class="order-4 lg:order-none"
       >
-        <Chart />
-      </DisclosurePanel>
+        <DisclosurePanel
+          id="income-breakdown-chart"
+          title="Income breakdown chart"
+          summary="Visual split of net income, IRS and Social Security"
+          toggle-data-cy="income-breakdown-chart-toggle"
+          panel-data-cy="income-breakdown-chart-panel"
+          :unmount-content="true"
+        >
+          <Chart />
+        </DisclosurePanel>
+      </div>
 
-      <CalculationDetails
-        :open="calculationDetailsOpen"
-        :social-security-open="socialSecurityDetailsOpen"
-        @update:open="calculationDetailsOpen = $event"
-        @update:social-security-open="socialSecurityDetailsOpen = $event"
-      />
+      <div
+        data-cy="calculation-details-container"
+        class="order-5 lg:order-none"
+      >
+        <CalculationDetails
+          :open="calculationDetailsOpen"
+          :social-security-open="socialSecurityDetailsOpen"
+          @update:open="calculationDetailsOpen = $event"
+          @update:social-security-open="socialSecurityDetailsOpen = $event"
+        />
+      </div>
     </div>
   </div>
 </template>

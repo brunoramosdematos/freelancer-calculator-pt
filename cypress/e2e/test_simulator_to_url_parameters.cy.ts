@@ -96,6 +96,18 @@ describe("pass ssDiscount to url parameters", () => {
 });
 
 describe("pass expenses to url parameters", () => {
+  it("keeps automatic expenses out of the url when income changes", () => {
+    cy.visit("/#/?income=50000");
+    openAdvancedTaxSettings();
+
+    cy.url().should("not.include", "expenses=");
+
+    cy.get('[data-cy="income"]').clear().type("60000");
+
+    cy.url().should("include", "income=60000");
+    cy.url().should("not.include", "expenses=");
+  });
+
   it("successfully uses expenses from simulator", () => {
     cy.visit("/#/?income=50000");
     openAdvancedTaxSettings();

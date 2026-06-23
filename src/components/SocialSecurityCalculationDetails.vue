@@ -83,13 +83,19 @@
     </div>
     <div class="grid grid-cols-[minmax(0,1fr)_auto] gap-4 py-3">
       <dt class="text-neutral-600">Annual final contribution</dt>
-      <dd class="font-medium text-blue-700 tabular-nums">
+      <dd
+        class="font-medium text-blue-700 tabular-nums"
+        data-cy="ss-annual-final-contribution"
+      >
         {{ asCurrency(store.ssPay.year, 2) }}
       </dd>
     </div>
     <div class="grid grid-cols-[minmax(0,1fr)_auto] gap-4 py-3">
       <dt class="text-neutral-600">Daily final contribution</dt>
-      <dd class="font-medium text-blue-700 tabular-nums">
+      <dd
+        class="font-medium text-blue-700 tabular-nums"
+        data-cy="ss-daily-final-contribution"
+      >
         {{ asCurrency(store.ssPay.day, 2) }}
       </dd>
     </div>

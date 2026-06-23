@@ -1,11 +1,13 @@
-import { beforeEach, describe, expect, it } from "vitest";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 
 import { createPinia } from "pinia";
 import {
+  DEFAULT_TAX_RANK_YEAR,
   SUPPORTED_TAX_RANK_YEARS,
   YEAR_BUSINESS_DAYS,
   useTaxesStore,
 } from "@/store";
+import router from "@/router";
 import { AssessmentScenario, FrequencyChoices } from "@/typings";
 import { asCurrency } from "@/utils";
 
@@ -640,6 +642,98 @@ describe("Taxes Store", () => {
     expect(taxesStore.dependentsAged4To6).toBe(0);
     expect(taxesStore.firstYear).toBe(false);
     expect(taxesStore.secondYear).toBe(false);
+  });
+
+  it("hydrates an old income-only simulation after joint-single-income without leaking dependent state", () => {
+    taxesStore.setAssessmentScenario(AssessmentScenario.JointSingleIncome);
+    taxesStore.setNumberOfDependents(2);
+    taxesStore.setDependentsAged3OrUnder(1);
+    taxesStore.setDependentsAged4To6(1);
+
+    taxesStore.setParametersFromURL({ income: "50000" });
+
+    expect(taxesStore.assessmentScenario).toBe(AssessmentScenario.Individual);
+    expect(taxesStore.numberOfDependents).toBe(0);
+    expect(taxesStore.dependentsAged3OrUnder).toBe(0);
+    expect(taxesStore.dependentsAged4To6).toBe(0);
+  });
+
+  it("resets all simulation inputs omitted from legacy URLs before hydrating income", () => {
+    taxesStore.setExpensesManual(1234);
+    taxesStore.setSsDiscount(-0.2);
+    taxesStore.setCurrentTaxRankYear(2024);
+    taxesStore.setSsFirstYear(true);
+    taxesStore.setFirstYear(true);
+    taxesStore.setRnh(true);
+    taxesStore.setBenefitsOfYouthIrs(true);
+    taxesStore.setYearOfYouthIrs(2);
+
+    taxesStore.setParametersFromURL({ income: "50000" });
+
+    expect(taxesStore.income).toBe(50000);
+    expect(taxesStore.incomeFrequency).toBe(FrequencyChoices.Year);
+    expect(taxesStore.displayFrequency).toBe(FrequencyChoices.Month);
+    expect(taxesStore.nrMonthsDisplay).toBe(12);
+    expect(taxesStore.nrDaysOff).toBe(0);
+    expect(taxesStore.ssDiscount).toBe(0);
+    expect(taxesStore.expensesAuto).toBe(true);
+    expect(taxesStore.expenses).toBe(taxesStore.expensesNeeded);
+    expect(taxesStore.currentTaxRankYear).toBe(DEFAULT_TAX_RANK_YEAR);
+    expect(taxesStore.ssFirstYear).toBe(false);
+    expect(taxesStore.firstYear).toBe(false);
+    expect(taxesStore.secondYear).toBe(false);
+    expect(taxesStore.rnh).toBe(false);
+    expect(taxesStore.benefitsOfYouthIrs).toBe(false);
+    expect(taxesStore.yearOfYouthIrs).toBe(1);
+  });
+
+  it("hydrates expenses as manual only when a valid expenses parameter is present", () => {
+    taxesStore.setParametersFromURL({ income: "60000" });
+
+    expect(taxesStore.expensesAuto).toBe(true);
+    expect(taxesStore.expenses).toBe(taxesStore.expensesNeeded);
+
+    taxesStore.setParametersFromURL({ income: "60000", expenses: "0" });
+
+    expect(taxesStore.expensesAuto).toBe(false);
+    expect(taxesStore.expenses).toBe(0);
+
+    taxesStore.setParametersFromURL({ income: "60000", expenses: "-1" });
+
+    expect(taxesStore.expensesAuto).toBe(true);
+    expect(taxesStore.expenses).toBe(taxesStore.expensesNeeded);
+  });
+
+  it("recalculates automatic expenses after dependent inputs change and preserves manual expenses", () => {
+    taxesStore.setIncome(60000);
+    taxesStore.setExpensesAuto(false);
+
+    const expensesBeforeExemption = taxesStore.expenses;
+    taxesStore.setSsFirstYear(true);
+
+    expect(taxesStore.expensesAuto).toBe(true);
+    expect(taxesStore.expenses).toBe(taxesStore.expensesNeeded);
+    expect(taxesStore.expenses).not.toBe(expensesBeforeExemption);
+
+    taxesStore.setExpensesManual(1234);
+    taxesStore.setIncome(100000);
+
+    expect(taxesStore.expensesAuto).toBe(false);
+    expect(taxesStore.expenses).toBe(1234);
+  });
+
+  it("hydrates URL parameters without pushing intermediate router navigations", () => {
+    const pushSpy = vi.spyOn(router, "push").mockResolvedValue(undefined);
+
+    taxesStore.setParametersFromURL({
+      income: "50000",
+      ssDiscount: "-0.05",
+      currentTaxRankYear: "2024",
+      ssFirstYear: "true",
+    });
+
+    expect(pushSpy).not.toHaveBeenCalled();
+    pushSpy.mockRestore();
   });
 
   it("hydrates legacy activity-year URL flags after resetting defaults", () => {

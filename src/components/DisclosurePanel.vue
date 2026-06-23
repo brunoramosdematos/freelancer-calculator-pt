@@ -15,12 +15,14 @@
           <span class="block text-sm font-semibold text-neutral-900">
             {{ title }}
           </span>
-          <span
-            v-if="summary"
-            class="mt-0.5 block truncate text-xs text-neutral-500"
-          >
-            {{ summary }}
-          </span>
+          <slot name="summary">
+            <span
+              v-if="summary"
+              class="mt-0.5 block truncate text-xs text-neutral-500"
+            >
+              {{ summary }}
+            </span>
+          </slot>
         </span>
         <ChevronDownIcon
           class="h-5 w-5 shrink-0 text-neutral-500 transition-transform motion-reduce:transition-none"

@@ -151,8 +151,10 @@ const frequencies = [
   FrequencyChoices.Day,
 ];
 
-const renderCellValue = (value: number) => {
-  return value ? asCurrency(value, breakpoint.smAndDown ? 0 : 2) : "-";
+const renderCellValue = (value: number | null | undefined) => {
+  return typeof value === "number" && Number.isFinite(value)
+    ? asCurrency(value, breakpoint.smAndDown ? 0 : 2)
+    : "-";
 };
 
 const mobileRows = computed(() => [

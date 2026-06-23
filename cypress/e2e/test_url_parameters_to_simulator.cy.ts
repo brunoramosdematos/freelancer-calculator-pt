@@ -112,9 +112,13 @@ describe("pass expenses through url parameters", () => {
 
   it("doesn't update expenses if incorrect from url", () => {
     cy.visit("/#/?income=50000&expenses=-1534"); // change URL to match your dev URL
+    cy.get('[data-cy="advanced-tax-settings-toggle"]').should(
+      "not.contain",
+      "Manual expenses",
+    );
     openAdvancedTaxSettings();
     cy.get('[data-cy="expenses"] input:first-of-type').should(
-      "have.value",
+      "not.have.value",
       "0",
     );
   });
@@ -222,6 +226,10 @@ describe("pass assessment scenario and dependents through url parameters", () =>
       "0",
     );
     cy.get('[data-cy="final-irs-row"]').should("contain", "12 576.22€");
+    cy.url().should("not.include", "assessmentScenario=");
+    cy.url().should("not.include", "numberOfDependents=");
+    cy.url().should("not.include", "dependentsAged3OrUnder=");
+    cy.url().should("not.include", "dependentsAged4To6=");
   });
 });
 

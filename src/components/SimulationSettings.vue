@@ -1,5 +1,8 @@
 <template>
-  <section class="rounded-lg border border-neutral-200 bg-white p-4 shadow-sm">
+  <section
+    class="rounded-lg border border-neutral-200 bg-white p-4 shadow-sm"
+    data-cy="simulation-settings"
+  >
     <div class="mb-4 flex items-start justify-between gap-4">
       <div>
         <h2 class="text-sm font-semibold text-neutral-900">
@@ -155,7 +158,7 @@
               for="dependents-aged-4-to-6-input"
               class="text-sm font-medium text-neutral-700"
             >
-              Aged 4-6
+              Aged 4–6
             </label>
             <AdjustCounter
               :value="store.dependentsAged4To6"

@@ -1,6 +1,9 @@
 <template>
   <dl class="divide-y divide-neutral-100 text-sm">
-    <div class="grid grid-cols-[minmax(0,1fr)_auto] gap-4 py-3">
+    <div
+      class="grid grid-cols-[minmax(0,1fr)_auto] gap-4 py-3"
+      data-cy="professional-expenses-row"
+    >
       <dt class="text-neutral-600">Professional expenses</dt>
       <dd class="font-medium text-neutral-900 tabular-nums">
         {{ asCurrency(store.expenses, 2) }}
@@ -12,7 +15,10 @@
         {{ store.expensesAuto ? "Automatic" : "Manual" }}
       </dd>
     </div>
-    <div class="grid grid-cols-[minmax(0,1fr)_auto] gap-4 py-3">
+    <div
+      class="grid grid-cols-[minmax(0,1fr)_auto] gap-4 py-3"
+      data-cy="expenses-still-needed-row"
+    >
       <dt class="text-neutral-600">Expenses still needed</dt>
       <dd class="font-medium text-neutral-900 tabular-nums">
         {{ asCurrency(store.expensesNeeded, 2) }}

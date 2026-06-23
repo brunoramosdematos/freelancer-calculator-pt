@@ -157,7 +157,9 @@ const {
 
 const showTaxRanksTable = ref(false);
 
-const renderCellValue = (value: number | null) => {
-  return value ? asCurrency(value, 2) : "-";
+const renderCellValue = (value: number | null | undefined) => {
+  return typeof value === "number" && Number.isFinite(value)
+    ? asCurrency(value, 2)
+    : "-";
 };
 </script>

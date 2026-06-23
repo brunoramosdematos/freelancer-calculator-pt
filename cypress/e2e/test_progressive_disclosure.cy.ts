@@ -13,6 +13,41 @@ const openSocialSecurityDetails = () => {
 };
 
 describe("progressive disclosure simulator layout", () => {
+  it("aligns the desktop dashboard columns and keeps result panels together", () => {
+    cy.viewport(1536, 1024);
+    cy.visit("/#/?income=50000");
+
+    cy.get('[data-cy="dashboard-settings-column"]').then(($settings) => {
+      const settingsRect = $settings[0].getBoundingClientRect();
+
+      cy.get('[data-cy="dashboard-results-column"]').then(($results) => {
+        const resultsRect = $results[0].getBoundingClientRect();
+
+        expect(Math.abs(settingsRect.top - resultsRect.top)).to.be.lte(1);
+      });
+    });
+
+    cy.get('[data-cy="results-summary"]').then(($summary) => {
+      const summaryRect = $summary[0].getBoundingClientRect();
+
+      cy.get('[data-cy="income-breakdown-chart-container"]').then(($chart) => {
+        const chartRect = $chart[0].getBoundingClientRect();
+
+        expect(chartRect.top - summaryRect.bottom).to.be.gte(0);
+        expect(chartRect.top - summaryRect.bottom).to.be.lte(32);
+        expect(Math.abs(chartRect.left - summaryRect.left)).to.be.lte(1);
+        expect(Math.abs(chartRect.right - summaryRect.right)).to.be.lte(1);
+      });
+
+      cy.get('[data-cy="calculation-details-container"]').then(($details) => {
+        const detailsRect = $details[0].getBoundingClientRect();
+
+        expect(Math.abs(detailsRect.left - summaryRect.left)).to.be.lte(1);
+        expect(Math.abs(detailsRect.right - summaryRect.right)).to.be.lte(1);
+      });
+    });
+  });
+
   it("keeps the default simulation focused on compact final results", () => {
     cy.visit("/#/?income=50000");
 
@@ -121,17 +156,30 @@ describe("progressive disclosure simulator layout", () => {
     cy.get('[data-cy="second-year"] input:first-of-type').should("be.checked");
   });
 
-  it("keeps the mobile summary before advanced settings without horizontal scroll", () => {
+  it("keeps the mobile dashboard order without horizontal scroll", () => {
     cy.viewport(375, 800);
     cy.visit("/#/?income=50000");
 
-    cy.get('[data-cy="financial-summary-table"]').should("be.visible");
-    cy.get('[data-cy="advanced-tax-settings-toggle"]').should("be.visible");
-    cy.get('[data-cy="financial-summary-table"]').then(($summary) => {
-      expect($summary.closest(".order-1")).to.have.length(1);
+    const selectors = [
+      '[data-cy="results-summary"]',
+      '[data-cy="simulation-settings"]',
+      '[data-cy="advanced-tax-settings-toggle"]',
+      '[data-cy="income-breakdown-chart-container"]',
+      '[data-cy="calculation-details-container"]',
+      '[data-cy="footer"]',
+    ];
+
+    selectors.forEach((selector) => {
+      cy.get(selector).should("be.visible");
     });
-    cy.get('[data-cy="advanced-tax-settings-toggle"]').then(($advanced) => {
-      expect($advanced.closest(".order-2")).to.have.length(1);
+
+    cy.then(() => {
+      const positions = selectors.map((selector) =>
+        Cypress.$(selector)[0].getBoundingClientRect().top,
+      );
+      const sortedPositions = [...positions].sort((a, b) => a - b);
+
+      expect(positions).to.deep.equal(sortedPositions);
     });
     cy.get('[data-cy="mobile-frequency-comparison-toggle"]').should(
       "be.visible",
@@ -157,6 +205,112 @@ describe("progressive disclosure simulator layout", () => {
       .and(($footer) => {
         expect($footer.css("position")).not.to.equal("fixed");
       });
+  });
+
+  it("keeps info popovers closed on focus and supports dialog keyboard behavior", () => {
+    cy.visit("/#/?income=50000");
+
+    cy.get('button[aria-label="Income tax year information"]').then(
+      ($button) => {
+        const panelId = $button.attr("aria-controls");
+
+        cy.wrap($button)
+          .focus()
+          .should("have.attr", "aria-expanded", "false");
+        cy.get(`#${panelId}`).should("not.exist");
+      },
+    );
+
+    openAdvancedTaxSettings();
+    cy.get(
+      'button[aria-label="Social Security base adjustment information"]',
+    ).then(($button) => {
+      const panelId = $button.attr("aria-controls");
+
+      cy.wrap($button)
+        .click()
+        .should("have.attr", "aria-haspopup", "dialog")
+        .and("have.attr", "aria-expanded", "true");
+      cy.get(`#${panelId}`)
+        .should("be.visible")
+        .and("have.attr", "role", "dialog")
+        .and(
+          "have.attr",
+          "aria-label",
+          "Social Security base adjustment information",
+        );
+      cy.get(`#${panelId} a`)
+        .should("have.attr", "target", "_blank")
+        .and("contain", "Official information")
+        .focus();
+      cy.get(`#${panelId}`).should("be.visible");
+
+      cy.get("body").type("{esc}");
+      cy.get(`#${panelId}`).should("not.exist");
+      cy.wrap($button).should("be.focused");
+    });
+  });
+
+  it("closes the active info popover when another one opens", () => {
+    cy.visit("/#/?income=50000");
+    openAdvancedTaxSettings();
+
+    cy.get(
+      'button[aria-label="Social Security base adjustment information"]',
+    ).then(($firstButton) => {
+      const firstPanelId = $firstButton.attr("aria-controls");
+
+      cy.wrap($firstButton).click();
+      cy.get(`#${firstPanelId}`).should("be.visible");
+
+      cy.get('button[aria-label="Youth IRS information"]').then(
+        ($secondButton) => {
+          const secondPanelId = $secondButton.attr("aria-controls");
+
+          cy.wrap($secondButton).focus();
+          cy.get(`#${firstPanelId}`).should("not.exist");
+          cy.wrap($secondButton).type("{enter}");
+          cy.get(`#${secondPanelId}`).should("be.visible");
+        },
+      );
+    });
+  });
+
+  it("renders zero monetary values as currency in summaries and details", () => {
+    cy.visit(
+      "/#/?income=1000&ssFirstYear=true&numberOfDependents=1&dependentsAged3OrUnder=1",
+    );
+
+    cy.get('[data-cy="final-irs-row"]')
+      .should("contain", "0.00€")
+      .and("not.contain", "-");
+    cy.get('[data-cy="social-security-row"]')
+      .should("contain", "0.00€")
+      .and("not.contain", "-");
+
+    cy.get('[data-cy="calculation-details-toggle"]').click();
+    cy.get('[data-cy="irs-calculation-details-toggle"]').click();
+    cy.get('[data-cy="irs-final-detail-row"]').should("contain", "0.00€");
+
+    cy.get('[data-cy="social-security-calculation-details-toggle"]').click();
+    cy.get('[data-cy="ss-final-monthly-contribution"]').should(
+      "contain",
+      "0.00€",
+    );
+    cy.get('[data-cy="ss-annual-final-contribution"]').should(
+      "contain",
+      "0.00€",
+    );
+    cy.get('[data-cy="ss-daily-final-contribution"]').should(
+      "contain",
+      "0.00€",
+    );
+
+    cy.get('[data-cy="deductions-assumptions-details-toggle"]').click();
+    cy.get('[data-cy="expenses-still-needed-row"]').should(
+      "contain",
+      "0.00€",
+    );
   });
 
   it("exposes accessible disclosure controls that work by keyboard", () => {

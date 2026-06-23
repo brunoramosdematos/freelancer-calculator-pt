@@ -44,37 +44,62 @@ const parseStrictNonNegativeInteger = (value: unknown) => {
   return Number(value);
 };
 
-interface TaxesState {
+interface SimulationInputState {
   income: number | null;
-  validationCount: number;
-  defaultIncomes: number[];
   incomeFrequency: FrequencyChoices;
   displayFrequency: FrequencyChoices;
   nrMonthsDisplay: number;
   nrDaysOff: number;
-  ssTax: number;
-  expensesTax: number;
-  maxExpensesTax: number;
+  ssDiscount: number;
   expenses: number;
   expensesAuto: boolean;
-  ssDiscount: number;
-  ssDiscountChoices: number[];
   currentTaxRankYear: (typeof SUPPORTED_TAX_RANK_YEARS)[number];
-  taxRanks: { [K in (typeof SUPPORTED_TAX_RANK_YEARS)[number]]: TaxRank[] };
-  iasPerYear: { [K in (typeof SUPPORTED_TAX_RANK_YEARS)[number]]: number };
-  youthIrs: { [K in (typeof SUPPORTED_TAX_RANK_YEARS)[number]]: YouthIrs };
-  colors: Colors;
-  rnh: boolean;
-  rnhTax: number;
   firstYear: boolean;
   secondYear: boolean;
   ssFirstYear: boolean;
+  rnh: boolean;
   benefitsOfYouthIrs: boolean;
   yearOfYouthIrs: number;
   assessmentScenario: AssessmentScenario;
   numberOfDependents: number;
   dependentsAged3OrUnder: number;
   dependentsAged4To6: number;
+}
+
+export const createDefaultSimulationInputs = (): SimulationInputState => ({
+  income: null,
+  incomeFrequency: FrequencyChoices.Year,
+  displayFrequency: FrequencyChoices.Month,
+  nrMonthsDisplay: 12,
+  nrDaysOff: 0,
+  ssDiscount: 0,
+  expenses: 0,
+  expensesAuto: true,
+  currentTaxRankYear: DEFAULT_TAX_RANK_YEAR,
+  ssFirstYear: false,
+  firstYear: false,
+  secondYear: false,
+  rnh: false,
+  benefitsOfYouthIrs: false,
+  yearOfYouthIrs: 1,
+  assessmentScenario: AssessmentScenario.Individual,
+  numberOfDependents: 0,
+  dependentsAged3OrUnder: 0,
+  dependentsAged4To6: 0,
+});
+
+interface TaxesState extends SimulationInputState {
+  validationCount: number;
+  defaultIncomes: number[];
+  ssTax: number;
+  expensesTax: number;
+  maxExpensesTax: number;
+  ssDiscountChoices: number[];
+  taxRanks: { [K in (typeof SUPPORTED_TAX_RANK_YEARS)[number]]: TaxRank[] };
+  iasPerYear: { [K in (typeof SUPPORTED_TAX_RANK_YEARS)[number]]: number };
+  youthIrs: { [K in (typeof SUPPORTED_TAX_RANK_YEARS)[number]]: YouthIrs };
+  colors: Colors;
+  rnhTax: number;
   storedSimulations:
     | [
         {
@@ -89,23 +114,15 @@ interface TaxesState {
 const useTaxesStore = defineStore({
   id: "taxes",
   state: (): TaxesState => ({
-    income: null,
+    ...createDefaultSimulationInputs(),
     validationCount: 0,
     defaultIncomes: [30000, 50000, 60000, 70000, 100000],
-    incomeFrequency: FrequencyChoices.Year,
-    displayFrequency: FrequencyChoices.Month,
-    nrMonthsDisplay: 12,
-    nrDaysOff: 0,
-    ssDiscount: 0,
     ssDiscountChoices: [
       -0.25, -0.2, -0.15, -0.1, -0.05, 0, +0.05, +0.1, +0.15, +0.2, +0.25,
     ],
     expensesTax: 15,
     maxExpensesTax: 15,
-    expenses: 0,
-    expensesAuto: true,
     ssTax: 0.214,
-    currentTaxRankYear: DEFAULT_TAX_RANK_YEAR,
     taxRanks: {
       2023: [
         { id: 1, min: 0, max: 7479, normalTax: 0.145, averageTax: 0.145 },
@@ -206,11 +223,7 @@ const useTaxesStore = defineStore({
       2025: 522.5,
       2026: 537.13,
     },
-    rnh: false,
     rnhTax: 0.2,
-    firstYear: false,
-    secondYear: false,
-    ssFirstYear: false,
     colors: {
       netIncome: "#76c479",
       irs: "#ff6384",
@@ -256,12 +269,6 @@ const useTaxesStore = defineStore({
         10: { maxDiscountPercentage: 0.25, maxDiscountIasMultiplier: 55 },
       },
     },
-    benefitsOfYouthIrs: false,
-    yearOfYouthIrs: 1,
-    assessmentScenario: AssessmentScenario.Individual,
-    numberOfDependents: 0,
-    dependentsAged3OrUnder: 0,
-    dependentsAged4To6: 0,
     storedSimulations: null,
   }),
   getters: {
@@ -555,27 +562,38 @@ const useTaxesStore = defineStore({
     },
   },
   actions: {
-    setIncome(value: number, syncUrl = true) {
-      if (value <= 0) {
+    resetSimulationInputs() {
+      Object.assign(this, createDefaultSimulationInputs());
+      this.validationCount = 0;
+    },
+    recalculateAutomaticExpenses() {
+      if (!this.expensesAuto) {
+        return;
+      }
+
+      this.expenses = this.expensesNeeded;
+    },
+    setIncome(value: number | null, syncUrl = true) {
+      if (!Number.isFinite(value) || value === null || value <= 0) {
         this.income = null;
       } else {
-        this.income = value ? value : 0;
-        if (this.expensesAuto) {
-          this.setExpenses(this.expensesNeeded, syncUrl);
-        }
+        this.income = value;
       }
+      this.recalculateAutomaticExpenses();
       if (syncUrl) {
         updateUrlQuery({ income: this.income });
       }
     },
     setSsDiscount(value: number, syncUrl = true) {
       this.ssDiscount = value;
+      this.recalculateAutomaticExpenses();
       if (syncUrl) {
         updateUrlQuery({ ssDiscount: this.ssDiscount });
       }
     },
     setIncomeFrequency(frequency: FrequencyChoices, syncUrl = true) {
       this.incomeFrequency = frequency;
+      this.recalculateAutomaticExpenses();
       if (syncUrl) {
         updateUrlQuery({ incomeFrequency: this.incomeFrequency });
       }
@@ -588,12 +606,14 @@ const useTaxesStore = defineStore({
     },
     setNrMonthsDisplay(nrMonthsDisplay: number, syncUrl = true) {
       this.nrMonthsDisplay = nrMonthsDisplay;
+      this.recalculateAutomaticExpenses();
       if (syncUrl) {
         updateUrlQuery({ nrMonthsDisplay: this.nrMonthsDisplay });
       }
     },
     setNrDaysOff(nrDaysOff: number, syncUrl = true) {
       this.nrDaysOff = nrDaysOff;
+      this.recalculateAutomaticExpenses();
       if (syncUrl) {
         updateUrlQuery({ nrDaysOff: this.nrDaysOff });
       }
@@ -603,6 +623,7 @@ const useTaxesStore = defineStore({
       syncUrl = true,
     ) {
       this.currentTaxRankYear = taxRankYear;
+      this.recalculateAutomaticExpenses();
       if (syncUrl) {
         updateUrlQuery({ currentTaxRankYear: this.currentTaxRankYear });
       }
@@ -621,15 +642,18 @@ const useTaxesStore = defineStore({
       this.expensesAuto = false;
       this.setExpenses(value, syncUrl);
     },
-    setExpensesAuto() {
+    setExpensesAuto(syncUrl = true) {
       this.expensesAuto = true;
-      this.setExpenses(this.expensesNeeded);
-      updateUrlQuery({
-        expenses: undefined,
-      });
+      this.recalculateAutomaticExpenses();
+      if (syncUrl) {
+        updateUrlQuery({
+          expenses: undefined,
+        });
+      }
     },
     setSsFirstYear(value: boolean, syncUrl = true) {
       this.ssFirstYear = value;
+      this.recalculateAutomaticExpenses();
       if (syncUrl) {
         updateUrlQuery({ ssFirstYear: this.ssFirstYear });
       }
@@ -764,11 +788,14 @@ const useTaxesStore = defineStore({
       setter(value, false);
       return true;
     },
-    setParametersFromURL(params: object) {
+    setParametersFromURL(params: Record<string, unknown>) {
       const numericValidator = (value: number) => !isNaN(value);
       const positiveNumericValidator = (value: number) =>
         numericValidator(value) && value > 0;
-      const booleanParser = (value: string) => value.toLowerCase() === "true";
+      const nonNegativeNumericValidator = (value: number) =>
+        numericValidator(value) && value >= 0;
+      const booleanParser = (value: unknown) =>
+        typeof value === "string" && value.toLowerCase() === "true";
       const frequencyChoicesValidator = (value: string) =>
         Object.values(FrequencyChoices).includes(value as FrequencyChoices);
       const taxRankYearValidator = (value: number) =>
@@ -780,12 +807,7 @@ const useTaxesStore = defineStore({
       const assessmentScenarioValidator = (value: string) =>
         ASSESSMENT_SCENARIOS.includes(value as AssessmentScenario);
 
-      this.assessmentScenario = AssessmentScenario.Individual;
-      this.numberOfDependents = 0;
-      this.dependentsAged3OrUnder = 0;
-      this.dependentsAged4To6 = 0;
-      this.firstYear = false;
-      this.secondYear = false;
+      this.resetSimulationInputs();
 
       this.setParameterFromUrl(
         params["assessmentScenario"],
@@ -821,15 +843,6 @@ const useTaxesStore = defineStore({
         null,
         frequencyChoicesValidator,
       );
-      const incomeResult = this.setParameterFromUrl(
-        params["income"],
-        this.setIncome,
-        parseInt,
-        positiveNumericValidator,
-      );
-      if (incomeResult) {
-        this.validationCount++;
-      }
       this.setParameterFromUrl(
         params["displayFrequency"],
         this.setDisplayFrequency,
@@ -855,12 +868,6 @@ const useTaxesStore = defineStore({
         (value: number) => this.ssDiscountChoices.includes(value),
       );
       this.setParameterFromUrl(
-        params["expenses"],
-        this.setExpensesManual,
-        parseInt,
-        numericValidator,
-      );
-      this.setParameterFromUrl(
         params["currentTaxRankYear"],
         this.setCurrentTaxRankYear,
         parseInt,
@@ -872,6 +879,26 @@ const useTaxesStore = defineStore({
         booleanParser,
         null,
       );
+
+      const incomeResult = this.setParameterFromUrl(
+        params["income"],
+        this.setIncome,
+        parseInt,
+        positiveNumericValidator,
+      );
+      const manualExpensesResult = this.setParameterFromUrl(
+        params["expenses"],
+        this.setExpensesManual,
+        parseInt,
+        nonNegativeNumericValidator,
+      );
+      if (!manualExpensesResult) {
+        this.expensesAuto = true;
+        this.recalculateAutomaticExpenses();
+      }
+      if (incomeResult) {
+        this.validationCount++;
+      }
       this.setParameterFromUrl(
         params["firstYear"],
         this.setFirstYear,
@@ -884,7 +911,12 @@ const useTaxesStore = defineStore({
         booleanParser,
         null,
       );
-      this.setParameterFromUrl(params["rnh"], this.setRnh, booleanParser, null);
+      this.setParameterFromUrl(
+        params["rnh"],
+        this.setRnh,
+        booleanParser,
+        null,
+      );
       this.setParameterFromUrl(
         params["benefitsOfYouthIrs"],
         this.setBenefitsOfYouthIrs,
@@ -952,22 +984,7 @@ const useTaxesStore = defineStore({
       return value >= 1 && value <= this.youthIrsRange;
     },
     reset() {
-      this.setIncome(null);
-      this.setIncomeFrequency(FrequencyChoices.Year);
-      this.setDisplayFrequency(FrequencyChoices.Month);
-      this.setNrMonthsDisplay(12);
-      this.setNrDaysOff(0);
-      this.setSsDiscount(0);
-      this.setExpenses(0);
-      this.setCurrentTaxRankYear(DEFAULT_TAX_RANK_YEAR);
-      this.setSsFirstYear(false);
-      this.setFirstYear(false);
-      this.setSecondYear(false);
-      this.setRnh(false);
-      this.setBenefitsOfYouthIrs(false);
-      this.setYearOfYouthIrs(1);
-      this.setAssessmentScenario(AssessmentScenario.Individual);
-      this.setNumberOfDependents(0);
+      this.resetSimulationInputs();
       clearUrlQuery();
     },
   },

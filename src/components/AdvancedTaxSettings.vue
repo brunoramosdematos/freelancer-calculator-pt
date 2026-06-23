@@ -6,6 +6,30 @@
     toggle-data-cy="advanced-tax-settings-toggle"
     panel-data-cy="advanced-tax-settings-panel"
   >
+    <template #summary>
+      <span
+        v-if="advancedSummaryItems.length === 0"
+        class="mt-1 block text-xs text-neutral-500"
+        data-cy="advanced-tax-settings-summary-default"
+      >
+        No custom tax settings
+      </span>
+      <span
+        v-else
+        class="mt-2 flex flex-wrap gap-1.5"
+        data-cy="advanced-tax-settings-summary"
+      >
+        <span
+          v-for="item in advancedSummaryItems"
+          :key="item.dataCy"
+          class="rounded border border-neutral-200 bg-neutral-50 px-2 py-0.5 text-xs font-medium text-neutral-700"
+          :data-cy="item.dataCy"
+        >
+          {{ item.label }}
+        </span>
+      </span>
+    </template>
+
     <div class="space-y-6">
       <div class="space-y-3">
         <div class="flex flex-wrap items-center justify-between gap-3">
@@ -238,6 +262,10 @@ defineEmits<{
 }>();
 
 type ActivityYearSelection = "none" | "first" | "second";
+type AdvancedSummaryItem = {
+  label: string;
+  dataCy: string;
+};
 
 const store = useTaxesStore();
 const { expensesNeeded, grossIncome, rnhTax } = storeToRefs(store);
@@ -368,37 +396,62 @@ const setActivityYear = (value: ActivityYearSelection) => {
   }
 };
 
-const advancedSummary = computed(() => {
-  const activeSettings: string[] = [];
+const advancedSummaryItems = computed<AdvancedSummaryItem[]>(() => {
+  const activeSettings: AdvancedSummaryItem[] = [];
 
   if (store.ssDiscount !== 0) {
-    activeSettings.push(`SS base ${formatSignedPercentage(store.ssDiscount)}`);
+    activeSettings.push({
+      label: `SS base ${formatSignedPercentage(store.ssDiscount)}`,
+      dataCy: "advanced-tax-summary-ss-discount",
+    });
   }
 
   if (store.benefitsOfYouthIrs) {
-    activeSettings.push(`Youth IRS year ${store.yearOfYouthIrs}`);
+    activeSettings.push({
+      label: `Youth IRS year ${store.yearOfYouthIrs}`,
+      dataCy: "advanced-tax-summary-youth-irs",
+    });
   }
 
   if (store.ssFirstYear) {
-    activeSettings.push("First 12 months SS exemption");
+    activeSettings.push({
+      label: "First 12 months SS exemption",
+      dataCy: "advanced-tax-summary-ss-first-year",
+    });
   }
 
   if (store.firstYear) {
-    activeSettings.push("First fiscal year");
+    activeSettings.push({
+      label: "First fiscal year",
+      dataCy: "advanced-tax-summary-first-year",
+    });
   } else if (store.secondYear) {
-    activeSettings.push("Second fiscal year");
+    activeSettings.push({
+      label: "Second fiscal year",
+      dataCy: "advanced-tax-summary-second-year",
+    });
   }
 
   if (store.rnh) {
-    activeSettings.push("NHR / RNH");
+    activeSettings.push({
+      label: "NHR / RNH",
+      dataCy: "advanced-tax-summary-rnh",
+    });
   }
 
   if (!store.expensesAuto) {
-    activeSettings.push("Manual expenses");
+    activeSettings.push({
+      label: "Manual expenses",
+      dataCy: "advanced-tax-summary-manual-expenses",
+    });
   }
 
-  return activeSettings.length > 0
-    ? activeSettings.join(" · ")
+  return activeSettings;
+});
+
+const advancedSummary = computed(() => {
+  return advancedSummaryItems.value.length > 0
+    ? advancedSummaryItems.value.map((item) => item.label).join(" · ")
     : "No custom tax settings";
 });
 </script>

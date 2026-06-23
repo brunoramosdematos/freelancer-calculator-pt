@@ -1,13 +1,14 @@
 <template>
-  <span ref="root" class="relative inline-flex">
+  <span ref="root" class="relative inline-flex" @focusout="onRootFocusout">
     <button
+      ref="button"
       type="button"
       class="inline-flex rounded-full text-neutral-500 hover:text-neutral-800 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
       :aria-label="label"
+      aria-haspopup="dialog"
       :aria-expanded="isOpen.toString()"
       :aria-controls="panelId"
       @click="toggle"
-      @focus="openFromFocus"
     >
       <QuestionMarkCircleIcon
         class="h-5 w-5 fill-neutral-100"
@@ -26,6 +27,7 @@
         v-if="isOpen"
         :id="panelId"
         role="dialog"
+        :aria-label="label"
         class="absolute z-50 w-72 rounded-lg border border-neutral-200 bg-white px-4 py-3 text-sm text-neutral-700 shadow-lg"
         :class="positionClass"
       >
@@ -68,36 +70,36 @@ const emit = defineEmits<{
 
 const { breakpoint } = useBreakpoint();
 const root = ref<HTMLElement | null>(null);
+const button = ref<HTMLButtonElement | null>(null);
 const isOpen = ref(false);
-const openedByFocus = ref(false);
 const panelId = `info-${Math.random().toString(36).slice(2)}`;
+const INFO_BUTTON_OPEN_EVENT = "info-button-open";
 
 const open = () => {
+  window.dispatchEvent(
+    new CustomEvent(INFO_BUTTON_OPEN_EVENT, { detail: panelId }),
+  );
   isOpen.value = true;
 };
 
-const openFromFocus = () => {
+const close = (options: { restoreFocus?: boolean } = {}) => {
   if (!isOpen.value) {
-    openedByFocus.value = true;
-    open();
-    window.setTimeout(() => {
-      openedByFocus.value = false;
-    }, 0);
-  }
-};
-
-const close = () => {
-  isOpen.value = false;
-};
-
-const toggle = () => {
-  if (openedByFocus.value) {
-    openedByFocus.value = false;
-    emit("onClick");
     return;
   }
 
-  isOpen.value = !isOpen.value;
+  isOpen.value = false;
+
+  if (options.restoreFocus) {
+    window.requestAnimationFrame(() => button.value?.focus());
+  }
+};
+
+const toggle = () => {
+  if (isOpen.value) {
+    close();
+  } else {
+    open();
+  }
   emit("onClick");
 };
 
@@ -108,7 +110,28 @@ const onDocumentClick = (event: MouseEvent) => {
 };
 
 const onDocumentKeydown = (event: KeyboardEvent) => {
-  if (event.key === "Escape") {
+  if (event.key === "Escape" && isOpen.value) {
+    event.preventDefault();
+    close({ restoreFocus: true });
+  }
+};
+
+const onRootFocusout = () => {
+  window.setTimeout(() => {
+    const activeElement = document.activeElement;
+
+    if (activeElement && root.value?.contains(activeElement)) {
+      return;
+    }
+
+    close();
+  }, 0);
+};
+
+const onAnotherInfoButtonOpen = (event: Event) => {
+  const detail = (event as CustomEvent<string>).detail;
+
+  if (detail !== panelId) {
     close();
   }
 };
@@ -116,11 +139,13 @@ const onDocumentKeydown = (event: KeyboardEvent) => {
 onMounted(() => {
   document.addEventListener("click", onDocumentClick);
   document.addEventListener("keydown", onDocumentKeydown);
+  window.addEventListener(INFO_BUTTON_OPEN_EVENT, onAnotherInfoButtonOpen);
 });
 
 onBeforeUnmount(() => {
   document.removeEventListener("click", onDocumentClick);
   document.removeEventListener("keydown", onDocumentKeydown);
+  window.removeEventListener(INFO_BUTTON_OPEN_EVENT, onAnotherInfoButtonOpen);
 });
 
 const positionClass = computed(() => {

@@ -11,7 +11,7 @@
     "vitest": "vitest",
     "coverage": "vitest run --coverage",
     "cy:e2e:open": "start-server-and-test 'vite dev --port 8261' http://localhost:8261 'cypress open --e2e'",
-    "cy:e2e:run": "start-server-and-test 'vite dev --port 8261' http://localhost:8261 'cypress run --e2e'",
+    "cy:e2e:run": "node scripts/run-cypress-e2e.mjs",
     "lint": "eslint --ext .js,.vue --ignore-path .gitignore --fix src",
     "format": "prettier .  --write"
   },
