@@ -1,5 +1,5 @@
 <template>
-  <div class="mx-2 md:mx-5 lg:mx-10 xl:mx-32 2xl:mx-60 3xl:mx-80">
+  <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
     <Form></Form>
     <Dashboard v-if="showDashboard"></Dashboard>
     <FooterBar />

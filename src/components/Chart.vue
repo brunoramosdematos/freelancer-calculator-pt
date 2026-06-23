@@ -1,20 +1,24 @@
 <template>
-  <div class="relative w-fit">
-    <canvas id="chart"></canvas>
+  <div class="relative mx-auto h-64 w-64">
+    <canvas ref="canvasRef"></canvas>
     <div
       class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2"
     >
-      <p class="text-center font-semibold text-lg text-neutral-600 whitespace-nowrap">
+      <p
+        class="text-center text-lg font-semibold text-neutral-700 whitespace-nowrap tabular-nums"
+      >
         {{ asCurrency(grossIncome[displayFrequency]) }}
       </p>
-      <small class="text-small">gross income</small>
+      <small class="block text-center text-xs text-neutral-500">
+        gross income
+      </small>
     </div>
   </div>
 </template>
 
 <script lang="ts" setup>
-import { computed, onMounted, watch } from "vue";
-import { Chart, registerables } from "chart.js";
+import { computed, onBeforeUnmount, onMounted, ref, watch } from "vue";
+import { Chart, registerables, type Chart as ChartInstance } from "chart.js";
 
 import { storeToRefs } from "pinia";
 import { asCurrency, asPercentage } from "@/utils.js";
@@ -28,7 +32,8 @@ const { grossIncome, netIncome, irsPay, ssPay, colors, displayFrequency } =
 Chart.register(...registerables);
 Chart.register(ChartDataLabels);
 
-let chart;
+const canvasRef = ref<HTMLCanvasElement | null>(null);
+let chart: ChartInstance<"doughnut"> | null = null;
 onMounted(() => {
   buildChart();
 });
@@ -86,15 +91,30 @@ const chartOptions = computed(() => {
 watch(
   () => chartData.value,
   (newData) => {
+    if (!chart) {
+      return;
+    }
+
     newData.datasets.forEach((d, i) => {
       chart.data.datasets[i].data = d.data;
     });
     chart.update();
   },
 );
+
+onBeforeUnmount(() => {
+  chart?.destroy();
+  chart = null;
+});
+
 const buildChart = () => {
-  const canvas = document.getElementById("chart") as HTMLCanvasElement;
-  const ctx = canvas.getContext("2d");
+  chart?.destroy();
+
+  const ctx = canvasRef.value?.getContext("2d");
+  if (!ctx) {
+    return;
+  }
+
   chart = new Chart(ctx, {
     type: "doughnut",
     data: chartData.value,

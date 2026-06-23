@@ -1,76 +1,53 @@
 <template>
-  <div v-if="showDashboard">
-    <footer
-      class="fixed bottom-0 w-full left-0 text-center border-t-[1px] border-neutral-200 bg-neutral-100 overflow-scroll max-h-24"
-      :class="{ 'py-5 md:py-2': breakpoint.mdAndUp }"
+  <footer
+    v-if="showDashboard"
+    class="mt-8 border-t border-neutral-200 py-6 text-sm text-neutral-600"
+    data-cy="footer"
+  >
+    <div
+      class="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between"
     >
-      <button
-        v-if="breakpoint.smAndDown"
-        class="underline text-xs w-full h-full"
-        @click="showFooterNotes = !showFooterNotes"
-      >
-        notes
-      </button>
-      <transition
-        enter-active-class="duration-300 ease-out"
-        enter-from-class="transform opacity-0"
-        enter-to-class="opacity-100"
-        leave-active-class="duration-200 ease-in"
-        leave-from-class="opacity-100"
-        leave-to-class="transform opacity-0"
-      >
-        <div
-          v-if="breakpoint.mdAndUp || showFooterNotes"
-          class="flex flex-col lg:flex-row justify-around items-center space-y-3 sm:space-y-0"
-          :class="{
-            'bg-neutral-300 fixed right-0 w-full top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 p-4':
-              breakpoint.smAndDown,
-          }"
-        >
-          <button
-            v-if="showFooterNotes"
-            type="button"
-            class="text-gray-400 bg-transparent hover:text-gray-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center"
-            @click="showFooterNotes = !showFooterNotes"
+      <div>
+        <p class="font-medium text-neutral-700">
+          Indicative estimate · {{ YEAR_BUSINESS_DAYS }} business days · VAT
+          excluded
+        </p>
+        <details class="mt-2">
+          <summary
+            class="cursor-pointer text-sm font-medium text-sky-700 underline underline-offset-2 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
           >
-            <XMarkIcon class="w-5 h-5" />
-          </button>
-          <div class="text-xs">
-            *Assuming {{ YEAR_BUSINESS_DAYS }} business days in a year.
+            Assumptions and limitations
+          </summary>
+          <div class="mt-3 max-w-3xl space-y-2 text-xs text-neutral-500">
+            <p>
+              This estimate is for independent workers with green receipts
+              (trabalhadores independentes com recibos verdes).
+            </p>
+            <p>
+              VAT (IVA) is ignored for the scenario where clients are outside
+              Portugal.
+            </p>
+            <p>
+              Daily values use {{ YEAR_BUSINESS_DAYS }} business days minus
+              unpaid days off.
+            </p>
           </div>
-          <div class="text-xs">
-            This is only valid for independent workers with green receipts
-            (trabalhadores independentes com recibos verdes).
-          </div>
-          <div class="text-xs">
-            VAT (IVA) is ignored (only for foreign clients).
-          </div>
-          <div class="flex justify-center">
-            <a
-              v-if="breakpoint.smAndDown"
-              class="cursor-pointer text-center text-blue-500 p-3 rounded-full shadow-sm hover:shadow-xl"
-              target="_blank"
-              rel="noopener noreferrer"
-              href="https://github.com/brunoramosdematos/freelancer-calculator-pt"
-              aria-label="Open Freelancer Calculator Portugal source code on GitHub"
-            >
-              <img src="@/assets/github-mark.svg" alt="" />
-            </a>
-          </div>
-        </div>
-      </transition>
-    </footer>
-  </div>
+        </details>
+      </div>
+      <RouterLink
+        to="/about"
+        class="text-sm font-medium text-neutral-700 underline underline-offset-2 hover:text-neutral-900 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
+      >
+        About and disclaimer
+      </RouterLink>
+    </div>
+  </footer>
 </template>
+
 <script lang="ts" setup>
 import { storeToRefs } from "pinia";
+import { RouterLink } from "vue-router";
 import { useTaxesStore, YEAR_BUSINESS_DAYS } from "@/store";
-import { useBreakpoint } from "@/composables/breakpoints";
-import { XMarkIcon } from "@heroicons/vue/24/outline";
-import { ref } from "vue";
 
 const { showDashboard } = storeToRefs(useTaxesStore());
-const { breakpoint } = useBreakpoint();
-
-const showFooterNotes = ref(false);
 </script>

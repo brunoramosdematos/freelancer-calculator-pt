@@ -1,3 +1,12 @@
+const openAdvancedTaxSettings = () => {
+  cy.get('[data-cy="advanced-tax-settings-toggle"]').click();
+};
+
+const openIrsCalculationDetails = () => {
+  cy.get('[data-cy="calculation-details-toggle"]').click();
+  cy.get('[data-cy="irs-calculation-details-toggle"]').click();
+};
+
 describe("simulator loads", () => {
   it("successfully loads the home page", () => {
     cy.visit("/#/");
@@ -74,11 +83,13 @@ describe("pass nrMonthsDisplay to url parameters", () => {
 describe("pass ssDiscount to url parameters", () => {
   it("successfully uses ssDiscount from simulator when using decrease button", () => {
     cy.visit("/#/?income=50000");
+    openAdvancedTaxSettings();
     cy.get('[data-cy="ss-discount"] [data-cy="counter-decrease"]').click();
     cy.url().should("include", "ssDiscount=-0.05");
   });
   it("successfully uses ssDiscount from simulator when using increase button", () => {
     cy.visit("/#/?income=50000");
+    openAdvancedTaxSettings();
     cy.get('[data-cy="ss-discount"] [data-cy="counter-increase"]').click();
     cy.url().should("include", "ssDiscount=0.05");
   });
@@ -87,6 +98,7 @@ describe("pass ssDiscount to url parameters", () => {
 describe("pass expenses to url parameters", () => {
   it("successfully uses expenses from simulator", () => {
     cy.visit("/#/?income=50000");
+    openAdvancedTaxSettings();
     cy.get('[data-cy="expenses"] input:first-of-type')
       .invoke("val", "")
       .type("3500");
@@ -94,16 +106,19 @@ describe("pass expenses to url parameters", () => {
   });
   it("successfully uses expenses from simulator when using decrease button", () => {
     cy.visit("/#/?income=50000");
+    openAdvancedTaxSettings();
     cy.get('[data-cy="expenses"] [data-cy="counter-decrease"]').click();
     cy.url().should("include", "expenses=2400");
   });
   it("successfully uses expenses from simulator when using increase button", () => {
     cy.visit("/#/?income=50000");
+    openAdvancedTaxSettings();
     cy.get('[data-cy="expenses"] [data-cy="counter-increase"]').click();
     cy.url().should("include", "expenses=2600");
   });
   it("doesn't update expenses if incorrect from simulator", () => {
     cy.visit("/#/?income=50000");
+    openAdvancedTaxSettings();
     cy.get('[data-cy="expenses"] input:first-of-type')
       .invoke("val", "")
       .type("adadsads");
@@ -114,6 +129,7 @@ describe("pass expenses to url parameters", () => {
 describe("unset expenses from url parameters on expensesAuto", () => {
   it("successfully reset expenses", () => {
     cy.visit("/#/?income=50000");
+    openAdvancedTaxSettings();
     cy.get('[data-cy="expenses"] input:first-of-type')
       .invoke("val", "")
       .type("3500");
@@ -147,6 +163,7 @@ describe("pass assessment scenario and dependents to url parameters", () => {
     cy.get('[data-cy="assessment-scenario-joint-single-income"]').should(
       "be.checked",
     );
+    openIrsCalculationDetails();
     cy.get('[data-cy="taxable-income-for-rates-row"]').should(
       "contain",
       "22 500.00€",
@@ -182,6 +199,7 @@ describe("pass assessment scenario and dependents to url parameters", () => {
     cy.url().should("include", "dependentsAged3OrUnder=1");
     cy.url().should("include", "dependentsAged4To6=1");
     cy.get('[data-cy="dependents-aged-7-or-over"]').should("contain", "0");
+    openIrsCalculationDetails();
     cy.get('[data-cy="dependent-tax-deduction-applied-row"]').should(
       "contain",
       "1 500.00€",
@@ -243,12 +261,14 @@ describe("pass assessment scenario and dependents to url parameters", () => {
 describe("pass ssFirstYear to url parameters", () => {
   it("successfully uses true ssFirstYear from simulator", () => {
     cy.visit("/#/?income=50000"); // change URL to match your dev URL
+    openAdvancedTaxSettings();
     cy.get('[data-cy="ss-first-year"] input:first-of-type').click();
     cy.url().should("include", "ssFirstYear=true");
   });
 
   it("successfully uses false ssFirstYear from simulator", () => {
     cy.visit("/#/?income=50000"); // change URL to match your dev URL
+    openAdvancedTaxSettings();
     cy.get('[data-cy="ss-first-year"] input:first-of-type').click().click();
     cy.url().should("include", "ssFirstYear=false");
   });
@@ -256,13 +276,16 @@ describe("pass ssFirstYear to url parameters", () => {
 describe("pass firstYear to url parameters", () => {
   it("successfully uses true firstYear from simulator", () => {
     cy.visit("/#/?income=50000"); // change URL to match your dev URL
-    cy.get('[data-cy="first-year"] input:first-of-type').click();
+    openAdvancedTaxSettings();
+    cy.get('[data-cy="first-year"]').click();
     cy.url().should("include", "firstYear=true");
   });
 
   it("successfully uses false firstYear from simulator", () => {
     cy.visit("/#/?income=50000"); // change URL to match your dev URL
-    cy.get('[data-cy="first-year"] input:first-of-type').click().click();
+    openAdvancedTaxSettings();
+    cy.get('[data-cy="first-year"]').click();
+    cy.get('[data-cy="activity-year-none"]').click();
     cy.url().should("include", "firstYear=false");
   });
 });
@@ -270,13 +293,16 @@ describe("pass firstYear to url parameters", () => {
 describe("pass secondYear to url parameters", () => {
   it("successfully uses true secondYear from simulator", () => {
     cy.visit("/#/?income=50000"); // change URL to match your dev URL
-    cy.get('[data-cy="second-year"] input:first-of-type').click();
+    openAdvancedTaxSettings();
+    cy.get('[data-cy="second-year"]').click();
     cy.url().should("include", "secondYear=true");
   });
 
   it("successfully uses false secondYear from simulator", () => {
     cy.visit("/#/?income=50000"); // change URL to match your dev URL
-    cy.get('[data-cy="second-year"] input:first-of-type').click().click();
+    openAdvancedTaxSettings();
+    cy.get('[data-cy="second-year"]').click();
+    cy.get('[data-cy="activity-year-none"]').click();
     cy.url().should("include", "secondYear=false");
   });
 });
@@ -284,12 +310,14 @@ describe("pass secondYear to url parameters", () => {
 describe("pass rnh to url parameters", () => {
   it("successfully uses true rnh from simulator", () => {
     cy.visit("/#/?income=50000"); // change URL to match your dev URL
+    openAdvancedTaxSettings();
     cy.get('[data-cy="rnh"] input:first-of-type').click();
     cy.url().should("include", "rnh=true");
   });
 
   it("successfully uses false rnh from simulator", () => {
     cy.visit("/#/?income=50000"); // change URL to match your dev URL
+    openAdvancedTaxSettings();
     cy.get('[data-cy="rnh"] input:first-of-type').click().click();
     cy.url().should("include", "rnh=false");
   });
@@ -298,6 +326,7 @@ describe("pass rnh to url parameters", () => {
 describe("pass youth irs to url parameters", () => {
   it("successfully uses true youth irs from simulator", () => {
     cy.visit("/#/?income=50000");
+    openAdvancedTaxSettings();
     cy.get('[data-cy="youth-irs"] input[type="checkbox"]').click();
     cy.get('[data-cy="youth-irs-years-dropdown"]>input').click();
     cy.get('[data-cy="youth-irs-years-dropdown"]')
@@ -309,7 +338,10 @@ describe("pass youth irs to url parameters", () => {
 
   it("successfully uses false youth irs from simulator", () => {
     cy.visit("/#/?income=50000");
+    openAdvancedTaxSettings();
     cy.get('[data-cy="youth-irs"] input[type="checkbox"]').click().click();
     cy.url().should("include", "benefitsOfYouthIrs=false");
   });
 });
+
+export {};

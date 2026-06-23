@@ -1,10 +1,23 @@
 const monthly2026Scenario =
   "/#/?income=11000&incomeFrequency=month&currentTaxRankYear=2026&nrMonthsDisplay=12";
 
+const openAdvancedTaxSettings = () => {
+  cy.get('[data-cy="advanced-tax-settings-toggle"]').click();
+};
+
+const openSocialSecurityDetails = () => {
+  openAdvancedTaxSettings();
+  cy.get('[data-cy="view-social-security-calculation"]').click();
+};
+
 describe("Social Security adjustment explanation", () => {
   it("shows capped 2026 behavior and the first adjustment that changes SS", () => {
     cy.visit(monthly2026Scenario);
+    openSocialSecurityDetails();
 
+    cy.get('[data-cy="ss-relevant-income-before-adjustment"]').should(
+      "be.visible",
+    );
     cy.get('[data-cy="ss-relevant-income-before-adjustment"]').should(
       "contain",
       "7 700.00€",
@@ -67,6 +80,7 @@ describe("Social Security adjustment explanation", () => {
     cy.visit(
       "/#/?income=2000&incomeFrequency=month&currentTaxRankYear=2026&nrMonthsDisplay=12",
     );
+    openSocialSecurityDetails();
 
     cy.get('[data-cy="ss-final-monthly-contribution"]').should(
       "contain",
@@ -83,7 +97,9 @@ describe("Social Security adjustment explanation", () => {
     );
     cy.get('[data-cy="ss-adjustment-status-message"]').should(
       "contain",
-      "changes the 70% relevant-income base",
+      "No cap, minimum, or exemption",
     );
   });
 });
+
+export {};

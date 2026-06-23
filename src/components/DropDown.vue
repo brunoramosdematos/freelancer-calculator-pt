@@ -4,8 +4,8 @@
       type="button"
       class="cursor-pointer w-full text-start py-2 placeholder:text-neutral-400 bg-inherit border-b-2 border-neutral-400 relative focus:outline-none focus:border-indigo-400"
       :value="value"
-      id="menu-button"
-      aria-expanded="true"
+      :id="id"
+      :aria-expanded="showDropdown.toString()"
       aria-haspopup="true"
       :class="{ 'text-indigo-400': showDropdown }"
     />
@@ -19,6 +19,8 @@
     >
       <button
         v-for="choice in choices"
+        :key="choice"
+        type="button"
         class="text-gray-700 block px-4 py-2 text-sm hover:bg-neutral-200 w-full"
         @click="changeChoice(choice)"
       >
@@ -32,6 +34,10 @@ import { ref } from "vue";
 import { ChevronDownIcon } from "@heroicons/vue/24/outline";
 const emit = defineEmits(["change"]);
 defineProps({
+  id: {
+    type: String,
+    default: "menu-button",
+  },
   value: { type: String || Number },
   choices: { type: Array },
 });
