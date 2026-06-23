@@ -586,6 +586,68 @@ describe("Taxes Store", () => {
     expect(taxesStore.dependentsAged7OrOver).toBe(0);
   });
 
+  describe("dashboard visibility state", () => {
+    it("derives dashboard visibility from valid income only", () => {
+      const visibilityStore = useTaxesStore(createPinia());
+
+      expect(visibilityStore.showDashboard).toBe(false);
+
+      visibilityStore.setIncome(50_000, false);
+
+      expect(visibilityStore.showDashboard).toBe(true);
+
+      visibilityStore.reset();
+
+      expect(visibilityStore.income).toBeNull();
+      expect(visibilityStore.showDashboard).toBe(false);
+    });
+
+    it("hydrates income and empty queries into the matching visibility state", () => {
+      const visibilityStore = useTaxesStore(createPinia());
+
+      visibilityStore.setParametersFromURL({ income: "50000" });
+
+      expect(visibilityStore.income).toBe(50_000);
+      expect(visibilityStore.showDashboard).toBe(true);
+
+      visibilityStore.setParametersFromURL({});
+
+      expect(visibilityStore.income).toBeNull();
+      expect(visibilityStore.showDashboard).toBe(false);
+    });
+
+    it("reset preserves stored simulations and automatic-expense defaults", () => {
+      const visibilityStore = useTaxesStore(createPinia());
+      const storedSimulation = {
+        id: "saved-simulation",
+        simulationName: "Saved simulation",
+        createdAt: "2026-06-24T00:00:00.000Z",
+        parameters: { income: "50000" },
+      };
+
+      visibilityStore.setStoredSimulations([storedSimulation]);
+      visibilityStore.setIncome(60_000, false);
+      visibilityStore.setExpensesManual(1_234, false);
+
+      visibilityStore.reset();
+
+      expect(visibilityStore.storedSimulations).toEqual([storedSimulation]);
+      expect(visibilityStore.expensesAuto).toBe(true);
+      expect(visibilityStore.expenses).toBe(0);
+      expect(visibilityStore.showDashboard).toBe(false);
+    });
+
+    it("derives visibility deterministically without presentation-only state", () => {
+      const visibilityStore = useTaxesStore(createPinia());
+
+      expect(visibilityStore.showDashboard).toBe(false);
+      visibilityStore.setIncome(50_000, false);
+      expect(visibilityStore.showDashboard).toBe(true);
+      visibilityStore.setIncome(null, false);
+      expect(visibilityStore.showDashboard).toBe(false);
+    });
+  });
+
   it("strictly validates new URL parameters and rejects impossible dependent buckets", () => {
     taxesStore.reset();
     taxesStore.setParametersFromURL({

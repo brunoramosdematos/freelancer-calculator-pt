@@ -15,17 +15,17 @@
   </transition>
   <div
     class="text-center transition delay-5 duration-100 ease-in-out flex"
-    :class="{ 'h-screen': validationCount === 0 }"
+    data-cy="income-form-shell"
+    :data-state="hasIncome ? 'active' : 'landing'"
+    :class="{ 'h-screen': !hasIncome }"
   >
     <div class="m-auto container max-w-2xl">
       <div class="relative md:h-44">
         <h4
           class="font-semibold mt-4 md:mt-0"
-          :class="
-            validationCount > 0
-              ? 'text-lg md:text-xl lg:text-2xl'
-              : 'text-lg sm:text-xl md:text-2-xl lg:text-3xl xl:text-4xl'
-          "
+          data-cy="product-heading"
+          :data-state="hasIncome ? 'active' : 'landing'"
+          :class="headingClass"
         >
           Freelancer Calculator Portugal 🇵🇹
         </h4>
@@ -56,13 +56,17 @@
                 >
                   <button
                     class="uppercase text-primary text-xs border-[0.5px] border-primary rounded-full px-5 py-[2px] hover:border-primary hover:text-primary focus:bg-sky-100"
-                    @click="store.setIncome(store.income - changeAmount.value)"
+                  @click="
+                    store.setIncome((store.income ?? 0) - changeAmount.value)
+                  "
                   >
                     - {{ changeAmount.text }}
                   </button>
                   <button
                     class="uppercase text-primary text-xs border-[0.5px] border-primary rounded-full px-5 py-[2px] ml-1 hover:border-primary hover:text-primary focus:bg-sky-100"
-                    @click="store.setIncome(store.income + changeAmount.value)"
+                  @click="
+                    store.setIncome((store.income ?? 0) + changeAmount.value)
+                  "
                   >
                     + {{ changeAmount.text }}
                   </button>
@@ -98,11 +102,11 @@
               </transition>
             </div>
             <div class="w-1/12">/</div>
-            <div :class="income === null ? 'w-4/12' : 'w-3/12'">
+            <div :class="hasIncome ? 'w-3/12' : 'w-4/12'">
               <FrequencyButton />
             </div>
           </div>
-          <div v-if="income !== null" class="inline-flex gap-5">
+          <div v-if="hasIncome" class="inline-flex gap-5">
             <button
               data-cy="reset-simulation-button"
               class="text-sm hover:text-income hover:font-medium py-5 flex gap-2 items-center"
@@ -112,6 +116,7 @@
               <ArrowPathIcon class="h-3" />
             </button>
             <button
+              data-cy="share-simulation-button"
               class="text-sm hover:text-secondary hover:font-medium py-5 flex gap-2 items-center"
               @click="share"
             >
@@ -134,7 +139,7 @@
   </div>
 </template>
 <script setup lang="ts">
-import { ref, watch, computed } from "vue";
+import { ref, computed } from "vue";
 import {
   CurrencyEuroIcon,
   ChevronDownIcon,
@@ -155,8 +160,7 @@ import { FrequencyChoices } from "@/typings";
 const { breakpoint } = useBreakpoint();
 
 // store
-const { validationCount, incomeFrequency, income } =
-  storeToRefs(useTaxesStore());
+const { incomeFrequency, income } = storeToRefs(useTaxesStore());
 const store = useTaxesStore();
 
 // dropdwon
@@ -171,11 +175,16 @@ const internalIncome = computed({
     store.setIncome(value ? value : 0);
   },
 });
-watch(
-  () => income.value,
-  () => {
-    validationCount.value++;
-  },
+
+const hasIncome = computed(
+  () =>
+    income.value !== null && Number.isFinite(income.value) && income.value > 0,
+);
+
+const headingClass = computed(() =>
+  hasIncome.value
+    ? "text-lg md:text-xl lg:text-2xl"
+    : "text-lg sm:text-xl md:text-2-xl lg:text-3xl xl:text-4xl",
 );
 
 const defaultIncomes = computed(() => {

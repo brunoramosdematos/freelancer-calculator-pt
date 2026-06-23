@@ -7,6 +7,7 @@
 </template>
 <script setup lang="ts">
 import { storeToRefs } from "pinia";
+import { watch } from "vue";
 import { useTaxesStore } from "@/store";
 import { useRoute } from "vue-router";
 
@@ -19,5 +20,12 @@ const store = useTaxesStore();
 const { showDashboard } = storeToRefs(store);
 
 const route = useRoute();
-store.setParametersFromURL(route.query);
+
+watch(
+  () => route.fullPath,
+  () => {
+    store.setParametersFromURL(route.query);
+  },
+  { immediate: true },
+);
 </script>

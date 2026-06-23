@@ -89,7 +89,6 @@ export const createDefaultSimulationInputs = (): SimulationInputState => ({
 });
 
 interface TaxesState extends SimulationInputState {
-  validationCount: number;
   defaultIncomes: number[];
   ssTax: number;
   expensesTax: number;
@@ -115,7 +114,6 @@ const useTaxesStore = defineStore({
   id: "taxes",
   state: (): TaxesState => ({
     ...createDefaultSimulationInputs(),
-    validationCount: 0,
     defaultIncomes: [30000, 50000, 60000, 70000, 100000],
     ssDiscountChoices: [
       -0.25, -0.2, -0.15, -0.1, -0.05, 0, +0.05, +0.1, +0.15, +0.2, +0.25,
@@ -273,9 +271,7 @@ const useTaxesStore = defineStore({
   }),
   getters: {
     showDashboard: (state) => {
-      return (
-        state.validationCount > 0 && state.income !== null && state.income !== 0
-      );
+      return state.income !== null && Number.isFinite(state.income) && state.income > 0;
     },
 
     grossIncome: (state) => {
@@ -564,7 +560,6 @@ const useTaxesStore = defineStore({
   actions: {
     resetSimulationInputs() {
       Object.assign(this, createDefaultSimulationInputs());
-      this.validationCount = 0;
     },
     recalculateAutomaticExpenses() {
       if (!this.expensesAuto) {
@@ -880,7 +875,7 @@ const useTaxesStore = defineStore({
         null,
       );
 
-      const incomeResult = this.setParameterFromUrl(
+      this.setParameterFromUrl(
         params["income"],
         this.setIncome,
         parseInt,
@@ -895,9 +890,6 @@ const useTaxesStore = defineStore({
       if (!manualExpensesResult) {
         this.expensesAuto = true;
         this.recalculateAutomaticExpenses();
-      }
-      if (incomeResult) {
-        this.validationCount++;
       }
       this.setParameterFromUrl(
         params["firstYear"],
