@@ -102,7 +102,12 @@ const toggle = () => {
 };
 
 const onButtonKeydown = (event: KeyboardEvent) => {
-  if (event.key !== "Enter" && event.key !== " " && event.key !== "Spacebar") {
+  if (
+    event.key !== "Enter" &&
+    event.key !== " " &&
+    event.key !== "Space" &&
+    event.key !== "Spacebar"
+  ) {
     return;
   }
 

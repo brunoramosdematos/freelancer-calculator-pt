@@ -126,7 +126,14 @@ describe("progressive disclosure simulator layout", () => {
     cy.get('[data-cy="advanced-tax-settings-toggle"]').then(($advanced) => {
       expect($advanced.closest(".order-2")).to.have.length(1);
     });
-    cy.get('[data-cy="financial-summary-table"] table').should("not.exist");
+    cy.get('[data-cy="mobile-frequency-comparison-toggle"]').should(
+      "be.visible",
+    );
+    cy.document().then((document) => {
+      expect(document.documentElement.scrollWidth).to.be.lte(
+        document.documentElement.clientWidth + 1,
+      );
+    });
     cy.get('[data-cy="mobile-frequency-comparison-toggle"]').click();
     cy.get('[data-cy="mobile-frequency-comparison-toggle"]').should(
       "have.attr",
@@ -157,7 +164,16 @@ describe("progressive disclosure simulator layout", () => {
 
     cy.get('[data-cy="calculation-details-toggle"]')
       .focus()
-      .trigger("keydown", { key: "Enter", code: "Enter", keyCode: 13 });
+      .then(($button) => {
+        $button[0].dispatchEvent(
+          new KeyboardEvent("keydown", {
+            bubbles: true,
+            cancelable: true,
+            code: "Enter",
+            key: "Enter",
+          }),
+        );
+      });
     cy.get('[data-cy="calculation-details-toggle"]').should(
       "have.attr",
       "aria-expanded",
@@ -165,7 +181,16 @@ describe("progressive disclosure simulator layout", () => {
     );
     cy.get('[data-cy="irs-calculation-details-toggle"]')
       .focus()
-      .trigger("keydown", { key: " ", code: "Space", keyCode: 32 });
+      .then(($button) => {
+        $button[0].dispatchEvent(
+          new KeyboardEvent("keydown", {
+            bubbles: true,
+            cancelable: true,
+            code: "Space",
+            key: " ",
+          }),
+        );
+      });
     cy.get('[data-cy="irs-calculation-details-toggle"]').should(
       "have.attr",
       "aria-expanded",
