@@ -20,6 +20,13 @@ Calculations are estimates and do not replace accounting, legal or tax advice.
 Users should validate their own situation with Autoridade Tributaria e Aduaneira
 or a qualified professional.
 
+## Prerequisites
+
+- Node.js 24 LTS.
+- npm bundled with Node.js 24, or another npm version compatible with Node.js
+  24.
+- Use `npm ci` for reproducible dependency installation from `package-lock.json`.
+
 ## Local Setup
 
 Install dependencies reproducibly:
@@ -63,10 +70,17 @@ npm run cy:e2e:run
 GitHub Pages deployment is handled by the repository workflow in
 `.github/workflows/workflow.yml`. Vitest and Cypress must pass before the deploy
 job builds the app, verifies the production artifact and uploads `./dist` to
-Pages.
+Pages. The workflow runs the project on Node.js 24.
 
 Manual GitHub Pages, custom-domain and DNS setup is documented in
 [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md).
+
+## Dependency Security
+
+The latest npm dependency audit snapshot is documented in
+[docs/security/NPM_AUDIT_2026-06-24.md](docs/security/NPM_AUDIT_2026-06-24.md).
+Audit findings change as advisories and package versions change, and dependency
+remediation is tracked separately from this dated assessment.
 
 ## Upstream Attribution
 
