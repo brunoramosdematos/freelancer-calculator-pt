@@ -14,6 +14,13 @@ const openAdvancedTaxSettings = () => {
   });
 };
 
+const normalizeTableText = (text: string) => text.replace(/\s+/g, " ").trim();
+
+const selectDropdownChoice = (selector: string, choice: string) => {
+  cy.get(`${selector} > input`).click();
+  cy.get(selector).contains("button", choice).click();
+};
+
 const assertIncomeState = (income: string, formattedIncome: string) => {
   cy.url().should("include", `income=${income}`);
   cy.get('[data-cy="income"]').should("have.value", formattedIncome);
@@ -213,6 +220,167 @@ describe("browser history synchronizes simulator state", () => {
       "NHR / RNH",
     );
     cy.get('[data-cy="rnh"] input:first-of-type').should("have.value", "true");
+  });
+
+  it("restores Social Security adjustment through one Back and Forward step", () => {
+    let defaultSocialSecurityText = "";
+    let adjustedSocialSecurityText = "";
+
+    cy.visit("/#/?income=50000");
+    openAdvancedTaxSettings();
+
+    cy.url().should("not.include", "ssDiscount=");
+    cy.get('[data-cy="ss-discount"]').should("contain", "0%");
+    cy.get('[data-cy="social-security-row"]')
+      .invoke("text")
+      .then((text) => {
+        defaultSocialSecurityText = normalizeTableText(text);
+      });
+
+    cy.get('[data-cy="ss-discount"] [data-cy="counter-decrease"]').click();
+
+    cy.url().should("include", "ssDiscount=-0.05");
+    cy.get('[data-cy="ss-discount"]').should("contain", "-5%");
+    cy.get('[data-cy="advanced-tax-summary-ss-discount"]').should(
+      "contain",
+      "SS base -5%",
+    );
+    cy.get('[data-cy="social-security-row"]')
+      .invoke("text")
+      .then((text) => {
+        adjustedSocialSecurityText = normalizeTableText(text);
+        expect(adjustedSocialSecurityText).not.to.equal(
+          defaultSocialSecurityText,
+        );
+      });
+
+    cy.go("back");
+
+    cy.url().should("not.include", "ssDiscount=");
+    cy.get('[data-cy="ss-discount"]').should("contain", "0%");
+    cy.get('[data-cy="advanced-tax-summary-ss-discount"]').should("not.exist");
+    cy.get('[data-cy="social-security-row"]')
+      .invoke("text")
+      .should((text) => {
+        expect(normalizeTableText(text)).to.equal(defaultSocialSecurityText);
+      });
+
+    cy.go("forward");
+
+    cy.url().should("include", "ssDiscount=-0.05");
+    cy.get('[data-cy="ss-discount"]').should("contain", "-5%");
+    cy.get('[data-cy="advanced-tax-summary-ss-discount"]').should(
+      "contain",
+      "SS base -5%",
+    );
+    cy.get('[data-cy="social-security-row"]')
+      .invoke("text")
+      .should((text) => {
+        expect(normalizeTableText(text)).to.equal(adjustedSocialSecurityText);
+      });
+  });
+
+  it("restores tax year and Youth IRS year through one Back and Forward step", () => {
+    cy.visit(
+      "/#/?income=50000&currentTaxRankYear=2025&benefitsOfYouthIrs=true&yearOfYouthIrs=2",
+    );
+
+    cy.get('[data-cy="tax-rank-years-dropdown"] > input').should(
+      "have.value",
+      "2025",
+    );
+    cy.get('[data-cy="advanced-tax-summary-youth-irs"]').should(
+      "contain",
+      "Youth IRS year 2",
+    );
+    openAdvancedTaxSettings();
+    cy.get('[data-cy="youth-irs"] input:first-of-type').should("be.checked");
+    cy.get('[data-cy="youth-irs-years-dropdown"] > input').should(
+      "have.value",
+      "2",
+    );
+
+    selectDropdownChoice('[data-cy="tax-rank-years-dropdown"]', "2024");
+
+    cy.url().should("include", "currentTaxRankYear=2024");
+    cy.url().should("include", "yearOfYouthIrs=1");
+    cy.get('[data-cy="tax-rank-years-dropdown"] > input').should(
+      "have.value",
+      "2024",
+    );
+    cy.get('[data-cy="youth-irs-years-dropdown"] > input').should(
+      "have.value",
+      "1",
+    );
+    cy.get('[data-cy="advanced-tax-summary-youth-irs"]').should(
+      "contain",
+      "Youth IRS year 1",
+    );
+
+    cy.go("back");
+
+    cy.url().should("include", "currentTaxRankYear=2025");
+    cy.url().should("include", "yearOfYouthIrs=2");
+    cy.get('[data-cy="tax-rank-years-dropdown"] > input').should(
+      "have.value",
+      "2025",
+    );
+    cy.get('[data-cy="youth-irs-years-dropdown"] > input').should(
+      "have.value",
+      "2",
+    );
+    cy.get('[data-cy="advanced-tax-summary-youth-irs"]').should(
+      "contain",
+      "Youth IRS year 2",
+    );
+
+    cy.go("forward");
+
+    cy.url().should("include", "currentTaxRankYear=2024");
+    cy.url().should("include", "yearOfYouthIrs=1");
+    cy.get('[data-cy="tax-rank-years-dropdown"] > input').should(
+      "have.value",
+      "2024",
+    );
+    cy.get('[data-cy="youth-irs-years-dropdown"] > input').should(
+      "have.value",
+      "1",
+    );
+    cy.get('[data-cy="advanced-tax-summary-youth-irs"]').should(
+      "contain",
+      "Youth IRS year 1",
+    );
+  });
+
+  it("renders a shared advanced URL without rewriting it", () => {
+    cy.visit(
+      "/#/?income=50000&currentTaxRankYear=2025&benefitsOfYouthIrs=true&yearOfYouthIrs=2&ssDiscount=-0.2",
+    );
+
+    cy.url().then((initialUrl) => {
+      cy.get('[data-cy="tax-rank-years-dropdown"] > input').should(
+        "have.value",
+        "2025",
+      );
+      cy.get('[data-cy="advanced-tax-summary-ss-discount"]').should(
+        "contain",
+        "SS base -20%",
+      );
+      cy.get('[data-cy="advanced-tax-summary-youth-irs"]').should(
+        "contain",
+        "Youth IRS year 2",
+      );
+      openAdvancedTaxSettings();
+      cy.get('[data-cy="ss-discount"]').should("contain", "-20%");
+      cy.get('[data-cy="youth-irs"] input:first-of-type').should(
+        "be.checked",
+      );
+      cy.get('[data-cy="youth-irs-years-dropdown"] > input').should(
+        "have.value",
+        "2",
+      );
+      cy.url().should("eq", initialUrl);
+    });
   });
 
   it("shares the current URL after Back navigation", () => {

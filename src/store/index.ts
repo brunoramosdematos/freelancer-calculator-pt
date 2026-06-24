@@ -623,6 +623,25 @@ const useTaxesStore = defineStore({
         updateUrlQuery({ currentTaxRankYear: this.currentTaxRankYear });
       }
     },
+    setCurrentTaxRankYearFromUser(
+      taxRankYear: (typeof SUPPORTED_TAX_RANK_YEARS)[number],
+    ) {
+      this.setCurrentTaxRankYear(taxRankYear, false);
+
+      const updatedQuery: {
+        currentTaxRankYear: (typeof SUPPORTED_TAX_RANK_YEARS)[number];
+        yearOfYouthIrs?: number;
+      } = {
+        currentTaxRankYear: this.currentTaxRankYear,
+      };
+
+      if (this.benefitsOfYouthIrs) {
+        this.setYearOfYouthIrs(1, false);
+        updatedQuery.yearOfYouthIrs = this.yearOfYouthIrs;
+      }
+
+      updateUrlQuery(updatedQuery);
+    },
     setExpenses(value: number, syncUrl = true) {
       if (value < 0) {
         this.expenses = 0;

@@ -720,6 +720,106 @@ describe("Taxes Store", () => {
     expect(taxesStore.dependentsAged4To6).toBe(0);
   });
 
+  it("hydrates Social Security adjustment passively without URL writes", () => {
+    const pushSpy = vi.spyOn(router, "push").mockResolvedValue(undefined);
+
+    try {
+      taxesStore.setParametersFromURL({ income: "50000", ssDiscount: "-0.2" });
+
+      expect(taxesStore.ssDiscount).toBe(-0.2);
+      expect(pushSpy).not.toHaveBeenCalled();
+    } finally {
+      pushSpy.mockRestore();
+    }
+  });
+
+  it("preserves an explicit Youth IRS URL year while hydrating without URL writes", () => {
+    const pushSpy = vi.spyOn(router, "push").mockResolvedValue(undefined);
+
+    try {
+      taxesStore.setParametersFromURL({
+        income: "50000",
+        currentTaxRankYear: "2025",
+        benefitsOfYouthIrs: "true",
+        yearOfYouthIrs: "2",
+      });
+
+      expect(taxesStore.currentTaxRankYear).toBe(2025);
+      expect(taxesStore.benefitsOfYouthIrs).toBe(true);
+      expect(taxesStore.yearOfYouthIrs).toBe(2);
+      expect(pushSpy).not.toHaveBeenCalled();
+    } finally {
+      pushSpy.mockRestore();
+    }
+  });
+
+  it("resets Youth IRS year atomically when a user changes tax year while Youth IRS is active", () => {
+    taxesStore.setIncome(50_000, false);
+    taxesStore.setCurrentTaxRankYear(2025, false);
+    taxesStore.setBenefitsOfYouthIrs(true, false);
+    taxesStore.setYearOfYouthIrs(2, false);
+
+    const pushSpy = vi.spyOn(router, "push").mockResolvedValue(undefined);
+
+    try {
+      taxesStore.setCurrentTaxRankYearFromUser(2024);
+
+      expect(taxesStore.currentTaxRankYear).toBe(2024);
+      expect(taxesStore.yearOfYouthIrs).toBe(1);
+      expect(taxesStore.expenses).toBe(taxesStore.expensesNeeded);
+      expect(pushSpy).toHaveBeenCalledTimes(1);
+      expect(pushSpy.mock.calls[0]?.[0]).toMatchObject({
+        query: {
+          currentTaxRankYear: 2024,
+          yearOfYouthIrs: 1,
+        },
+      });
+    } finally {
+      pushSpy.mockRestore();
+    }
+  });
+
+  it("changes only the tax year from the user action when Youth IRS is inactive", () => {
+    taxesStore.setCurrentTaxRankYear(2025, false);
+    taxesStore.setBenefitsOfYouthIrs(false, false);
+    taxesStore.setYearOfYouthIrs(2, false);
+
+    const pushSpy = vi.spyOn(router, "push").mockResolvedValue(undefined);
+
+    try {
+      taxesStore.setCurrentTaxRankYearFromUser(2024);
+
+      expect(taxesStore.currentTaxRankYear).toBe(2024);
+      expect(taxesStore.yearOfYouthIrs).toBe(2);
+      expect(pushSpy).toHaveBeenCalledTimes(1);
+      expect(pushSpy.mock.calls[0]?.[0]).toMatchObject({
+        query: {
+          currentTaxRankYear: 2024,
+        },
+      });
+    } finally {
+      pushSpy.mockRestore();
+    }
+  });
+
+  it("keeps the generic tax year setter passive when syncUrl is false", () => {
+    taxesStore.setCurrentTaxRankYear(2025, false);
+    taxesStore.setBenefitsOfYouthIrs(true, false);
+    taxesStore.setYearOfYouthIrs(2, false);
+
+    const pushSpy = vi.spyOn(router, "push").mockResolvedValue(undefined);
+
+    try {
+      taxesStore.setCurrentTaxRankYear(2024, false);
+
+      expect(taxesStore.currentTaxRankYear).toBe(2024);
+      expect(taxesStore.yearOfYouthIrs).toBe(2);
+      expect(pushSpy).not.toHaveBeenCalled();
+    } finally {
+      pushSpy.mockRestore();
+    }
+  });
+
   it("resets all simulation inputs omitted from legacy URLs before hydrating income", () => {
     taxesStore.setExpensesManual(1234);
     taxesStore.setSsDiscount(-0.2);

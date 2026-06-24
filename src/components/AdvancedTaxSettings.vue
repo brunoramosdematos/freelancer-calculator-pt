@@ -246,7 +246,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, ref, watch } from "vue";
+import { computed } from "vue";
 import { storeToRefs } from "pinia";
 import { ArrowPathIcon } from "@heroicons/vue/24/outline";
 import { useTaxesStore } from "@/store";
@@ -275,40 +275,18 @@ const formatSignedPercentage = (value: number) => {
 };
 
 const ssDiscountChoices = computed(() => store.ssDiscountChoices);
-const ssDiscountPosition = ref(
-  Math.max(store.ssDiscountChoices.indexOf(store.ssDiscount), 0),
-);
-
-watch(
-  () => ssDiscountPosition.value,
-  (newPosition) => {
+const ssDiscountPosition = computed({
+  get() {
+    return Math.max(store.ssDiscountChoices.indexOf(store.ssDiscount), 0);
+  },
+  set(newPosition: number) {
     const selectedDiscount = store.ssDiscountChoices[newPosition];
 
     if (selectedDiscount !== undefined) {
       store.setSsDiscount(selectedDiscount);
     }
   },
-);
-
-watch(
-  () => store.ssDiscount,
-  (newDiscount) => {
-    const newPosition = store.ssDiscountChoices.indexOf(newDiscount);
-
-    if (newPosition !== -1 && newPosition !== ssDiscountPosition.value) {
-      ssDiscountPosition.value = newPosition;
-    }
-  },
-);
-
-watch(
-  () => store.currentTaxRankYear,
-  () => {
-    if (store.benefitsOfYouthIrs) {
-      store.setYearOfYouthIrs(1);
-    }
-  },
-);
+});
 
 const ssDiscountDisplay = computed(() =>
   formatSignedPercentage(store.ssDiscount),

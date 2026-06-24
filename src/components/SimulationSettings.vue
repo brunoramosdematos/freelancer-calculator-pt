@@ -250,6 +250,6 @@ const { getCurrentTaxRankYear } = storeToRefs(store);
 const changeCurrentTaxRankYear = (
   taxRank: (typeof SUPPORTED_TAX_RANK_YEARS)[number],
 ) => {
-  store.setCurrentTaxRankYear(taxRank);
+  store.setCurrentTaxRankYearFromUser(taxRank);
 };
 </script>
