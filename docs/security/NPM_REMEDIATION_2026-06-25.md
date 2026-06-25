@@ -4,8 +4,7 @@
 
 - Repository: `brunoramosdematos/freelancer-calculator-pt`.
 - Starting SHA: `f07b308cdd0a5fa30da7da7a0de974bb41fe4ce6`.
-- Final SHA: recorded in the final execution report after this document is
-  committed and pushed.
+- Final SHA: `e7ece9214c5be9e39106b94df2dab2e2339bb091`.
 - Execution timestamp: `2026-06-25T00:07:36Z`.
 - Local Node.js: `v24.14.0`.
 - Local npm: `11.16.0`.
@@ -253,9 +252,9 @@ Lifecycle-script maintainers from npm metadata:
 
 Rollback target:
 
-- Revert the focused remediation commit that contains this document and the
-  `postcss`/workflow changes. The final commit SHA is recorded in the final
-  execution report after push.
+- Revert the focused remediation commit
+  `e7ece9214c5be9e39106b94df2dab2e2339bb091`, which contains this document and
+  the `postcss`/workflow changes.
 
 Expected package versions after rollback:
 
@@ -292,3 +291,15 @@ The complete development dependency tree is not clean. The remaining high and
 critical findings are development, test, lint, or build-toolchain risks and
 should be handled in the next focused Vite/Vitest/Cypress/toolchain
 remediation execution.
+
+## Addendum - 2026-06-25
+
+The Vite/Vitest-focused remediation is documented in
+[NPM_TOOLCHAIN_REMEDIATION_2026-06-25.md](NPM_TOOLCHAIN_REMEDIATION_2026-06-25.md).
+That execution remediated the direct `vite` and `vitest` findings, removed the
+unused direct `msw` dependency, and kept the production dependency audit clean.
+
+The audit totals and residual-risk text above remain a historical snapshot of
+the production-dependency remediation execution. Cypress/request, Tailwind,
+ESLint and other development-tooling findings remain unresolved and must stay
+tracked separately.
