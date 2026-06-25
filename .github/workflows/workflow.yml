@@ -45,10 +45,26 @@ jobs:
           start: npm run dev -- --port 8261
           wait-on: http://localhost:8261
 
+  production-audit:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: "npm"
+      - name: Install dependencies without lifecycle scripts
+        run: npm ci --ignore-scripts
+      - name: Run production dependency audit
+        run: npm run audit:prod
+
   deploy:
     needs:
       - vitest
       - cypress-run
+      - production-audit
     if: github.ref == 'refs/heads/main'
     permissions:
       contents: read

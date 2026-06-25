@@ -77,10 +77,12 @@ Manual GitHub Pages, custom-domain and DNS setup is documented in
 
 ## Dependency Security
 
-The latest npm dependency audit snapshot is documented in
+The historical npm dependency audit snapshot is documented in
 [docs/security/NPM_AUDIT_2026-06-24.md](docs/security/NPM_AUDIT_2026-06-24.md).
+The latest production dependency remediation report is documented in
+[docs/security/NPM_REMEDIATION_2026-06-25.md](docs/security/NPM_REMEDIATION_2026-06-25.md).
 Audit findings change as advisories and package versions change, and dependency
-remediation is tracked separately from this dated assessment.
+remediation is tracked in dated reports rather than changing README totals.
 
 ## Upstream Attribution
 
