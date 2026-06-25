@@ -108,82 +108,7 @@
         </p>
       </fieldset>
 
-      <div class="space-y-4">
-        <div class="flex flex-wrap items-center justify-between gap-3">
-          <label
-            for="number-of-dependents-input"
-            class="text-sm font-medium text-neutral-700"
-          >
-            Number of dependents
-          </label>
-          <AdjustCounter
-            :value="store.numberOfDependents"
-            :min="0"
-            unit="dependents"
-            input-id="number-of-dependents-input"
-            input-label="Number of dependents"
-            decrease-label="Decrease number of dependents"
-            increase-label="Increase number of dependents"
-            data-cy="number-of-dependents"
-            @update:value="store.setNumberOfDependents"
-          />
-        </div>
-
-        <div v-if="store.numberOfDependents > 0" class="space-y-3">
-          <p class="text-xs text-neutral-500">
-            Ages are measured on 31 December of the selected tax year.
-          </p>
-          <div class="flex flex-wrap items-center justify-between gap-3">
-            <label
-              for="dependents-aged-3-or-under-input"
-              class="text-sm font-medium text-neutral-700"
-            >
-              Aged 3 or under
-            </label>
-            <AdjustCounter
-              :value="store.dependentsAged3OrUnder"
-              :min="0"
-              :max="store.numberOfDependents"
-              unit="dependents"
-              input-id="dependents-aged-3-or-under-input"
-              input-label="Aged 3 or under"
-              decrease-label="Decrease dependents aged 3 or under"
-              increase-label="Increase dependents aged 3 or under"
-              data-cy="dependents-aged-3-or-under"
-              @update:value="store.setDependentsAged3OrUnder"
-            />
-          </div>
-          <div class="flex flex-wrap items-center justify-between gap-3">
-            <label
-              for="dependents-aged-4-to-6-input"
-              class="text-sm font-medium text-neutral-700"
-            >
-              Aged 4–6
-            </label>
-            <AdjustCounter
-              :value="store.dependentsAged4To6"
-              :min="0"
-              :max="store.numberOfDependents - store.dependentsAged3OrUnder"
-              unit="dependents"
-              input-id="dependents-aged-4-to-6-input"
-              input-label="Aged 4 to 6"
-              decrease-label="Decrease dependents aged 4 to 6"
-              increase-label="Increase dependents aged 4 to 6"
-              data-cy="dependents-aged-4-to-6"
-              @update:value="store.setDependentsAged4To6"
-            />
-          </div>
-          <div class="flex flex-wrap items-center justify-between gap-3">
-            <span class="text-sm font-medium text-neutral-700">Aged 7+</span>
-            <span
-              class="inline-flex min-w-[5rem] justify-center border-b border-neutral-400 py-2 text-sm tabular-nums"
-              data-cy="dependents-aged-7-or-over"
-            >
-              {{ store.dependentsAged7OrOver }}
-            </span>
-          </div>
-        </div>
-      </div>
+      <DependentAgeGroups />
 
       <div
         class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-1 xl:grid-cols-2"
@@ -241,6 +166,7 @@ import {
   YEAR_BUSINESS_DAYS,
 } from "@/store";
 import AdjustCounter from "@/components/AdjustCounter.vue";
+import DependentAgeGroups from "@/components/DependentAgeGroups.vue";
 import DropDown from "@/components/DropDown.vue";
 import InfoButton from "@/components/InfoButton.vue";
 

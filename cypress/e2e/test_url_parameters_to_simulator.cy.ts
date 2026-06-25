@@ -2,6 +2,10 @@ const openAdvancedTaxSettings = () => {
   cy.get('[data-cy="advanced-tax-settings-toggle"]').click();
 };
 
+const openDependentAgeGroups = () => {
+  cy.get('[data-cy="dependent-age-groups-toggle"]').click();
+};
+
 describe("simulator loads", () => {
   it("successfully loads the home page", () => {
     cy.visit("/#/"); // change URL to match your dev URL
@@ -163,6 +167,16 @@ describe("pass assessment scenario and dependents through url parameters", () =>
       "have.value",
       "2",
     );
+    cy.get('[data-cy="dependent-age-groups-toggle"]').should(
+      "have.attr",
+      "aria-expanded",
+      "false",
+    );
+    cy.get('[data-cy="dependent-age-groups-summary"]').should(
+      "contain",
+      "1 aged 3 or under · 1 aged 4–6 · 0 aged 7+",
+    );
+    openDependentAgeGroups();
     cy.get('[data-cy="dependents-aged-3-or-under"] input:first-of-type').should(
       "have.value",
       "1",
@@ -206,6 +220,11 @@ describe("pass assessment scenario and dependents through url parameters", () =>
       "have.value",
       "2",
     );
+    cy.get('[data-cy="dependent-age-groups-summary"]').should(
+      "contain",
+      "2 aged 3 or under · 0 aged 4–6 · 0 aged 7+",
+    );
+    openDependentAgeGroups();
     cy.get('[data-cy="dependents-aged-3-or-under"] input:first-of-type').should(
       "have.value",
       "2",
