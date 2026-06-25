@@ -1,19 +1,19 @@
-/// <reference types="vitest" />
+import { fileURLToPath } from "node:url";
 
-import { defineConfig } from "vite";
-import Vue from "@vitejs/plugin-vue";
-import path from "path";
+import vue from "@vitejs/plugin-vue";
+import { defineConfig } from "vitest/config";
 
 export default defineConfig({
-  plugins: [Vue()],
+  plugins: [vue()],
   test: {
     globals: true,
     environment: "jsdom",
+    include: ["src/**/*.spec.ts"],
+    exclude: ["cypress/**", "**/*.cy.ts"],
   },
-  root: ".", //Define the root
   resolve: {
     alias: {
-      "@": path.resolve(__dirname, "./src"),
+      "@": fileURLToPath(new URL("./src", import.meta.url)),
     },
   },
 });
