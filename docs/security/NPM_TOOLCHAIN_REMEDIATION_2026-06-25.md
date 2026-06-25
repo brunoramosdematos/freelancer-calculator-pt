@@ -393,3 +393,15 @@ The complete npm dependency tree is not clean. Remaining high and critical
 findings are development/test/tooling risks and should be addressed next in a
 focused Cypress/request remediation, followed by Tailwind/ESLint/tooling
 remediations.
+
+## Addendum - 2026-06-25, Cypress toolchain
+
+The Cypress/request remediation is documented in
+[NPM_CYPRESS_REMEDIATION_2026-06-25.md](NPM_CYPRESS_REMEDIATION_2026-06-25.md).
+That execution upgraded Cypress to 15.18.0, removed the
+`start-server-and-test > wait-on > axios` path, eliminated complete-tree
+critical findings, and kept the production dependency audit clean.
+
+The Vite/Vitest totals above remain a historical snapshot. Tailwind, Sass,
+ESLint, `jsdom > ws` and other moderate/high development-tooling findings
+remain unresolved.

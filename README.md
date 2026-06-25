@@ -83,6 +83,8 @@ The production dependency remediation report is documented in
 [docs/security/NPM_REMEDIATION_2026-06-25.md](docs/security/NPM_REMEDIATION_2026-06-25.md).
 The latest Vite/Vitest toolchain remediation report is documented in
 [docs/security/NPM_TOOLCHAIN_REMEDIATION_2026-06-25.md](docs/security/NPM_TOOLCHAIN_REMEDIATION_2026-06-25.md).
+The latest Cypress toolchain remediation report is documented in
+[docs/security/NPM_CYPRESS_REMEDIATION_2026-06-25.md](docs/security/NPM_CYPRESS_REMEDIATION_2026-06-25.md).
 Audit findings change as advisories and package versions change, and dependency
 remediation is tracked in dated reports rather than changing README totals.
 

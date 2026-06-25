@@ -303,3 +303,16 @@ The audit totals and residual-risk text above remain a historical snapshot of
 the production-dependency remediation execution. Cypress/request, Tailwind,
 ESLint and other development-tooling findings remain unresolved and must stay
 tracked separately.
+
+## Addendum - 2026-06-25, Cypress toolchain
+
+The Cypress-focused remediation is documented in
+[NPM_CYPRESS_REMEDIATION_2026-06-25.md](NPM_CYPRESS_REMEDIATION_2026-06-25.md).
+That execution removed the Cypress/request critical path, removed the
+`start-server-and-test > wait-on > axios` path, added a complete-tree critical
+audit gate, and kept the production dependency audit clean.
+
+The audit totals above remain a historical snapshot of the
+production-dependency remediation execution. Tailwind, Sass, ESLint,
+`jsdom > ws` and other development-tooling findings remain unresolved and must
+stay tracked separately.
