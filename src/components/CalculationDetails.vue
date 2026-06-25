@@ -1,8 +1,8 @@
 <template>
   <DisclosurePanel
     id="calculation-details"
-    title="Calculation details"
-    summary="IRS, Social Security, deductions and assumptions"
+    :title="t('calculationDetails.title')"
+    :summary="t('calculationDetails.summary')"
     :open="open"
     toggle-data-cy="calculation-details-toggle"
     panel-data-cy="calculation-details-panel"
@@ -11,8 +11,8 @@
     <div class="space-y-3">
       <DisclosurePanel
         id="irs-calculation-details"
-        title="IRS calculation"
-        summary="Taxable income, brackets and dependent deductions"
+        :title="t('calculationDetails.irsTitle')"
+        :summary="t('calculationDetails.irsSummary')"
         heading-level="3"
         toggle-data-cy="irs-calculation-details-toggle"
         panel-data-cy="irs-calculation-details-panel"
@@ -22,8 +22,8 @@
 
       <DisclosurePanel
         id="social-security-calculation-details"
-        title="Social Security calculation"
-        summary="70% base, adjustment, cap and final contribution"
+        :title="t('calculationDetails.socialSecurityTitle')"
+        :summary="t('calculationDetails.socialSecuritySummary')"
         heading-level="3"
         :open="socialSecurityOpen"
         toggle-data-cy="social-security-calculation-details-toggle"
@@ -35,8 +35,8 @@
 
       <DisclosurePanel
         id="deductions-assumptions-details"
-        title="Deductions and assumptions"
-        summary="Expenses, benefits and working-day assumptions"
+        :title="t('calculationDetails.deductionsTitle')"
+        :summary="t('calculationDetails.deductionsSummary')"
         heading-level="3"
         toggle-data-cy="deductions-assumptions-details-toggle"
         panel-data-cy="deductions-assumptions-details-panel"
@@ -48,6 +48,7 @@
 </template>
 
 <script setup lang="ts">
+import { useI18n } from "vue-i18n";
 import DisclosurePanel from "@/components/DisclosurePanel.vue";
 import DeductionsAssumptionsDetails from "@/components/DeductionsAssumptionsDetails.vue";
 import IrsCalculationDetails from "@/components/IrsCalculationDetails.vue";
@@ -68,4 +69,6 @@ defineEmits<{
   (event: "update:open", value: boolean): void;
   (event: "update:socialSecurityOpen", value: boolean): void;
 }>();
+
+const { t } = useI18n({ useScope: "global" });
 </script>

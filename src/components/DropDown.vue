@@ -5,6 +5,7 @@
       class="cursor-pointer w-full text-start py-2 placeholder:text-neutral-400 bg-inherit border-b-2 border-neutral-400 relative focus:outline-none focus:border-indigo-400"
       :value="value"
       :id="id"
+      :aria-label="label"
       :aria-expanded="showDropdown.toString()"
       aria-haspopup="true"
       :class="{ 'text-indigo-400': showDropdown }"
@@ -24,25 +25,36 @@
         class="text-gray-700 block px-4 py-2 text-sm hover:bg-neutral-200 w-full"
         @click="changeChoice(choice)"
       >
-        {{ choice }}
+        {{ getChoiceLabel(choice) }}
       </button>
     </div>
   </div>
 </template>
 <script setup lang="ts">
-import { ref } from "vue";
+import { computed, ref } from "vue";
 import { ChevronDownIcon } from "@heroicons/vue/24/outline";
 const emit = defineEmits(["change"]);
-defineProps({
+const props = defineProps({
   id: {
     type: String,
     default: "menu-button",
   },
   value: { type: String || Number },
+  displayValue: { type: String, required: false },
+  label: { type: String, required: false },
   choices: { type: Array },
+  choiceLabels: {
+    type: Object,
+    required: false,
+    default: () => ({}),
+  },
 });
 
 const showDropdown = ref(false);
+const value = computed(() => props.displayValue ?? props.value);
+const getChoiceLabel = (choice: any) => {
+  return props.choiceLabels[String(choice)] ?? choice;
+};
 const changeChoice = (choice: any) => {
   emit("change", choice);
 };

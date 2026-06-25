@@ -5,16 +5,16 @@
         for="number-of-dependents-input"
         class="text-sm font-medium text-neutral-700"
       >
-        Number of dependents
+        {{ t("dependents.total.label") }}
       </label>
       <AdjustCounter
         :value="store.numberOfDependents"
         :min="0"
-        unit="dependents"
+        :unit="t('units.dependentUnit')"
         input-id="number-of-dependents-input"
-        input-label="Number of dependents"
-        decrease-label="Decrease number of dependents"
-        increase-label="Increase number of dependents"
+        :input-label="t('dependents.total.input')"
+        :decrease-label="t('dependents.total.decrease')"
+        :increase-label="t('dependents.total.increase')"
         data-cy="number-of-dependents"
         @update:value="handleNumberOfDependentsUpdate"
       />
@@ -36,9 +36,8 @@
           @click="toggleAgeGroups"
         >
           <span class="min-w-0">
-            <span class="block">Dependent age groups</span>
+            <span class="block">{{ t("dependents.ageGroups.title") }}</span>
             <span
-              :id="summaryId"
               class="mt-1 block text-xs font-normal leading-5 text-neutral-600"
               data-cy="dependent-age-groups-summary"
             >
@@ -61,8 +60,7 @@
         data-cy="dependent-age-groups-panel"
       >
         <p class="text-xs leading-5 text-neutral-500">
-          Ages are measured on 31 December of the selected tax year. Age groups
-          affect the dependent deduction used by this simulator.
+          {{ t("dependents.ageGroups.help") }}
         </p>
 
         <div class="space-y-3">
@@ -71,17 +69,17 @@
               for="dependents-aged-3-or-under-input"
               class="text-sm font-medium text-neutral-700"
             >
-              Aged 3 or under
+              {{ t("dependents.ageGroups.aged3OrUnder.label") }}
             </label>
             <AdjustCounter
               :value="store.dependentsAged3OrUnder"
               :min="0"
               :max="store.numberOfDependents"
-              unit="dependents"
+              :unit="t('units.dependentUnit')"
               input-id="dependents-aged-3-or-under-input"
-              input-label="Aged 3 or under"
-              decrease-label="Decrease dependents aged 3 or under"
-              increase-label="Increase dependents aged 3 or under"
+              :input-label="t('dependents.ageGroups.aged3OrUnder.input')"
+              :decrease-label="t('dependents.ageGroups.aged3OrUnder.decrease')"
+              :increase-label="t('dependents.ageGroups.aged3OrUnder.increase')"
               data-cy="dependents-aged-3-or-under"
               @update:value="store.setDependentsAged3OrUnder"
             />
@@ -92,17 +90,17 @@
               for="dependents-aged-4-to-6-input"
               class="text-sm font-medium text-neutral-700"
             >
-              Aged 4–6
+              {{ t("dependents.ageGroups.aged4To6.label") }}
             </label>
             <AdjustCounter
               :value="store.dependentsAged4To6"
               :min="0"
               :max="store.numberOfDependents - store.dependentsAged3OrUnder"
-              unit="dependents"
+              :unit="t('units.dependentUnit')"
               input-id="dependents-aged-4-to-6-input"
-              input-label="Aged 4 to 6"
-              decrease-label="Decrease dependents aged 4 to 6"
-              increase-label="Increase dependents aged 4 to 6"
+              :input-label="t('dependents.ageGroups.aged4To6.input')"
+              :decrease-label="t('dependents.ageGroups.aged4To6.decrease')"
+              :increase-label="t('dependents.ageGroups.aged4To6.increase')"
               data-cy="dependents-aged-4-to-6"
               @update:value="store.setDependentsAged4To6"
             />
@@ -110,24 +108,28 @@
 
           <div class="flex flex-wrap items-start justify-between gap-3">
             <div>
-              <span class="text-sm font-medium text-neutral-700">
-                Aged 7+
+              <span
+                :id="aged7OrOverLabelId"
+                class="text-sm font-medium text-neutral-700"
+              >
+                {{ t("dependents.ageGroups.aged7OrOver.label") }}
               </span>
               <p
                 :id="derivedLabelId"
                 class="mt-1 text-xs text-neutral-500"
                 data-cy="dependent-age-groups-derived-label"
               >
-                Calculated automatically
+                {{ t("dependents.ageGroups.aged7OrOver.calculated") }}
               </p>
             </div>
-            <span
+            <output
               class="inline-flex min-w-[5rem] justify-center border-b border-neutral-600 py-2 text-sm tabular-nums text-neutral-900"
               data-cy="dependents-aged-7-or-over"
-              :aria-label="`Aged 7 or over, ${store.dependentsAged7OrOver}, calculated automatically`"
+              :aria-labelledby="aged7OrOverLabelId"
+              :aria-describedby="derivedLabelId"
             >
               {{ store.dependentsAged7OrOver }}
-            </span>
+            </output>
           </div>
         </div>
       </div>
@@ -138,26 +140,30 @@
 <script setup lang="ts">
 import { ChevronDownIcon } from "@heroicons/vue/24/outline";
 import { computed, ref, watch } from "vue";
+import { useI18n } from "vue-i18n";
 import AdjustCounter from "@/components/AdjustCounter.vue";
-import { formatDependentAgeGroupsSummary } from "@/components/dependentAgeGroupsSummary";
+import { getDependentAgeGroupsSummaryDescriptor } from "@/components/dependentAgeGroupsSummary";
 import { useTaxesStore } from "@/store";
 
 const store = useTaxesStore();
+const { t } = useI18n({ useScope: "global" });
 
 const toggleId = "dependent-age-groups-toggle";
 const panelId = "dependent-age-groups-panel";
-const summaryId = "dependent-age-groups-summary";
 const derivedLabelId = "dependents-aged-7-or-over-derived-label";
+const aged7OrOverLabelId = "dependents-aged-7-or-over-label";
 
 const isAgeGroupsOpen = ref(false);
 
-const summaryText = computed(() =>
-  formatDependentAgeGroupsSummary(
+const summaryText = computed(() => {
+  const descriptor = getDependentAgeGroupsSummaryDescriptor(
     store.numberOfDependents,
     store.dependentsAged3OrUnder,
     store.dependentsAged4To6,
-  ),
-);
+  );
+
+  return t(descriptor.key, descriptor.values ?? {}, descriptor.plural);
+});
 
 const toggleAgeGroups = () => {
   isAgeGroupsOpen.value = !isAgeGroupsOpen.value;

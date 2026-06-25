@@ -4,7 +4,9 @@
       class="grid grid-cols-[minmax(0,1fr)_auto] gap-4 py-3"
       data-cy="ss-relevant-income-row"
     >
-      <dt class="text-neutral-600">Relevant income at 70%</dt>
+      <dt class="text-neutral-600">
+        {{ t("socialSecurityCalculation.relevantIncome") }}
+      </dt>
       <dd
         class="font-medium text-neutral-900 tabular-nums"
         data-cy="ss-relevant-income-before-adjustment"
@@ -16,7 +18,9 @@
       class="grid grid-cols-[minmax(0,1fr)_auto] gap-4 py-3"
       data-cy="ss-selected-adjustment-row"
     >
-      <dt class="text-neutral-600">Selected adjustment</dt>
+      <dt class="text-neutral-600">
+        {{ t("socialSecurityCalculation.selectedAdjustment") }}
+      </dt>
       <dd
         class="font-medium text-neutral-900 tabular-nums"
         data-cy="ss-selected-adjustment"
@@ -28,7 +32,9 @@
       class="grid grid-cols-[minmax(0,1fr)_auto] gap-4 py-3"
       data-cy="ss-adjusted-relevant-income-row"
     >
-      <dt class="text-neutral-600">Adjusted relevant income</dt>
+      <dt class="text-neutral-600">
+        {{ t("socialSecurityCalculation.adjustedRelevantIncome") }}
+      </dt>
       <dd
         class="font-medium text-neutral-900 tabular-nums"
         data-cy="ss-adjusted-relevant-income"
@@ -40,7 +46,9 @@
       class="grid grid-cols-[minmax(0,1fr)_auto] gap-4 py-3"
       data-cy="ss-contribution-base-cap-row"
     >
-      <dt class="text-neutral-600">Maximum base of 12 IAS</dt>
+      <dt class="text-neutral-600">
+        {{ t("socialSecurityCalculation.maximumBase") }}
+      </dt>
       <dd
         class="font-medium text-neutral-900 tabular-nums"
         data-cy="ss-contribution-base-cap"
@@ -52,7 +60,9 @@
       class="grid grid-cols-[minmax(0,1fr)_auto] gap-4 py-3"
       data-cy="ss-contribution-base-row"
     >
-      <dt class="text-neutral-600">Contribution base applied</dt>
+      <dt class="text-neutral-600">
+        {{ t("socialSecurityCalculation.contributionBase") }}
+      </dt>
       <dd
         class="font-medium text-neutral-900 tabular-nums"
         data-cy="ss-contribution-base"
@@ -61,7 +71,9 @@
       </dd>
     </div>
     <div class="grid grid-cols-[minmax(0,1fr)_auto] gap-4 py-3">
-      <dt class="text-neutral-600">Calculated monthly contribution</dt>
+      <dt class="text-neutral-600">
+        {{ t("socialSecurityCalculation.calculatedMonthlyContribution") }}
+      </dt>
       <dd
         class="font-medium text-neutral-900 tabular-nums"
         data-cy="ss-calculated-monthly-contribution"
@@ -73,7 +85,9 @@
       class="grid grid-cols-[minmax(0,1fr)_auto] gap-4 py-3"
       data-cy="ss-final-monthly-contribution-row"
     >
-      <dt class="text-neutral-600">Final monthly contribution</dt>
+      <dt class="text-neutral-600">
+        {{ t("socialSecurityCalculation.finalMonthlyContribution") }}
+      </dt>
       <dd
         class="font-medium text-blue-700 tabular-nums"
         data-cy="ss-final-monthly-contribution"
@@ -82,7 +96,9 @@
       </dd>
     </div>
     <div class="grid grid-cols-[minmax(0,1fr)_auto] gap-4 py-3">
-      <dt class="text-neutral-600">Annual final contribution</dt>
+      <dt class="text-neutral-600">
+        {{ t("socialSecurityCalculation.annualFinalContribution") }}
+      </dt>
       <dd
         class="font-medium text-blue-700 tabular-nums"
         data-cy="ss-annual-final-contribution"
@@ -91,7 +107,9 @@
       </dd>
     </div>
     <div class="grid grid-cols-[minmax(0,1fr)_auto] gap-4 py-3">
-      <dt class="text-neutral-600">Daily final contribution</dt>
+      <dt class="text-neutral-600">
+        {{ t("socialSecurityCalculation.dailyFinalContribution") }}
+      </dt>
       <dd
         class="font-medium text-blue-700 tabular-nums"
         data-cy="ss-daily-final-contribution"
@@ -100,7 +118,9 @@
       </dd>
     </div>
     <div class="py-3">
-      <dt class="text-neutral-600">Current status</dt>
+      <dt class="text-neutral-600">
+        {{ t("socialSecurityCalculation.currentStatus") }}
+      </dt>
       <dd
         class="mt-1 rounded-md bg-neutral-50 px-3 py-2 text-neutral-700"
         data-cy="ss-adjustment-status-message"
@@ -113,10 +133,12 @@
 
 <script setup lang="ts">
 import { computed } from "vue";
+import { useI18n } from "vue-i18n";
 import { useTaxesStore } from "@/store";
 import { asCurrency } from "@/utils.js";
 
 const store = useTaxesStore();
+const { t } = useI18n({ useScope: "global" });
 
 const renderPercentage = (value: number) => {
   return `${value > 0 ? "+" : ""}${(value * 100).toFixed(0)}%`;
@@ -124,11 +146,11 @@ const renderPercentage = (value: number) => {
 
 const ssAdjustmentStatusMessage = computed(() => {
   if (store.ssFirstYear) {
-    return "Social Security exemption is active; this adjustment currently has no monetary effect.";
+    return t("socialSecurityStatus.exemptionActive");
   }
 
   if (store.ssIsAtMinimumContribution) {
-    return "Minimum monthly Social Security contribution applied.";
+    return t("socialSecurityStatus.minimumApplied");
   }
 
   if (store.ssIsContributionBaseCapped) {
@@ -136,14 +158,14 @@ const ssAdjustmentStatusMessage = computed(() => {
       store.ssFirstAvailableDiscountBelowContributionBaseCap;
 
     if (firstDiscountBelowCap === null) {
-      return "Maximum contribution base reached. All available adjustments produce the same capped Social Security contribution.";
+      return t("socialSecurityStatus.allAdjustmentsCapped");
     }
 
-    return `Maximum contribution base reached. ${renderPercentage(
-      firstDiscountBelowCap,
-    )} is the first available adjustment that changes the result.`;
+    return t("socialSecurityStatus.cappedFirstChangingAdjustment", {
+      percentage: renderPercentage(firstDiscountBelowCap),
+    });
   }
 
-  return "No cap, minimum, or exemption is changing the Social Security result.";
+  return t("socialSecurityStatus.noEffect");
 });
 </script>

@@ -1,0 +1,334 @@
+export default {
+  app: {
+    productHeading: "Calculadora para Freelancers em Portugal 🇵🇹",
+    productAlt: "Calculadora para Freelancers em Portugal",
+  },
+  navigation: {
+    simulator: "simulador",
+    simulations: "simulações ({count})",
+    about: "sobre",
+    githubSourceLabel:
+      "Abrir o código-fonte da Calculadora para Freelancers em Portugal no GitHub",
+  },
+  localeSwitcher: {
+    label: "Idioma",
+    english: "English",
+    portuguesePortugal: "Português (Portugal)",
+  },
+  actions: {
+    reset: "repor",
+    share: "partilhar",
+    save: "guardar",
+    auto: "auto",
+    close: "Fechar",
+    closeModal: "Fechar janela",
+    saveSimulation: "Guardar esta simulação",
+    saveNewSimulation: "Guardar",
+    viewRanks: "Ver escalões",
+    viewSocialSecurityCalculation: "Ver cálculo da Segurança Social",
+    goToSimulator: "ir para o simulador",
+    contributeOnGitHub: "contribuir no GitHub",
+    officialInformation: "Informação oficial",
+    openSimulation: "Abrir simulação guardada",
+    deleteSimulation: "Eliminar simulação guardada",
+  },
+  frequency: {
+    year: "ano",
+    month: "mês",
+    day: "dia",
+    Year: "Ano",
+    Month: "Mês",
+    Day: "Dia",
+    compare: "Comparar ano, mês e dia",
+    showIncomePer: "Mostrar rendimento por",
+  },
+  units: {
+    dependents: "{count} dependente | {count} dependentes",
+    dependentUnit: "dependentes",
+    months: "{count} mês | {count} meses",
+    monthUnit: "meses",
+    days: "{count} dia | {count} dias",
+    dayUnit: "dias",
+    eur: "EUR",
+    perYear: "/ano",
+    perMonth: "/mês",
+    businessDays: "dias úteis",
+    vatExcluded: "IVA excluído",
+  },
+  simulator: {
+    tagline: "simule o seu rendimento líquido",
+    incomePlaceholder: "Rendimento",
+    increaseIncome: "Aumentar rendimento em {amount}",
+    decreaseIncome: "Diminuir rendimento em {amount}",
+    shareCopied: "ligação partilhável copiada para a área de transferência",
+    simulationSaved: "Simulação guardada",
+  },
+  simulationSettings: {
+    title: "Definições da simulação",
+    summary: "Pressupostos principais usados na estimativa.",
+    infoLabel: "Informação sobre o ano fiscal",
+    infoText:
+      "Os anos fiscais podem alterar valores do IAS e escalões de IRS. O ano selecionado controla esses limites publicados.",
+    taxYear: "Ano fiscal",
+  },
+  assessment: {
+    label: "Tributação",
+    individual: {
+      label: "Individual",
+      description:
+        "Um sujeito passivo; sem cônjuge ou unido de facto incluído.",
+    },
+    jointSingleIncome: {
+      label: "Conjunta — um rendimento",
+      description: "Tributação do agregado com um rendimento de EUR 0.",
+      help: "Usa o quociente conjugal para os escalões de IRS.",
+    },
+  },
+  dependents: {
+    total: {
+      label: "Número de dependentes",
+      input: "Número de dependentes",
+      decrease: "Diminuir número de dependentes",
+      increase: "Aumentar número de dependentes",
+    },
+    ageGroups: {
+      title: "Faixas etárias dos dependentes",
+      help: "As idades são medidas a 31 de dezembro do ano fiscal selecionado. As faixas etárias afetam a dedução por dependentes usada por este simulador.",
+      aged3OrUnder: {
+        label: "Até 3 anos",
+        input: "Até 3 anos",
+        decrease: "Diminuir dependentes até 3 anos",
+        increase: "Aumentar dependentes até 3 anos",
+      },
+      aged4To6: {
+        label: "Dos 4 aos 6 anos",
+        input: "Dos 4 aos 6 anos",
+        decrease: "Diminuir dependentes dos 4 aos 6 anos",
+        increase: "Aumentar dependentes dos 4 aos 6 anos",
+      },
+      aged7OrOver: {
+        label: "7 anos ou mais",
+        outputLabel: "7 anos ou mais",
+        calculated: "Calculado automaticamente",
+      },
+    },
+    summary: {
+      none: "Sem dependentes.",
+      allOlder:
+        "O dependente é atualmente considerado como tendo 7 anos ou mais. | Os {total} dependentes são atualmente considerados como tendo 7 anos ou mais.",
+      mixed:
+        "{aged3OrUnder} até 3 anos · {aged4To6} dos 4 aos 6 anos · {aged7OrOver} com 7 anos ou mais",
+    },
+  },
+  schedule: {
+    paidMonths: {
+      label: "Meses remunerados por ano",
+      decrease: "Diminuir meses remunerados por ano",
+      increase: "Aumentar meses remunerados por ano",
+    },
+    unpaidDays: {
+      label: "Dias de ausência não remunerados",
+      decrease: "Diminuir dias de ausência não remunerados",
+      increase: "Aumentar dias de ausência não remunerados",
+    },
+  },
+  advancedSettings: {
+    title: "Opções fiscais avançadas",
+    noCustomSettings: "Sem opções fiscais personalizadas",
+    socialSecurityBaseAdjustment: {
+      label: "Ajuste da base da Segurança Social",
+      infoLabel: "Informação sobre o ajuste da base da Segurança Social",
+      infoText:
+        "A percentagem selecionada aplica-se à base de rendimento relevante de 70% antes da taxa de 21,4%. Limites, mínimos e isenções podem impedir uma alteração visível na contribuição final.",
+      decrease: "Diminuir ajuste da base da Segurança Social",
+      increase: "Aumentar ajuste da base da Segurança Social",
+    },
+    youthIrs: {
+      label: "IRS Jovem",
+      infoLabel: "Informação sobre o IRS Jovem",
+      infoText:
+        "O IRS Jovem pode reduzir o IRS de contribuintes elegíveis segundo as regras anuais aplicáveis.",
+      year: "Ano",
+      summary: "IRS Jovem ano {year}",
+    },
+    socialSecurityExemption: {
+      label: "Isenção de SS nos primeiros 12 meses",
+      infoLabel:
+        "Informação sobre a isenção de Segurança Social nos primeiros 12 meses",
+      infoText:
+        "Os primeiros 12 meses como trabalhador independente podem estar isentos de contribuições para a Segurança Social.",
+    },
+    activityYear: {
+      label: "Redução por ano de atividade",
+      none: "Nenhuma",
+      first: "Primeiro ano fiscal",
+      second: "Segundo ano fiscal",
+    },
+    rnh: {
+      label: "NHR / RNH",
+      infoLabel: "Informação sobre NHR / RNH",
+      infoText:
+        "Os residentes não habituais usam uma taxa fixa de IRS de {rate} neste simulador.",
+    },
+    professionalExpenses: {
+      title: "Despesas profissionais",
+      infoLabel: "Informação sobre despesas profissionais",
+      infoText:
+        "As deduções específicas da Categoria B podem exigir despesas profissionais justificadas acima da dedução automática da Segurança Social.",
+      maximumRequired: "Máximo necessário:",
+      decrease: "Diminuir despesas profissionais",
+      increase: "Aumentar despesas profissionais",
+      manualSummary: "Despesas manuais",
+    },
+    summary: {
+      ssBase: "Base SS {percentage}",
+    },
+  },
+  socialSecurityStatus: {
+    exemptionActive:
+      "A isenção de Segurança Social está ativa; este ajuste não tem atualmente efeito monetário.",
+    exemptionFinalZero:
+      "A isenção de Segurança Social está ativa; a Segurança Social final é EUR 0.",
+    minimumApplied:
+      "Aplicada a contribuição mínima mensal para a Segurança Social.",
+    cappedWithBase: "Base máxima da Segurança Social aplicada · {base}/mês.",
+    cappedWithFirstChangingAdjustment:
+      "Base máxima da Segurança Social aplicada · {base}/mês. {percentage} é o primeiro ajuste disponível que altera o resultado.",
+    allAdjustmentsCapped:
+      "Base contributiva máxima atingida. Todos os ajustes disponíveis produzem a mesma contribuição limitada para a Segurança Social.",
+    cappedFirstChangingAdjustment:
+      "Base contributiva máxima atingida. {percentage} é o primeiro ajuste disponível que altera o resultado.",
+    noEffect:
+      "Nenhum limite, mínimo ou isenção está a alterar o resultado da Segurança Social.",
+  },
+  results: {
+    title: "Resultados",
+    shownPer: "Apresentado por {frequency}.",
+    grossIncome: "Rendimento bruto",
+    netIncome: "Rendimento líquido",
+    totalTaxes: "Total de impostos",
+  },
+  table: {
+    title: "Título",
+    grossIncome: "Rendimento bruto",
+    netIncome: "Rendimento líquido",
+    socialSecurity: "Segurança Social",
+  },
+  chart: {
+    title: "Gráfico da distribuição do rendimento",
+    summary: "Divisão visual entre rendimento líquido, IRS e Segurança Social",
+    grossIncome: "rendimento bruto",
+    grossIncomeLabel: "Rendimento bruto",
+    netIncome: "Rendimento líquido",
+    socialSecurity: "Segurança Social",
+    ariaLabel:
+      "Gráfico da distribuição do rendimento entre rendimento líquido, IRS e Segurança Social.",
+  },
+  calculationDetails: {
+    title: "Detalhes do cálculo",
+    summary: "IRS, Segurança Social, deduções e pressupostos",
+    irsTitle: "Cálculo do IRS",
+    irsSummary: "Rendimento coletável, escalões e deduções por dependentes",
+    socialSecurityTitle: "Cálculo da Segurança Social",
+    socialSecuritySummary: "Base de 70%, ajuste, limite e contribuição final",
+    deductionsTitle: "Deduções e pressupostos",
+    deductionsSummary: "Despesas, benefícios e pressupostos de dias úteis",
+  },
+  irsCalculation: {
+    specificDeductions: "Deduções específicas",
+    expenses: "Despesas",
+    youthIrsDiscount: "Desconto do IRS Jovem",
+    householdTaxableIncome: "Rendimento coletável do agregado",
+    taxableIncomeForRates: "Rendimento coletável usado para taxas de IRS",
+    dividedBy2: "(dividido por 2)",
+    averageRatePortion: "Parcela à taxa média",
+    normalRatePortion: "Parcela à taxa normal",
+    quotient: "(quociente)",
+    taxRank: "Escalão",
+    levelOfTotal: "Nível {level} de {total}",
+    irsBeforeDependentDeduction: "IRS antes da dedução por dependentes",
+    dependentDeductionApplied: "Dedução por dependentes aplicada",
+    finalIrs: "IRS final",
+    dialog: {
+      title: "Escalões",
+      intro:
+        "O rendimento coletável usado para taxas de IRS ({amount}) está no nível {level}.",
+      biggerThan: "superior a {amount}",
+      lowerThan: "inferior a {amount}",
+      and: "e",
+      level: "Nível",
+      minimum: "Mínimo",
+      maximum: "Máximo",
+      normalTax: "Taxa normal",
+      averageTax: "Taxa média",
+    },
+  },
+  socialSecurityCalculation: {
+    relevantIncome: "Rendimento relevante a 70%",
+    selectedAdjustment: "Ajuste selecionado",
+    adjustedRelevantIncome: "Rendimento relevante ajustado",
+    maximumBase: "Base máxima de 12 IAS",
+    contributionBase: "Base contributiva aplicada",
+    calculatedMonthlyContribution: "Contribuição mensal calculada",
+    finalMonthlyContribution: "Contribuição mensal final",
+    annualFinalContribution: "Contribuição anual final",
+    dailyFinalContribution: "Contribuição diária final",
+    currentStatus: "Estado atual",
+  },
+  deductions: {
+    professionalExpenses: "Despesas profissionais",
+    expensesMode: "Modo das despesas",
+    automatic: "Automático",
+    manual: "Manual",
+    expensesStillNeeded: "Despesas ainda necessárias",
+    paidMonths: "Meses remunerados por ano",
+    unpaidDays: "Dias de ausência não remunerados",
+    businessDaysAssumed: "Dias úteis assumidos",
+    youthIrs: "IRS Jovem",
+    activityYearReduction: "Redução por ano de atividade",
+    active: "Ativo",
+    notActive: "Não ativo",
+    activeYear: "Ativo, ano {year}",
+    ssFirstYear: "Isenção de SS nos primeiros 12 meses",
+  },
+  simulations: {
+    title: "Simulações guardadas",
+    empty: "Ainda não existem simulações guardadas.",
+    namePlaceholder: "Nome da simulação",
+  },
+  about: {
+    title: "Calculadora para Freelancers em Portugal",
+    intro:
+      "Esta calculadora open source estima o rendimento líquido, o IRS português e a Segurança Social de trabalhadores independentes usando o modelo simplificado da Categoria B implementado no simulador. Suporta tributação individual, tributação conjunta com um único rendimento, deduções por dependentes e simulações guardadas no localStorage do navegador.",
+    maintained:
+      "O projeto é mantido por Bruno Ramos de Matos como derivado do trabalho open source original de Francisco Macedo:",
+    disclaimer:
+      "Os cálculos são estimativas indicativas, não aconselhamento contabilístico, jurídico ou fiscal. Não cobrem todas as regras fiscais portuguesas, como guarda partilhada, deduções por deficiência, regras de mínimo de existência, deduções adicionais à coleta ou a taxa adicional de solidariedade. Valide a sua situação com a Autoridade Tributária e Aduaneira ou um profissional qualificado.",
+  },
+  footer: {
+    headline:
+      "Estimativa indicativa · {businessDays} dias úteis · IVA excluído",
+    assumptionsTitle: "Pressupostos e limitações",
+    independentWorkers:
+      "Esta estimativa destina-se a trabalhadores independentes com recibos verdes.",
+    vatIgnored:
+      "O IVA é ignorado no cenário em que os clientes estão fora de Portugal.",
+    dailyValues:
+      "Os valores diários usam {businessDays} dias úteis menos os dias de ausência não remunerados.",
+    aboutDisclaimer: "Sobre e aviso legal",
+  },
+  metadata: {
+    title: "Calculadora para Freelancers em Portugal | IRS e Segurança Social",
+    description:
+      "Calculadora open source para estimar o rendimento líquido, o IRS português e as contribuições para a Segurança Social de trabalhadores independentes, incluindo tributação individual, tributação conjunta com um único rendimento e deduções por dependentes.",
+  },
+  accessibility: {
+    decreaseValue: "Diminuir valor",
+    increaseValue: "Aumentar valor",
+    counterValue: "Valor do contador",
+    moreInformation: "Mais informação",
+  },
+  validation: {
+    noValue: "-",
+  },
+} as const;

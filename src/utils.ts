@@ -24,10 +24,6 @@ export const reverseCurrency = (num: string) => {
   return result <= 0 ? NaN : result;
 };
 
-export const formatISOString = (isoString: string): string => {
-  return new Date(isoString).toLocaleString("en");
-};
-
 export const generateUUID = (): string => {
   const uuid: string[] = [];
 

@@ -8,6 +8,9 @@ Production URL: https://freelancerpt.brunomatos.dev/
 
 Repository: https://github.com/brunoramosdematos/freelancer-calculator-pt
 
+The UI supports English and Português (Portugal). Localization architecture and
+glossary guidance are documented in [docs/I18N.md](docs/I18N.md).
+
 ## Scope
 
 The simulator currently supports tax years 2023, 2024, 2025 and 2026. It models
@@ -23,8 +26,7 @@ or a qualified professional.
 ## Prerequisites
 
 - Node.js 24 LTS.
-- npm bundled with Node.js 24, or another npm version compatible with Node.js
-  24.
+- npm bundled with Node.js 24, or another npm version compatible with Node.js 24.
 - Use `npm ci` for reproducible dependency installation from `package-lock.json`.
 
 ## Local Setup

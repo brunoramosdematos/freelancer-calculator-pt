@@ -1,7 +1,7 @@
 <template>
   <DisclosurePanel
     id="advanced-tax-settings"
-    title="Advanced tax settings"
+    :title="t('advancedSettings.title')"
     :summary="advancedSummary"
     toggle-data-cy="advanced-tax-settings-toggle"
     panel-data-cy="advanced-tax-settings-panel"
@@ -12,7 +12,7 @@
         class="mt-1 block text-xs text-neutral-500"
         data-cy="advanced-tax-settings-summary-default"
       >
-        No custom tax settings
+        {{ t("advancedSettings.noCustomSettings") }}
       </span>
       <span
         v-else
@@ -38,16 +38,18 @@
               for="ss-discount-input"
               class="text-sm font-medium text-neutral-700"
             >
-              Social Security base adjustment
+              {{ t("advancedSettings.socialSecurityBaseAdjustment.label") }}
             </label>
             <InfoButton
-              label="Social Security base adjustment information"
+              :label="
+                t('advancedSettings.socialSecurityBaseAdjustment.infoLabel')
+              "
               link="https://www.seg-social.pt/documents/10152/15974914/1009%20Trabalhador%20independente%20-%20novo%20regime/87b6e00c-523d-4718-8a88-942ea804c18a"
             >
               <p>
-                The selected percentage applies to the 70% relevant-income base
-                before the 21.4% rate. Caps, minimums and exemptions can stop a
-                visible change in the final contribution.
+                {{
+                  t("advancedSettings.socialSecurityBaseAdjustment.infoText")
+                }}
               </p>
             </InfoButton>
           </div>
@@ -56,9 +58,15 @@
             :min="0"
             :max="ssDiscountChoices.length - 1"
             input-id="ss-discount-input"
-            input-label="Social Security base adjustment"
-            decrease-label="Decrease Social Security base adjustment"
-            increase-label="Increase Social Security base adjustment"
+            :input-label="
+              t('advancedSettings.socialSecurityBaseAdjustment.label')
+            "
+            :decrease-label="
+              t('advancedSettings.socialSecurityBaseAdjustment.decrease')
+            "
+            :increase-label="
+              t('advancedSettings.socialSecurityBaseAdjustment.increase')
+            "
             data-cy="ss-discount"
           >
             {{ ssDiscountDisplay }}
@@ -79,7 +87,7 @@
           data-cy="view-social-security-calculation"
           @click="$emit('viewSocialSecurityCalculation')"
         >
-          View Social Security calculation
+          {{ t("actions.viewSocialSecurityCalculation") }}
         </button>
       </div>
 
@@ -88,18 +96,17 @@
           <div class="flex items-center gap-2">
             <SwitchButton
               id="youthIrsSwitchButton"
-              label="Youth IRS"
+              :label="t('advancedSettings.youthIrs.label')"
               :model-value="store.benefitsOfYouthIrs"
               data-cy="youth-irs"
               @update:model-value="store.setBenefitsOfYouthIrs"
             />
             <InfoButton
-              label="Youth IRS information"
+              :label="t('advancedSettings.youthIrs.infoLabel')"
               link="https://www.deco.proteste.pt/dinheiro/impostos/dicas/irs-jovem-como-funciona"
             >
               <p>
-                Youth IRS can reduce IRS for eligible taxpayers under the
-                applicable yearly rules.
+                {{ t("advancedSettings.youthIrs.infoText") }}
               </p>
             </InfoButton>
           </div>
@@ -111,7 +118,7 @@
               for="youth-irs-years-dropdown"
               class="text-sm text-neutral-700"
             >
-              Year
+              {{ t("advancedSettings.youthIrs.year") }}
             </label>
             <DropDown
               id="youth-irs-years-dropdown"
@@ -126,25 +133,24 @@
         <div class="flex items-center gap-2">
           <SwitchButton
             id="ssExemptSwitchButton"
-            label="First 12 months SS exemption"
+            :label="t('advancedSettings.socialSecurityExemption.label')"
             :model-value="store.ssFirstYear"
             data-cy="ss-first-year"
             @update:model-value="store.setSsFirstYear"
           />
           <InfoButton
-            label="First 12 months Social Security exemption information"
+            :label="t('advancedSettings.socialSecurityExemption.infoLabel')"
             link="https://www.montepio.org/ei/pessoal/emprego-e-formacao/seguranca-social-guia-com-as-regras-para-os-trabalhadores-independentes#"
           >
             <p>
-              The first 12 months as an independent worker may be exempt from
-              Social Security contributions.
+              {{ t("advancedSettings.socialSecurityExemption.infoText") }}
             </p>
           </InfoButton>
         </div>
 
         <fieldset>
           <legend class="text-sm font-medium text-neutral-700">
-            Activity-year reduction
+            {{ t("advancedSettings.activityYear.label") }}
           </legend>
           <div
             class="mt-2 grid grid-cols-1 gap-2 sm:grid-cols-3 lg:grid-cols-1 xl:grid-cols-3"
@@ -176,18 +182,21 @@
         <div class="flex items-center gap-2">
           <SwitchButton
             id="nrmElegibleSwitchButton"
-            label="NHR / RNH"
+            :label="t('advancedSettings.rnh.label')"
             :model-value="store.rnh"
             data-cy="rnh"
             @update:model-value="store.setRnh"
           />
           <InfoButton
-            label="NHR / RNH information"
+            :label="t('advancedSettings.rnh.infoLabel')"
             link="https://info.portaldasfinancas.gov.pt/pt/apoio_contribuinte/Folhetos_informativos/Documents/Non_habitual_residents_Tax_regime.pdf"
           >
             <p>
-              Non-habitual residents use a fixed IRS tax rate of
-              {{ rnhTax }} in this simulator.
+              {{
+                t("advancedSettings.rnh.infoText", {
+                  rate: renderPercentage(rnhTax),
+                })
+              }}
             </p>
           </InfoButton>
         </div>
@@ -196,22 +205,21 @@
       <div v-if="expensesNeeded > 0" class="space-y-3">
         <div class="flex items-center gap-2">
           <h3 class="text-sm font-medium text-neutral-700">
-            Professional expenses
+            {{ t("advancedSettings.professionalExpenses.title") }}
           </h3>
           <InfoButton
-            label="Professional expenses information"
+            :label="t('advancedSettings.professionalExpenses.infoLabel')"
             link="https://www.cgd.pt/Site/Saldo-Positivo/leis-e-impostos/Pages/deducoes-especificas.aspx#:~:text=Empresariais%20e%20Profissionais%20(Categoria%20B)&text=Se%20estiver%20enquadrado%20no%20regime,bruto%20(antes%20dos%20descontos)."
           >
             <p>
-              Category B specific deductions can require justified professional
-              expenses above the automatic Social Security deduction.
+              {{ t("advancedSettings.professionalExpenses.infoText") }}
             </p>
           </InfoButton>
         </div>
         <p class="text-xs text-neutral-500">
-          Maximum required:
+          {{ t("advancedSettings.professionalExpenses.maximumRequired") }}
           <span class="font-semibold tabular-nums">
-            {{ asCurrency(expensesNeeded) }}/year
+            {{ asCurrency(expensesNeeded) }}{{ t("units.perYear") }}
           </span>
         </p>
         <div class="flex flex-wrap items-center gap-3">
@@ -223,9 +231,13 @@
             :width="14"
             unit="EUR"
             input-id="professional-expenses-input"
-            input-label="Professional expenses"
-            decrease-label="Decrease professional expenses"
-            increase-label="Increase professional expenses"
+            :input-label="t('advancedSettings.professionalExpenses.title')"
+            :decrease-label="
+              t('advancedSettings.professionalExpenses.decrease')
+            "
+            :increase-label="
+              t('advancedSettings.professionalExpenses.increase')
+            "
             data-cy="expenses"
             @update:value="store.setExpensesManual"
           />
@@ -236,7 +248,7 @@
             :class="store.expensesAuto ? 'invisible' : 'visible'"
             @click="store.setExpensesAuto()"
           >
-            auto
+            {{ t("actions.auto") }}
             <ArrowPathIcon class="h-3 w-3" aria-hidden="true" />
           </button>
         </div>
@@ -249,6 +261,7 @@
 import { computed } from "vue";
 import { storeToRefs } from "pinia";
 import { ArrowPathIcon } from "@heroicons/vue/24/outline";
+import { useI18n } from "vue-i18n";
 import { useTaxesStore } from "@/store";
 import { asCurrency } from "@/utils.js";
 import AdjustCounter from "@/components/AdjustCounter.vue";
@@ -269,9 +282,14 @@ type AdvancedSummaryItem = {
 
 const store = useTaxesStore();
 const { expensesNeeded, grossIncome, rnhTax } = storeToRefs(store);
+const { t } = useI18n({ useScope: "global" });
 
 const formatSignedPercentage = (value: number) => {
   return `${value > 0 ? "+" : ""}${value * 100}%`;
+};
+
+const renderPercentage = (value: number) => {
+  return `${(value * 100).toFixed(0)}%`;
 };
 
 const ssDiscountChoices = computed(() => store.ssDiscountChoices);
@@ -294,11 +312,11 @@ const ssDiscountDisplay = computed(() =>
 
 const ssAdjustmentStatusMessage = computed(() => {
   if (store.ssFirstYear) {
-    return "Social Security exemption is active; this adjustment currently has no monetary effect.";
+    return t("socialSecurityStatus.exemptionActive");
   }
 
   if (store.ssIsAtMinimumContribution) {
-    return "Minimum monthly Social Security contribution applied.";
+    return t("socialSecurityStatus.minimumApplied");
   }
 
   if (store.ssIsContributionBaseCapped) {
@@ -306,18 +324,15 @@ const ssAdjustmentStatusMessage = computed(() => {
       store.ssFirstAvailableDiscountBelowContributionBaseCap;
 
     if (firstDiscountBelowCap === null) {
-      return `Maximum Social Security base applied · ${asCurrency(
-        store.ssContributionBase,
-        2,
-      )}/month.`;
+      return t("socialSecurityStatus.cappedWithBase", {
+        base: asCurrency(store.ssContributionBase, 2),
+      });
     }
 
-    return `Maximum Social Security base applied · ${asCurrency(
-      store.ssContributionBase,
-      2,
-    )}/month. ${formatSignedPercentage(
-      firstDiscountBelowCap,
-    )} is the first available adjustment that changes the result.`;
+    return t("socialSecurityStatus.cappedWithFirstChangingAdjustment", {
+      base: asCurrency(store.ssContributionBase, 2),
+      percentage: formatSignedPercentage(firstDiscountBelowCap),
+    });
   }
 
   return "";
@@ -332,15 +347,29 @@ const changeYouthIrsYear = (year: number) => {
   store.setYearOfYouthIrs(year);
 };
 
-const activityYearOptions: {
-  value: ActivityYearSelection;
-  label: string;
-  dataCy: string;
-}[] = [
-  { value: "none", label: "None", dataCy: "activity-year-none" },
-  { value: "first", label: "First fiscal year", dataCy: "first-year" },
-  { value: "second", label: "Second fiscal year", dataCy: "second-year" },
-];
+const activityYearOptions = computed<
+  {
+    value: ActivityYearSelection;
+    label: string;
+    dataCy: string;
+  }[]
+>(() => [
+  {
+    value: "none",
+    label: t("advancedSettings.activityYear.none"),
+    dataCy: "activity-year-none",
+  },
+  {
+    value: "first",
+    label: t("advancedSettings.activityYear.first"),
+    dataCy: "first-year",
+  },
+  {
+    value: "second",
+    label: t("advancedSettings.activityYear.second"),
+    dataCy: "second-year",
+  },
+]);
 
 const activityYearSelection = computed<ActivityYearSelection>(() => {
   if (store.firstYear) {
@@ -379,47 +408,51 @@ const advancedSummaryItems = computed<AdvancedSummaryItem[]>(() => {
 
   if (store.ssDiscount !== 0) {
     activeSettings.push({
-      label: `SS base ${formatSignedPercentage(store.ssDiscount)}`,
+      label: t("advancedSettings.summary.ssBase", {
+        percentage: formatSignedPercentage(store.ssDiscount),
+      }),
       dataCy: "advanced-tax-summary-ss-discount",
     });
   }
 
   if (store.benefitsOfYouthIrs) {
     activeSettings.push({
-      label: `Youth IRS year ${store.yearOfYouthIrs}`,
+      label: t("advancedSettings.youthIrs.summary", {
+        year: store.yearOfYouthIrs,
+      }),
       dataCy: "advanced-tax-summary-youth-irs",
     });
   }
 
   if (store.ssFirstYear) {
     activeSettings.push({
-      label: "First 12 months SS exemption",
+      label: t("advancedSettings.socialSecurityExemption.label"),
       dataCy: "advanced-tax-summary-ss-first-year",
     });
   }
 
   if (store.firstYear) {
     activeSettings.push({
-      label: "First fiscal year",
+      label: t("advancedSettings.activityYear.first"),
       dataCy: "advanced-tax-summary-first-year",
     });
   } else if (store.secondYear) {
     activeSettings.push({
-      label: "Second fiscal year",
+      label: t("advancedSettings.activityYear.second"),
       dataCy: "advanced-tax-summary-second-year",
     });
   }
 
   if (store.rnh) {
     activeSettings.push({
-      label: "NHR / RNH",
+      label: t("advancedSettings.rnh.label"),
       dataCy: "advanced-tax-summary-rnh",
     });
   }
 
   if (!store.expensesAuto) {
     activeSettings.push({
-      label: "Manual expenses",
+      label: t("advancedSettings.professionalExpenses.manualSummary"),
       dataCy: "advanced-tax-summary-manual-expenses",
     });
   }
@@ -430,6 +463,6 @@ const advancedSummaryItems = computed<AdvancedSummaryItem[]>(() => {
 const advancedSummary = computed(() => {
   return advancedSummaryItems.value.length > 0
     ? advancedSummaryItems.value.map((item) => item.label).join(" · ")
-    : "No custom tax settings";
+    : t("advancedSettings.noCustomSettings");
 });
 </script>

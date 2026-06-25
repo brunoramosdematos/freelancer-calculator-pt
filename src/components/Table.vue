@@ -5,16 +5,24 @@
         class="border-b border-neutral-200 text-xs uppercase tracking-wide text-neutral-500"
       >
         <tr>
-          <th scope="col" class="py-3 text-left font-semibold">Title</th>
-          <th scope="col" class="py-3 text-right font-semibold">Year</th>
-          <th scope="col" class="py-3 text-right font-semibold">Month</th>
-          <th scope="col" class="py-3 text-right font-semibold">Day</th>
+          <th scope="col" class="py-3 text-left font-semibold">
+            {{ t("table.title") }}
+          </th>
+          <th scope="col" class="py-3 text-right font-semibold">
+            {{ t("frequency.Year") }}
+          </th>
+          <th scope="col" class="py-3 text-right font-semibold">
+            {{ t("frequency.Month") }}
+          </th>
+          <th scope="col" class="py-3 text-right font-semibold">
+            {{ t("frequency.Day") }}
+          </th>
         </tr>
       </thead>
       <tbody class="divide-y divide-neutral-100">
         <tr data-cy="gross-income-row">
           <th scope="row" class="py-3 text-left font-medium text-neutral-900">
-            Gross income
+            {{ t("table.grossIncome") }}
           </th>
           <td class="py-3 text-right tabular-nums whitespace-nowrap">
             {{ renderCellValue(grossIncome.year) }}
@@ -48,7 +56,7 @@
         </tr>
         <tr data-cy="social-security-row">
           <th scope="row" class="py-3 text-left font-medium text-neutral-900">
-            Social Security
+            {{ t("table.socialSecurity") }}
           </th>
           <td
             class="py-3 text-right tabular-nums whitespace-nowrap text-blue-700"
@@ -68,7 +76,7 @@
         </tr>
         <tr data-cy="net-income-row">
           <th scope="row" class="py-3 text-left font-semibold text-neutral-900">
-            Net income
+            {{ t("table.netIncome") }}
           </th>
           <td
             class="py-3 text-right font-semibold tabular-nums whitespace-nowrap text-green-700"
@@ -106,13 +114,15 @@
       </div>
       <DisclosurePanel
         id="mobile-frequency-comparison"
-        title="Compare year, month and day"
+        :title="t('frequency.compare')"
         heading-level="3"
         toggle-data-cy="mobile-frequency-comparison-toggle"
       >
         <div class="grid grid-cols-3 gap-2 text-xs text-neutral-600">
           <template v-for="frequency in frequencies" :key="frequency">
-            <div class="font-semibold uppercase">{{ frequency }}</div>
+            <div class="font-semibold uppercase">
+              {{ t(`frequency.${frequency}`) }}
+            </div>
           </template>
           <template v-for="row in comparisonRows" :key="row.label">
             <div class="col-span-3 mt-2 font-medium text-neutral-900">
@@ -134,6 +144,7 @@
 
 <script setup lang="ts">
 import { computed } from "vue";
+import { useI18n } from "vue-i18n";
 import { storeToRefs } from "pinia";
 import { useTaxesStore } from "@/store";
 import { FrequencyChoices } from "@/typings";
@@ -142,6 +153,7 @@ import { useBreakpoint } from "@/composables/breakpoints";
 import DisclosurePanel from "@/components/DisclosurePanel.vue";
 
 const { breakpoint } = useBreakpoint();
+const { t } = useI18n({ useScope: "global" });
 const { displayFrequency, grossIncome, netIncome, ssPay, irsPay } =
   storeToRefs(useTaxesStore());
 
@@ -154,12 +166,12 @@ const frequencies = [
 const renderCellValue = (value: number | null | undefined) => {
   return typeof value === "number" && Number.isFinite(value)
     ? asCurrency(value, breakpoint.smAndDown ? 0 : 2)
-    : "-";
+    : t("validation.noValue");
 };
 
 const mobileRows = computed(() => [
   {
-    label: "Gross income",
+    label: t("table.grossIncome"),
     dataCy: "gross-income-row",
     value: grossIncome.value[displayFrequency.value],
     valueClass: "text-neutral-900",
@@ -171,13 +183,13 @@ const mobileRows = computed(() => [
     valueClass: "text-red-700",
   },
   {
-    label: "Social Security",
+    label: t("table.socialSecurity"),
     dataCy: "social-security-row",
     value: ssPay.value[displayFrequency.value],
     valueClass: "text-blue-700",
   },
   {
-    label: "Net income",
+    label: t("table.netIncome"),
     dataCy: "net-income-row",
     value: netIncome.value[displayFrequency.value],
     valueClass: "font-semibold text-green-700",
@@ -185,9 +197,9 @@ const mobileRows = computed(() => [
 ]);
 
 const comparisonRows = computed(() => [
-  { label: "Gross income", values: grossIncome.value },
+  { label: t("table.grossIncome"), values: grossIncome.value },
   { label: "IRS", values: irsPay.value },
-  { label: "Social Security", values: ssPay.value },
-  { label: "Net income", values: netIncome.value },
+  { label: t("table.socialSecurity"), values: ssPay.value },
+  { label: t("table.netIncome"), values: netIncome.value },
 ]);
 </script>

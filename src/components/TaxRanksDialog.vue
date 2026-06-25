@@ -12,7 +12,9 @@
       <div class="relative bg-neutral-200 rounded-lg shadow">
         <!-- Modal header -->
         <div class="flex items-start justify-between p-4 border-b rounded-t">
-          <h3 class="text-xl font-semibold text-gray-900">Tax Ranks</h3>
+          <h3 class="text-xl font-semibold text-gray-900">
+            {{ t("irsCalculation.dialog.title") }}
+          </h3>
           <button
             type="button"
             class="text-gray-400 bg-transparent hover:text-gray-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center"
@@ -20,28 +22,42 @@
             @click="$emit('close')"
           >
             <XMarkIcon class="w-5 h-5" />
-            <span class="sr-only">Close modal</span>
+            <span class="sr-only">{{ t("actions.closeModal") }}</span>
           </button>
         </div>
 
         <!-- Modal body -->
         <div class="p-6 space-y-6">
-          Your taxable income used for IRS rates (<span
-            class="text-income whitespace-nowrap"
-            >{{ asCurrency(taxableIncomeForRates) }}</span
-          >) is in level
-          <span class="text-red-500">{{ taxRank.id }}</span>
-          <span class="text-sm" v-html="taxRankMinText"></span
-          ><span class="text-sm" v-html="taxRankMaxText"></span>.
+          <p>
+            {{
+              t("irsCalculation.dialog.intro", {
+                amount: asCurrency(taxableIncomeForRates),
+                level: taxRank.id,
+              })
+            }}
+            <span v-if="taxRankBoundaryText" class="text-sm">
+              {{ taxRankBoundaryText }}
+            </span>
+          </p>
 
           <table class="w-full text-sm text-left text-gray-700 table-auto">
             <thead class="text-xs text-gray-700 uppercase border-b-2">
               <tr>
-                <th class="text-center">Level</th>
-                <th class="text-center">Minimum</th>
-                <th class="text-center">Maximum</th>
-                <th class="text-center">Normal Tax</th>
-                <th class="text-center">Average Tax</th>
+                <th class="text-center">
+                  {{ t("irsCalculation.dialog.level") }}
+                </th>
+                <th class="text-center">
+                  {{ t("irsCalculation.dialog.minimum") }}
+                </th>
+                <th class="text-center">
+                  {{ t("irsCalculation.dialog.maximum") }}
+                </th>
+                <th class="text-center">
+                  {{ t("irsCalculation.dialog.normalTax") }}
+                </th>
+                <th class="text-center">
+                  {{ t("irsCalculation.dialog.averageTax") }}
+                </th>
               </tr>
             </thead>
             <tbody>
@@ -83,24 +99,34 @@ import { asCurrency, asPercentage } from "@/utils";
 import { computed } from "vue";
 import { storeToRefs } from "pinia";
 import { XMarkIcon } from "@heroicons/vue/24/outline";
+import { useI18n } from "vue-i18n";
 // store
 const { getTaxRanks, taxRank, taxableIncomeForRates } =
   storeToRefs(useTaxesStore());
+const { t } = useI18n({ useScope: "global" });
 
 // taxRank
-const taxRankMinText = computed(() => {
-  return taxRank.value.min
-    ? ` (bigger than <span class="text-neutral-600">${asCurrency(
-        taxRank.value.min,
-      )}</span>`
-    : null;
-});
-const taxRankMaxText = computed(() => {
-  const preText = taxRankMinText.value ? " and" : " (";
-  return taxRank.value.max
-    ? `${preText} lower than <span class="text-neutral-600">${asCurrency(
-        taxRank.value.max,
-      )})</span>`
-    : ")";
+const taxRankBoundaryText = computed(() => {
+  const boundaries: string[] = [];
+
+  if (taxRank.value.min) {
+    boundaries.push(
+      t("irsCalculation.dialog.biggerThan", {
+        amount: asCurrency(taxRank.value.min),
+      }),
+    );
+  }
+
+  if (taxRank.value.max) {
+    boundaries.push(
+      t("irsCalculation.dialog.lowerThan", {
+        amount: asCurrency(taxRank.value.max),
+      }),
+    );
+  }
+
+  return boundaries.length
+    ? `(${boundaries.join(` ${t("irsCalculation.dialog.and")} `)})`
+    : "";
 });
 </script>

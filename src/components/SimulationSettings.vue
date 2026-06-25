@@ -6,16 +6,15 @@
     <div class="mb-4 flex items-start justify-between gap-4">
       <div>
         <h2 class="text-sm font-semibold text-neutral-900">
-          Simulation settings
+          {{ t("simulationSettings.title") }}
         </h2>
         <p class="mt-1 text-xs text-neutral-500">
-          Core assumptions used in the estimate.
+          {{ t("simulationSettings.summary") }}
         </p>
       </div>
-      <InfoButton label="Income tax year information">
+      <InfoButton :label="t('simulationSettings.infoLabel')">
         <p>
-          Tax years can change IAS values and IRS brackets. The selected year
-          controls those published thresholds.
+          {{ t("simulationSettings.infoText") }}
         </p>
       </InfoButton>
     </div>
@@ -26,7 +25,7 @@
           for="tax-rank-years-dropdown"
           class="text-sm font-medium text-neutral-700"
         >
-          Income tax year
+          {{ t("simulationSettings.taxYear") }}
         </label>
         <DropDown
           id="tax-rank-years-dropdown"
@@ -39,7 +38,7 @@
 
       <fieldset data-cy="assessment-scenario">
         <legend class="text-sm font-medium text-neutral-700">
-          Tax assessment
+          {{ t("assessment.label") }}
         </legend>
         <div
           class="mt-2 grid grid-cols-1 gap-2 sm:grid-cols-2 lg:grid-cols-1 xl:grid-cols-2"
@@ -64,9 +63,11 @@
                 store.setAssessmentScenario(AssessmentScenario.Individual)
               "
             />
-            <span class="block text-sm font-semibold">Individual</span>
+            <span class="block text-sm font-semibold">
+              {{ t("assessment.individual.label") }}
+            </span>
             <span class="block text-xs text-neutral-500">
-              One taxpayer; no spouse or partner included.
+              {{ t("assessment.individual.description") }}
             </span>
           </label>
           <label
@@ -92,9 +93,11 @@
                 )
               "
             />
-            <span class="block text-sm font-semibold">Joint - one income</span>
+            <span class="block text-sm font-semibold">
+              {{ t("assessment.jointSingleIncome.label") }}
+            </span>
             <span class="block text-xs text-neutral-500">
-              Household assessment with one EUR 0 income.
+              {{ t("assessment.jointSingleIncome.description") }}
             </span>
           </label>
         </div>
@@ -104,7 +107,7 @@
           "
           class="mt-2 text-xs text-neutral-500"
         >
-          Uses the marital quotient for IRS bands.
+          {{ t("assessment.jointSingleIncome.help") }}
         </p>
       </fieldset>
 
@@ -118,16 +121,16 @@
             for="paid-months-per-year-input"
             class="mb-2 block text-sm font-medium text-neutral-700"
           >
-            Paid months per year
+            {{ t("schedule.paidMonths.label") }}
           </label>
           <AdjustCounter
             :value="store.nrMonthsDisplay"
             :min="1"
-            unit="months"
+            :unit="t('units.monthUnit')"
             input-id="paid-months-per-year-input"
-            input-label="Paid months per year"
-            decrease-label="Decrease paid months per year"
-            increase-label="Increase paid months per year"
+            :input-label="t('schedule.paidMonths.label')"
+            :decrease-label="t('schedule.paidMonths.decrease')"
+            :increase-label="t('schedule.paidMonths.increase')"
             data-cy="nr-months-display"
             @update:value="store.setNrMonthsDisplay"
           />
@@ -137,17 +140,17 @@
             for="unpaid-days-off-input"
             class="mb-2 block text-sm font-medium text-neutral-700"
           >
-            Unpaid days off
+            {{ t("schedule.unpaidDays.label") }}
           </label>
           <AdjustCounter
             :value="store.nrDaysOff"
             :min="0"
             :max="YEAR_BUSINESS_DAYS - 1"
-            unit="days"
+            :unit="t('units.dayUnit')"
             input-id="unpaid-days-off-input"
-            input-label="Unpaid days off"
-            decrease-label="Decrease unpaid days off"
-            increase-label="Increase unpaid days off"
+            :input-label="t('schedule.unpaidDays.label')"
+            :decrease-label="t('schedule.unpaidDays.decrease')"
+            :increase-label="t('schedule.unpaidDays.increase')"
             data-cy="nr-days-off"
             @update:value="store.setNrDaysOff"
           />
@@ -159,6 +162,7 @@
 
 <script setup lang="ts">
 import { storeToRefs } from "pinia";
+import { useI18n } from "vue-i18n";
 import { AssessmentScenario } from "@/typings";
 import {
   SUPPORTED_TAX_RANK_YEARS,
@@ -172,6 +176,7 @@ import InfoButton from "@/components/InfoButton.vue";
 
 const store = useTaxesStore();
 const { getCurrentTaxRankYear } = storeToRefs(store);
+const { t } = useI18n({ useScope: "global" });
 
 const changeCurrentTaxRankYear = (
   taxRank: (typeof SUPPORTED_TAX_RANK_YEARS)[number],

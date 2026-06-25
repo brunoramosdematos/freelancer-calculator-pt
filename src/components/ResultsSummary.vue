@@ -7,14 +7,16 @@
       class="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between"
     >
       <div>
-        <h2 class="text-sm font-semibold text-neutral-900">Results</h2>
+        <h2 class="text-sm font-semibold text-neutral-900">
+          {{ t("results.title") }}
+        </h2>
         <p class="mt-1 text-xs text-neutral-500">
-          Shown per {{ displayFrequency }}.
+          {{ t("results.shownPer", { frequency: displayFrequencyLabel }) }}
         </p>
       </div>
       <div
         class="inline-flex rounded-lg border border-neutral-200 bg-neutral-50 p-1"
-        aria-label="Show income per"
+        :aria-label="t('frequency.showIncomePer')"
       >
         <button
           v-for="frequencyChoice in Object.keys(FrequencyChoices)"
@@ -28,7 +30,7 @@
           data-cy="frequency-button"
           @click="setFrequency(frequencyChoice)"
         >
-          {{ frequencyChoice }}
+          {{ t(`frequency.${frequencyChoice}`) }}
         </button>
       </div>
     </div>
@@ -38,25 +40,29 @@
         <p
           class="text-xs font-semibold uppercase tracking-wide text-neutral-500"
         >
-          Gross income
+          {{ t("results.grossIncome") }}
         </p>
         <p class="mt-2 text-2xl font-semibold text-neutral-900 tabular-nums">
           {{ grossIncomeDisplay }}
         </p>
-        <p class="mt-1 text-xs text-neutral-500">/ {{ displayFrequency }}</p>
+        <p class="mt-1 text-xs text-neutral-500">
+          / {{ displayFrequencyLabel }}
+        </p>
       </div>
       <div class="rounded-lg border border-green-200 p-4">
         <p class="text-xs font-semibold uppercase tracking-wide text-green-700">
-          Net income
+          {{ t("results.netIncome") }}
         </p>
         <p class="mt-2 text-2xl font-semibold text-green-700 tabular-nums">
           {{ netIncomeDisplay }}
         </p>
-        <p class="mt-1 text-xs text-neutral-500">/ {{ displayFrequency }}</p>
+        <p class="mt-1 text-xs text-neutral-500">
+          / {{ displayFrequencyLabel }}
+        </p>
       </div>
       <div class="rounded-lg border border-red-200 p-4">
         <p class="text-xs font-semibold uppercase tracking-wide text-red-700">
-          Total taxes
+          {{ t("results.totalTaxes") }}
         </p>
         <p class="mt-2 text-2xl font-semibold text-red-700 tabular-nums">
           {{ taxesDisplay }}
@@ -69,7 +75,7 @@
             </dd>
           </div>
           <div class="flex justify-between gap-3">
-            <dt>Social Security</dt>
+            <dt>{{ t("table.socialSecurity") }}</dt>
             <dd class="font-medium tabular-nums text-blue-700">
               {{ ssDisplay }}
             </dd>
@@ -95,6 +101,7 @@
 
 <script setup lang="ts">
 import { computed } from "vue";
+import { useI18n } from "vue-i18n";
 import { storeToRefs } from "pinia";
 import { FrequencyChoices } from "@/typings";
 import { useTaxesStore } from "@/store";
@@ -102,6 +109,7 @@ import { asCurrency } from "@/utils.js";
 import Table from "@/components/Table.vue";
 
 const store = useTaxesStore();
+const { t } = useI18n({ useScope: "global" });
 const {
   displayFrequency,
   grossIncome,
@@ -123,13 +131,17 @@ const grossIncomeDisplay = computed(() =>
   asCurrency(grossIncome.value[displayFrequency.value]),
 );
 
+const displayFrequencyLabel = computed(() =>
+  t(`frequency.${displayFrequency.value}`),
+);
+
 const specialSocialSecurityStatus = computed(() => {
   if (store.ssFirstYear) {
-    return "Social Security exemption is active; final Social Security is EUR 0.";
+    return t("socialSecurityStatus.exemptionFinalZero");
   }
 
   if (store.ssIsAtMinimumContribution) {
-    return "Minimum monthly Social Security contribution applied.";
+    return t("socialSecurityStatus.minimumApplied");
   }
 
   if (store.ssIsContributionBaseCapped) {
@@ -137,18 +149,15 @@ const specialSocialSecurityStatus = computed(() => {
       store.ssFirstAvailableDiscountBelowContributionBaseCap;
 
     if (firstDiscountBelowCap === null) {
-      return `Maximum Social Security base applied · ${asCurrency(
-        store.ssContributionBase,
-        2,
-      )}/month.`;
+      return t("socialSecurityStatus.cappedWithBase", {
+        base: asCurrency(store.ssContributionBase, 2),
+      });
     }
 
-    return `Maximum Social Security base applied · ${asCurrency(
-      store.ssContributionBase,
-      2,
-    )}/month. ${formatSignedPercentage(
-      firstDiscountBelowCap,
-    )} is the first available adjustment that changes the result.`;
+    return t("socialSecurityStatus.cappedWithFirstChangingAdjustment", {
+      base: asCurrency(store.ssContributionBase, 2),
+      percentage: formatSignedPercentage(firstDiscountBelowCap),
+    });
   }
 
   return "";

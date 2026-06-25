@@ -9,27 +9,29 @@
     >
       <div>
         <p class="font-medium text-neutral-700">
-          Indicative estimate · {{ YEAR_BUSINESS_DAYS }} business days · VAT
-          excluded
+          {{
+            t("footer.headline", {
+              businessDays: YEAR_BUSINESS_DAYS,
+            })
+          }}
         </p>
         <details class="mt-2">
           <summary
             class="cursor-pointer text-sm font-medium text-sky-700 underline underline-offset-2 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
           >
-            Assumptions and limitations
+            {{ t("footer.assumptionsTitle") }}
           </summary>
           <div class="mt-3 max-w-3xl space-y-2 text-xs text-neutral-500">
             <p>
-              This estimate is for independent workers with green receipts
-              (trabalhadores independentes com recibos verdes).
+              {{ t("footer.independentWorkers") }}
             </p>
             <p>
-              VAT (IVA) is ignored for the scenario where clients are outside
-              Portugal.
+              {{ t("footer.vatIgnored") }}
             </p>
             <p>
-              Daily values use {{ YEAR_BUSINESS_DAYS }} business days minus
-              unpaid days off.
+              {{
+                t("footer.dailyValues", { businessDays: YEAR_BUSINESS_DAYS })
+              }}
             </p>
           </div>
         </details>
@@ -38,7 +40,7 @@
         to="/about"
         class="text-sm font-medium text-neutral-700 underline underline-offset-2 hover:text-neutral-900 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
       >
-        About and disclaimer
+        {{ t("footer.aboutDisclaimer") }}
       </RouterLink>
     </div>
   </footer>
@@ -47,7 +49,9 @@
 <script lang="ts" setup>
 import { storeToRefs } from "pinia";
 import { RouterLink } from "vue-router";
+import { useI18n } from "vue-i18n";
 import { useTaxesStore, YEAR_BUSINESS_DAYS } from "@/store";
 
 const { showDashboard } = storeToRefs(useTaxesStore());
+const { t } = useI18n({ useScope: "global" });
 </script>

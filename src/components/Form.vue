@@ -27,12 +27,12 @@
           :data-state="hasIncome ? 'active' : 'landing'"
           :class="headingClass"
         >
-          Freelancer Calculator Portugal 🇵🇹
+          {{ t("app.productHeading") }}
         </h4>
         <p
           class="md:mt-3 md:mb-5 text-sm md:text-xl text-neutral-600 font-light"
         >
-          simulate your net income
+          {{ t("simulator.tagline") }}
         </p>
         <div class="flex flex-col justify-around items-center md:flex-row">
           <div class="flex items-center justify-center w-full">
@@ -40,7 +40,7 @@
               <div class="relative">
                 <FormattedNumberInput
                   v-model:value="internalIncome"
-                  placeholder="Income"
+                  :placeholder="t('simulator.incomePlaceholder')"
                   class="pl-7"
                   data-cy="income"
                   @click="showDropdown = true"
@@ -56,17 +56,27 @@
                 >
                   <button
                     class="uppercase text-primary text-xs border-[0.5px] border-primary rounded-full px-5 py-[2px] hover:border-primary hover:text-primary focus:bg-sky-100"
-                  @click="
-                    store.setIncome((store.income ?? 0) - changeAmount.value)
-                  "
+                    :aria-label="
+                      t('simulator.decreaseIncome', {
+                        amount: changeAmount.text,
+                      })
+                    "
+                    @click="
+                      store.setIncome((store.income ?? 0) - changeAmount.value)
+                    "
                   >
                     - {{ changeAmount.text }}
                   </button>
                   <button
                     class="uppercase text-primary text-xs border-[0.5px] border-primary rounded-full px-5 py-[2px] ml-1 hover:border-primary hover:text-primary focus:bg-sky-100"
-                  @click="
-                    store.setIncome((store.income ?? 0) + changeAmount.value)
-                  "
+                    :aria-label="
+                      t('simulator.increaseIncome', {
+                        amount: changeAmount.text,
+                      })
+                    "
+                    @click="
+                      store.setIncome((store.income ?? 0) + changeAmount.value)
+                    "
                   >
                     + {{ changeAmount.text }}
                   </button>
@@ -112,7 +122,7 @@
               class="text-sm hover:text-income hover:font-medium py-5 flex gap-2 items-center"
               @click="store.reset()"
             >
-              reset
+              {{ t("actions.reset") }}
               <ArrowPathIcon class="h-3" />
             </button>
             <button
@@ -120,7 +130,7 @@
               class="text-sm hover:text-secondary hover:font-medium py-5 flex gap-2 items-center"
               @click="share"
             >
-              share
+              {{ t("actions.share") }}
               <ShareIcon class="h-3" />
             </button>
             <button
@@ -128,7 +138,7 @@
               class="text-sm hover:text-tertiary hover:font-medium py-5 flex gap-2 items-center"
               @click="showNewSimulationDialog = true"
             >
-              save
+              {{ t("actions.save") }}
               <BookmarkIcon class="h-3" />
             </button>
           </div>
@@ -140,6 +150,7 @@
 </template>
 <script setup lang="ts">
 import { ref, computed } from "vue";
+import { useI18n } from "vue-i18n";
 import {
   CurrencyEuroIcon,
   ChevronDownIcon,
@@ -158,6 +169,7 @@ import SaveSimulationDialog from "@/components/SaveSimulationDialog.vue";
 import { FrequencyChoices } from "@/typings";
 
 const { breakpoint } = useBreakpoint();
+const { t } = useI18n({ useScope: "global" });
 
 // store
 const { incomeFrequency, income } = storeToRefs(useTaxesStore());
@@ -219,14 +231,14 @@ const closeToast = () => {
 };
 
 const share = () => {
-  toastMessage.value = "sharable link copied to clipboard";
+  toastMessage.value = t("simulator.shareCopied");
   navigator.clipboard.writeText(window.location.href);
   showToast.value = true;
 };
 
 const simulationSaved = () => {
   showNewSimulationDialog.value = false;
-  toastMessage.value = "Simulation saved";
+  toastMessage.value = t("simulator.simulationSaved");
   showToast.value = true;
 };
 </script>

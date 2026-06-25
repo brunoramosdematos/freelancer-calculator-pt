@@ -1,6 +1,10 @@
 <template>
   <div class="relative mx-auto h-64 w-64">
-    <canvas ref="canvasRef"></canvas>
+    <canvas
+      ref="canvasRef"
+      role="img"
+      :aria-label="t('chart.ariaLabel')"
+    ></canvas>
     <div
       class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2"
     >
@@ -10,7 +14,7 @@
         {{ asCurrency(grossIncome[displayFrequency]) }}
       </p>
       <small class="block text-center text-xs text-neutral-500">
-        gross income
+        {{ t("chart.grossIncome") }}
       </small>
     </div>
   </div>
@@ -19,6 +23,7 @@
 <script lang="ts" setup>
 import { computed, onBeforeUnmount, onMounted, ref, watch } from "vue";
 import { Chart, registerables, type Chart as ChartInstance } from "chart.js";
+import { useI18n } from "vue-i18n";
 
 import { storeToRefs } from "pinia";
 import { asCurrency, asPercentage } from "@/utils.js";
@@ -28,6 +33,7 @@ import ChartDataLabels from "chartjs-plugin-datalabels";
 
 const { grossIncome, netIncome, irsPay, ssPay, colors, displayFrequency } =
   storeToRefs(useTaxesStore());
+const { t, locale } = useI18n({ useScope: "global" });
 
 Chart.register(...registerables);
 Chart.register(ChartDataLabels);
@@ -40,7 +46,7 @@ onMounted(() => {
 
 const chartData = computed(() => {
   return {
-    labels: ["Net Income", "IRS", "SS"],
+    labels: [t("chart.netIncome"), "IRS", t("chart.socialSecurity")],
     datasets: [
       {
         data: [
@@ -89,15 +95,23 @@ const chartOptions = computed(() => {
 });
 
 watch(
-  () => chartData.value,
+  () => [chartData.value, chartOptions.value, locale.value],
   (newData) => {
     if (!chart) {
       return;
     }
 
-    newData.datasets.forEach((d, i) => {
+    const [data, options] = newData as [
+      typeof chartData.value,
+      typeof chartOptions.value,
+      string,
+    ];
+
+    chart.data.labels = data.labels;
+    data.datasets.forEach((d, i) => {
       chart.data.datasets[i].data = d.data;
     });
+    chart.options = options;
     chart.update();
   },
 );

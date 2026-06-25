@@ -3,7 +3,7 @@
     <button
       class="bg-neutral-300 text-neutral-600 rounded-full font-bold px-1 py-1 hover:bg-neutral-400 hover:text-neutral-100 disabled:bg-neutral-200 disabled:text-neutral-400"
       :disabled="counter <= min"
-      :aria-label="decreaseLabel"
+      :aria-label="resolvedDecreaseLabel"
       data-cy="counter-decrease"
       @click="decreaseValue"
     >
@@ -15,7 +15,7 @@
           v-model:value="counterDisplay"
           class="text-center"
           :id="inputId"
-          :aria-label="inputId ? undefined : inputLabel"
+          :aria-label="inputId ? undefined : resolvedInputLabel"
         />
       </slot>
     </span>
@@ -23,7 +23,7 @@
     <button
       class="bg-neutral-300 text-neutral-600 rounded-full font-bold px-1 py-1 hover:bg-neutral-400 hover:text-neutral-100 disabled:bg-neutral-200 disabled:text-neutral-400"
       :disabled="max !== undefined && counter >= max"
-      :aria-label="increaseLabel"
+      :aria-label="resolvedIncreaseLabel"
       data-cy="counter-increase"
       @click="increaseValue"
     >
@@ -35,6 +35,7 @@
 import { MinusIcon, PlusIcon } from "@heroicons/vue/24/outline";
 
 import { ref, watch, computed } from "vue";
+import { useI18n } from "vue-i18n";
 import FormattedNumberInput from "@/components/FormattedNumberInput.vue";
 const props = defineProps({
   value: {
@@ -63,11 +64,11 @@ const props = defineProps({
   },
   decreaseLabel: {
     type: String,
-    default: "Decrease value",
+    required: false,
   },
   increaseLabel: {
     type: String,
-    default: "Increase value",
+    required: false,
   },
   step: {
     type: Number,
@@ -77,6 +78,16 @@ const props = defineProps({
 
 // value
 const emits = defineEmits(["update:value"]);
+const { t } = useI18n({ useScope: "global" });
+const resolvedDecreaseLabel = computed(
+  () => props.decreaseLabel ?? t("accessibility.decreaseValue"),
+);
+const resolvedIncreaseLabel = computed(
+  () => props.increaseLabel ?? t("accessibility.increaseValue"),
+);
+const resolvedInputLabel = computed(
+  () => props.inputLabel ?? t("accessibility.counterValue"),
+);
 
 const increaseValue = () => {
   if (props.max === undefined || counter.value < props.max) {

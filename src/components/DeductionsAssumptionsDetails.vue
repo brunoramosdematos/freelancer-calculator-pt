@@ -4,52 +4,64 @@
       class="grid grid-cols-[minmax(0,1fr)_auto] gap-4 py-3"
       data-cy="professional-expenses-row"
     >
-      <dt class="text-neutral-600">Professional expenses</dt>
+      <dt class="text-neutral-600">
+        {{ t("deductions.professionalExpenses") }}
+      </dt>
       <dd class="font-medium text-neutral-900 tabular-nums">
         {{ asCurrency(store.expenses, 2) }}
       </dd>
     </div>
     <div class="grid grid-cols-[minmax(0,1fr)_auto] gap-4 py-3">
-      <dt class="text-neutral-600">Expenses mode</dt>
+      <dt class="text-neutral-600">{{ t("deductions.expensesMode") }}</dt>
       <dd class="font-medium text-neutral-900">
-        {{ store.expensesAuto ? "Automatic" : "Manual" }}
+        {{
+          store.expensesAuto
+            ? t("deductions.automatic")
+            : t("deductions.manual")
+        }}
       </dd>
     </div>
     <div
       class="grid grid-cols-[minmax(0,1fr)_auto] gap-4 py-3"
       data-cy="expenses-still-needed-row"
     >
-      <dt class="text-neutral-600">Expenses still needed</dt>
+      <dt class="text-neutral-600">
+        {{ t("deductions.expensesStillNeeded") }}
+      </dt>
       <dd class="font-medium text-neutral-900 tabular-nums">
         {{ asCurrency(store.expensesNeeded, 2) }}
       </dd>
     </div>
     <div class="grid grid-cols-[minmax(0,1fr)_auto] gap-4 py-3">
-      <dt class="text-neutral-600">Paid months per year</dt>
+      <dt class="text-neutral-600">{{ t("deductions.paidMonths") }}</dt>
       <dd class="font-medium text-neutral-900 tabular-nums">
         {{ store.nrMonthsDisplay }}
       </dd>
     </div>
     <div class="grid grid-cols-[minmax(0,1fr)_auto] gap-4 py-3">
-      <dt class="text-neutral-600">Unpaid days off</dt>
+      <dt class="text-neutral-600">{{ t("deductions.unpaidDays") }}</dt>
       <dd class="font-medium text-neutral-900 tabular-nums">
         {{ store.nrDaysOff }}
       </dd>
     </div>
     <div class="grid grid-cols-[minmax(0,1fr)_auto] gap-4 py-3">
-      <dt class="text-neutral-600">Business days assumed</dt>
+      <dt class="text-neutral-600">
+        {{ t("deductions.businessDaysAssumed") }}
+      </dt>
       <dd class="font-medium text-neutral-900 tabular-nums">
         {{ YEAR_BUSINESS_DAYS }}
       </dd>
     </div>
     <div class="grid grid-cols-[minmax(0,1fr)_auto] gap-4 py-3">
-      <dt class="text-neutral-600">Youth IRS</dt>
+      <dt class="text-neutral-600">{{ t("deductions.youthIrs") }}</dt>
       <dd class="font-medium text-neutral-900">
         {{ youthIrsStatus }}
       </dd>
     </div>
     <div class="grid grid-cols-[minmax(0,1fr)_auto] gap-4 py-3">
-      <dt class="text-neutral-600">Activity-year reduction</dt>
+      <dt class="text-neutral-600">
+        {{ t("deductions.activityYearReduction") }}
+      </dt>
       <dd class="font-medium text-neutral-900">
         {{ activityYearStatus }}
       </dd>
@@ -57,13 +69,15 @@
     <div class="grid grid-cols-[minmax(0,1fr)_auto] gap-4 py-3">
       <dt class="text-neutral-600">NHR / RNH</dt>
       <dd class="font-medium text-neutral-900">
-        {{ store.rnh ? "Active" : "Not active" }}
+        {{ store.rnh ? t("deductions.active") : t("deductions.notActive") }}
       </dd>
     </div>
     <div class="grid grid-cols-[minmax(0,1fr)_auto] gap-4 py-3">
-      <dt class="text-neutral-600">First 12 months SS exemption</dt>
+      <dt class="text-neutral-600">{{ t("deductions.ssFirstYear") }}</dt>
       <dd class="font-medium text-neutral-900">
-        {{ store.ssFirstYear ? "Active" : "Not active" }}
+        {{
+          store.ssFirstYear ? t("deductions.active") : t("deductions.notActive")
+        }}
       </dd>
     </div>
   </dl>
@@ -71,26 +85,28 @@
 
 <script setup lang="ts">
 import { computed } from "vue";
+import { useI18n } from "vue-i18n";
 import { useTaxesStore, YEAR_BUSINESS_DAYS } from "@/store";
 import { asCurrency } from "@/utils.js";
 
 const store = useTaxesStore();
+const { t } = useI18n({ useScope: "global" });
 
 const youthIrsStatus = computed(() =>
   store.benefitsOfYouthIrs
-    ? `Active, year ${store.yearOfYouthIrs}`
-    : "Not active",
+    ? t("deductions.activeYear", { year: store.yearOfYouthIrs })
+    : t("deductions.notActive"),
 );
 
 const activityYearStatus = computed(() => {
   if (store.firstYear) {
-    return "First fiscal year";
+    return t("advancedSettings.activityYear.first");
   }
 
   if (store.secondYear) {
-    return "Second fiscal year";
+    return t("advancedSettings.activityYear.second");
   }
 
-  return "None";
+  return t("advancedSettings.activityYear.none");
 });
 </script>

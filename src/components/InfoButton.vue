@@ -4,7 +4,7 @@
       ref="button"
       type="button"
       class="inline-flex rounded-full text-neutral-500 hover:text-neutral-800 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
-      :aria-label="label"
+      :aria-label="resolvedLabel"
       aria-haspopup="dialog"
       :aria-expanded="isOpen.toString()"
       :aria-controls="panelId"
@@ -27,12 +27,12 @@
         v-if="isOpen"
         :id="panelId"
         role="dialog"
-        :aria-label="label"
+        :aria-label="resolvedLabel"
         class="absolute z-50 w-72 rounded-lg border border-neutral-200 bg-white px-4 py-3 text-sm text-neutral-700 shadow-lg"
         :class="positionClass"
       >
         <slot>
-          <p>More information about this field.</p>
+          <p>{{ t("actions.officialInformation") }}</p>
         </slot>
         <a
           v-if="link"
@@ -41,7 +41,7 @@
           target="_blank"
           rel="noopener noreferrer"
         >
-          Official information
+          {{ t("actions.officialInformation") }}
         </a>
       </div>
     </transition>
@@ -51,6 +51,7 @@
 <script lang="ts" setup>
 import { QuestionMarkCircleIcon } from "@heroicons/vue/24/outline";
 import { computed, onBeforeUnmount, onMounted, ref } from "vue";
+import { useI18n } from "vue-i18n";
 import { useBreakpoint } from "@/composables/breakpoints";
 
 const props = withDefaults(
@@ -60,7 +61,7 @@ const props = withDefaults(
   }>(),
   {
     link: undefined,
-    label: "More information",
+    label: undefined,
   },
 );
 
@@ -69,6 +70,10 @@ const emit = defineEmits<{
 }>();
 
 const { breakpoint } = useBreakpoint();
+const { t } = useI18n({ useScope: "global" });
+const resolvedLabel = computed(
+  () => props.label ?? t("accessibility.moreInformation"),
+);
 const root = ref<HTMLElement | null>(null);
 const button = ref<HTMLButtonElement | null>(null);
 const isOpen = ref(false);

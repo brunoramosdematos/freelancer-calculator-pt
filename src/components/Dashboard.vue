@@ -28,8 +28,8 @@
       >
         <DisclosurePanel
           id="income-breakdown-chart"
-          title="Income breakdown chart"
-          summary="Visual split of net income, IRS and Social Security"
+          :title="t('chart.title')"
+          :summary="t('chart.summary')"
           toggle-data-cy="income-breakdown-chart-toggle"
           panel-data-cy="income-breakdown-chart-panel"
           :unmount-content="true"
@@ -55,6 +55,7 @@
 
 <script setup lang="ts">
 import { nextTick, ref } from "vue";
+import { useI18n } from "vue-i18n";
 import AdvancedTaxSettings from "@/components/AdvancedTaxSettings.vue";
 import CalculationDetails from "@/components/CalculationDetails.vue";
 import Chart from "@/components/Chart.vue";
@@ -64,6 +65,7 @@ import SimulationSettings from "@/components/SimulationSettings.vue";
 
 const calculationDetailsOpen = ref(false);
 const socialSecurityDetailsOpen = ref(false);
+const { t } = useI18n({ useScope: "global" });
 
 const openSocialSecurityDetails = async () => {
   calculationDetailsOpen.value = true;
