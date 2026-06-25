@@ -28,7 +28,7 @@ describe("pass income to url parameters", () => {
   it("doesn't update the url if income is 0", () => {
     cy.visit("/#/");
     cy.get('[data-cy="income"]').type("0");
-    cy.url().should("not.include", "0");
+    cy.location("hash").should("not.include", "income=0");
   });
 });
 

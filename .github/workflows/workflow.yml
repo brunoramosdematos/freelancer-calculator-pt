@@ -39,11 +39,11 @@ jobs:
           node-version: 24
           cache: "npm"
       - name: Cypress run
-        uses: cypress-io/github-action@v6
+        uses: cypress-io/github-action@v7.4.0
         with:
           install-command: npm ci
-          start: npm run dev -- --port 8261
-          wait-on: http://localhost:8261
+          start: npm run dev -- --host 127.0.0.1 --port 8261 --strictPort
+          wait-on: http://127.0.0.1:8261
 
   production-audit:
     runs-on: ubuntu-latest
@@ -59,6 +59,8 @@ jobs:
         run: npm ci --ignore-scripts
       - name: Run production dependency audit
         run: npm run audit:prod
+      - name: Run critical dependency audit
+        run: npm run audit:critical
 
   deploy:
     needs:
