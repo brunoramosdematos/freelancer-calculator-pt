@@ -1,0 +1,15 @@
+# Default owner
+* @brunoramosdematos
+
+# Source code
+src/ @brunoramosdematos
+
+# GitHub Actions and release governance
+.github/ @brunoramosdematos
+CHANGELOG.md @brunoramosdematos
+docs/RELEASE_PROCESS.md @brunoramosdematos
+docs/VERSIONING.md @brunoramosdematos
+
+# Security and tax documentation
+docs/security/ @brunoramosdematos
+docs/TAX_UPDATE_POLICY.md @brunoramosdematos

@@ -30,6 +30,7 @@
     "cy:e2e:run": "node scripts/run-cypress-e2e.mjs run",
     "cy:a11y": "node scripts/run-cypress-e2e.mjs a11y",
     "verify:bundle-budget": "node scripts/verify-bundle-budget.mjs",
+    "verify:release-readiness": "node scripts/verify-release-readiness.mjs",
     "lighthouse:ci": "node scripts/run-lighthouse.mjs",
     "typecheck": "vue-tsc --noEmit",
     "lint": "eslint . --ext .js,.cjs,.mjs,.ts,.vue",
@@ -38,7 +39,7 @@
     "format:check": "prettier . --check",
     "check": "npm run audit:prod && npm run audit:critical && npm run format:check && npm run lint && npm run typecheck && npm run vitest -- --run && npm run build && npm run verify:production-build",
     "check:e2e": "npm run check && npm run cy:e2e:run",
-    "check:release": "npm run check && npm run verify:bundle-budget && npm run lighthouse:ci && npm run cy:e2e:run && npm run cy:a11y"
+    "check:release": "npm run check && npm run verify:bundle-budget && npm run lighthouse:ci && npm run cy:e2e:run && npm run cy:a11y && npm run verify:release-readiness"
   },
   "dependencies": {
     "@heroicons/vue": "^2.1.1",

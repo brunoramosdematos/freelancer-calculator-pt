@@ -19,11 +19,15 @@ This project uses local and CI gates to keep releases reproducible.
   count and absence of test/runtime leakage.
 - `npm run lighthouse:ci` runs desktop Lighthouse smoke checks against local
   production preview URLs.
+- `npm run verify:release-readiness` verifies release governance files,
+  changelog structure, CODEOWNERS, issue templates, workflow jobs and required
+  package scripts.
 - `npm run check` runs production audit, critical audit, formatting, lint,
   typecheck, Vitest, build and production verification.
 - `npm run check:e2e` runs `check` plus Cypress.
 - `npm run check:release` runs `check`, bundle budget verification, Lighthouse,
-  Cypress E2E and Cypress axe accessibility checks.
+  Cypress E2E, Cypress axe accessibility checks and release-readiness
+  verification.
 
 ## Vue Type Checking
 
@@ -55,6 +59,12 @@ npm run typecheck
 ```
 
 The deploy job still builds, verifies and uploads `dist` to GitHub Pages.
+
+The release validation workflow in `.github/workflows/release.yml` runs on
+manual dispatch and `v*.*.*` tags. It runs `npm run check:release`, prints
+release metadata and runs the complete npm audit as non-blocking context for
+known development-only findings. It does not deploy. GitHub Pages deployment
+remains in `.github/workflows/workflow.yml`.
 
 The `accessibility-performance` job runs:
 

@@ -16,6 +16,12 @@ quality gates are documented in [docs/QUALITY_GATES.md](docs/QUALITY_GATES.md).
 Accessibility expectations are documented in
 [docs/ACCESSIBILITY.md](docs/ACCESSIBILITY.md), and performance budgets are
 documented in [docs/PERFORMANCE.md](docs/PERFORMANCE.md).
+Release history is tracked in [CHANGELOG.md](CHANGELOG.md), and release
+governance is documented in [docs/RELEASE_PROCESS.md](docs/RELEASE_PROCESS.md),
+[docs/VERSIONING.md](docs/VERSIONING.md),
+[docs/TAX_UPDATE_POLICY.md](docs/TAX_UPDATE_POLICY.md),
+[docs/BRANCH_PROTECTION.md](docs/BRANCH_PROTECTION.md) and
+[docs/ROADMAP.md](docs/ROADMAP.md).
 
 ## Scope
 
