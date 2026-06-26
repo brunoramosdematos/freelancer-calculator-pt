@@ -126,7 +126,7 @@
           <AdjustCounter
             :value="store.nrMonthsDisplay"
             :min="1"
-            :unit="t('units.monthUnit')"
+            :unit="paidMonthsUnit"
             input-id="paid-months-per-year-input"
             :input-label="t('schedule.paidMonths.label')"
             :decrease-label="t('schedule.paidMonths.decrease')"
@@ -146,7 +146,7 @@
             :value="store.nrDaysOff"
             :min="0"
             :max="YEAR_BUSINESS_DAYS - 1"
-            :unit="t('units.dayUnit')"
+            :unit="unpaidDaysUnit"
             input-id="unpaid-days-off-input"
             :input-label="t('schedule.unpaidDays.label')"
             :decrease-label="t('schedule.unpaidDays.decrease')"
@@ -161,6 +161,7 @@
 </template>
 
 <script setup lang="ts">
+import { computed } from "vue";
 import { storeToRefs } from "pinia";
 import { useI18n } from "vue-i18n";
 import { AssessmentScenario } from "@/typings";
@@ -177,6 +178,11 @@ import InfoButton from "@/components/InfoButton.vue";
 const store = useTaxesStore();
 const { getCurrentTaxRankYear } = storeToRefs(store);
 const { t } = useI18n({ useScope: "global" });
+
+const paidMonthsUnit = computed(() =>
+  t("units.monthUnit", {}, store.nrMonthsDisplay),
+);
+const unpaidDaysUnit = computed(() => t("units.dayUnit", {}, store.nrDaysOff));
 
 const changeCurrentTaxRankYear = (
   taxRank: (typeof SUPPORTED_TAX_RANK_YEARS)[number],

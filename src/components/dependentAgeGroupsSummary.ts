@@ -1,7 +1,14 @@
+export interface DependentAgeGroupsSummarySegment {
+  key: string;
+  values: Record<string, number>;
+  plural: number;
+}
+
 export interface DependentAgeGroupsSummaryDescriptor {
   key: string;
   values?: Record<string, number>;
   plural?: number;
+  segments?: DependentAgeGroupsSummarySegment[];
 }
 
 export const getDependentAgeGroupsSummaryDescriptor = (
@@ -25,10 +32,22 @@ export const getDependentAgeGroupsSummaryDescriptor = (
 
   return {
     key: "dependents.summary.mixed",
-    values: {
-      aged3OrUnder,
-      aged4To6,
-      aged7OrOver,
-    },
+    segments: [
+      {
+        key: "dependents.summary.aged3OrUnderSegment",
+        values: { count: aged3OrUnder },
+        plural: aged3OrUnder,
+      },
+      {
+        key: "dependents.summary.aged4To6Segment",
+        values: { count: aged4To6 },
+        plural: aged4To6,
+      },
+      {
+        key: "dependents.summary.aged7OrOverSegment",
+        values: { count: aged7OrOver },
+        plural: aged7OrOver,
+      },
+    ],
   };
 };

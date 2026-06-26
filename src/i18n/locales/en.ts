@@ -1,11 +1,19 @@
-export default {
+export const languageName = "English";
+
+export const metadata = {
+  title: "Freelancer Calculator Portugal | IRS & Social Security",
+  description:
+    "Open-source tax, Social Security, and income calculator for freelancers in Portugal.",
+} as const;
+
+const messages = {
   app: {
     productHeading: "Freelancer Calculator Portugal 🇵🇹",
     productAlt: "Freelancer Calculator Portugal",
   },
   navigation: {
     simulator: "simulator",
-    simulations: "simulations ({count})",
+    simulations: "simulation ({count}) | simulations ({count})",
     about: "about",
     githubSourceLabel:
       "Open Freelancer Calculator Portugal source code on GitHub",
@@ -14,6 +22,7 @@ export default {
     label: "Language",
     english: "English",
     portuguesePortugal: "Português (Portugal)",
+    portugueseBrazil: "Português (Brasil)",
   },
   actions: {
     reset: "reset",
@@ -44,11 +53,11 @@ export default {
   },
   units: {
     dependents: "{count} dependent | {count} dependents",
-    dependentUnit: "dependents",
+    dependentUnit: "dependent | dependents",
     months: "{count} month | {count} months",
-    monthUnit: "months",
+    monthUnit: "month | months",
     days: "{count} day | {count} days",
-    dayUnit: "days",
+    dayUnit: "day | days",
     eur: "EUR",
     perYear: "/year",
     perMonth: "/month",
@@ -115,8 +124,9 @@ export default {
       none: "No dependents.",
       allOlder:
         "The dependent is currently treated as aged 7+. | All {total} dependents are currently treated as aged 7+.",
-      mixed:
-        "{aged3OrUnder} aged 3 or under · {aged4To6} aged 4–6 · {aged7OrOver} aged 7+",
+      aged3OrUnderSegment: "{count} aged 3 or under | {count} aged 3 or under",
+      aged4To6Segment: "{count} aged 4–6 | {count} aged 4–6",
+      aged7OrOverSegment: "{count} aged 7+ | {count} aged 7+",
     },
   },
   schedule: {
@@ -314,11 +324,6 @@ export default {
       "Daily values use {businessDays} business days minus unpaid days off.",
     aboutDisclaimer: "About and disclaimer",
   },
-  metadata: {
-    title: "Freelancer Calculator Portugal | IRS & Social Security",
-    description:
-      "Open-source tax, Social Security, and income calculator for freelancers in Portugal.",
-  },
   accessibility: {
     decreaseValue: "Decrease value",
     increaseValue: "Increase value",
@@ -329,3 +334,5 @@ export default {
     noValue: "-",
   },
 } as const;
+
+export default messages;

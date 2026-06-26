@@ -1,22 +1,8 @@
 import { DEFAULT_LOCALE, SupportedLocale } from "@/i18n/locale";
+import { LocaleMetadata, metadataByLocale } from "@/i18n/locales";
 
-export interface LocaleMetadata {
-  title: string;
-  description: string;
-}
-
-export const METADATA: Record<SupportedLocale, LocaleMetadata> = {
-  en: {
-    title: "Freelancer Calculator Portugal | IRS & Social Security",
-    description:
-      "Open-source tax, Social Security, and income calculator for freelancers in Portugal.",
-  },
-  "pt-PT": {
-    title: "Calculadora para Freelancers em Portugal | IRS e Segurança Social",
-    description:
-      "Calculadora open source para estimar o rendimento líquido, o IRS português e as contribuições para a Segurança Social de trabalhadores independentes, incluindo tributação individual, tributação conjunta com um único rendimento e deduções por dependentes.",
-  },
-};
+export const METADATA: Record<SupportedLocale, LocaleMetadata> =
+  metadataByLocale;
 
 const getMetadata = (locale: SupportedLocale) =>
   METADATA[locale] ?? METADATA[DEFAULT_LOCALE];

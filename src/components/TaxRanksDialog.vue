@@ -31,7 +31,7 @@
           <p>
             {{
               t("irsCalculation.dialog.intro", {
-                amount: asCurrency(taxableIncomeForRates),
+                amount: formatCurrency(taxableIncomeForRates),
                 level: taxRank.id,
               })
             }}
@@ -73,16 +73,16 @@
                   {{ item.id }}
                 </td>
                 <td class="py-1 text-center whitespace-nowrap">
-                  {{ asCurrency(item.min) }}
+                  {{ formatCurrency(item.min) }}
                 </td>
                 <td class="py-1 text-center whitespace-nowrap">
-                  {{ asCurrency(item.max) }}
+                  {{ formatCurrency(item.max) }}
                 </td>
                 <td class="py-1 text-center whitespace-nowrap">
-                  {{ asPercentage(item.normalTax) }}
+                  {{ formatPercentage(item.normalTax) }}
                 </td>
                 <td class="py-1 text-center whitespace-nowrap">
-                  {{ asPercentage(item.averageTax) }}
+                  {{ formatPercentage(item.averageTax) }}
                 </td>
               </tr>
             </tbody>
@@ -95,15 +95,16 @@
 
 <script lang="ts" setup>
 import { useTaxesStore } from "@/store";
-import { asCurrency, asPercentage } from "@/utils";
 import { computed } from "vue";
 import { storeToRefs } from "pinia";
 import { XMarkIcon } from "@heroicons/vue/24/outline";
 import { useI18n } from "vue-i18n";
+import { useLocalizedFormatters } from "@/composables/useLocalizedFormatters";
 // store
 const { getTaxRanks, taxRank, taxableIncomeForRates } =
   storeToRefs(useTaxesStore());
 const { t } = useI18n({ useScope: "global" });
+const { formatCurrency, formatPercentage } = useLocalizedFormatters();
 
 // taxRank
 const taxRankBoundaryText = computed(() => {
@@ -112,7 +113,7 @@ const taxRankBoundaryText = computed(() => {
   if (taxRank.value.min) {
     boundaries.push(
       t("irsCalculation.dialog.biggerThan", {
-        amount: asCurrency(taxRank.value.min),
+        amount: formatCurrency(taxRank.value.min),
       }),
     );
   }
@@ -120,7 +121,7 @@ const taxRankBoundaryText = computed(() => {
   if (taxRank.value.max) {
     boundaries.push(
       t("irsCalculation.dialog.lowerThan", {
-        amount: asCurrency(taxRank.value.max),
+        amount: formatCurrency(taxRank.value.max),
       }),
     );
   }

@@ -10,7 +10,7 @@
       <AdjustCounter
         :value="store.numberOfDependents"
         :min="0"
-        :unit="t('units.dependentUnit')"
+        :unit="totalDependentsUnit"
         input-id="number-of-dependents-input"
         :input-label="t('dependents.total.input')"
         :decrease-label="t('dependents.total.decrease')"
@@ -75,7 +75,7 @@
               :value="store.dependentsAged3OrUnder"
               :min="0"
               :max="store.numberOfDependents"
-              :unit="t('units.dependentUnit')"
+              :unit="aged3OrUnderUnit"
               input-id="dependents-aged-3-or-under-input"
               :input-label="t('dependents.ageGroups.aged3OrUnder.input')"
               :decrease-label="t('dependents.ageGroups.aged3OrUnder.decrease')"
@@ -96,7 +96,7 @@
               :value="store.dependentsAged4To6"
               :min="0"
               :max="store.numberOfDependents - store.dependentsAged3OrUnder"
-              :unit="t('units.dependentUnit')"
+              :unit="aged4To6Unit"
               input-id="dependents-aged-4-to-6-input"
               :input-label="t('dependents.ageGroups.aged4To6.input')"
               :decrease-label="t('dependents.ageGroups.aged4To6.decrease')"
@@ -155,12 +155,28 @@ const aged7OrOverLabelId = "dependents-aged-7-or-over-label";
 
 const isAgeGroupsOpen = ref(false);
 
+const totalDependentsUnit = computed(() =>
+  t("units.dependentUnit", {}, store.numberOfDependents),
+);
+const aged3OrUnderUnit = computed(() =>
+  t("units.dependentUnit", {}, store.dependentsAged3OrUnder),
+);
+const aged4To6Unit = computed(() =>
+  t("units.dependentUnit", {}, store.dependentsAged4To6),
+);
+
 const summaryText = computed(() => {
   const descriptor = getDependentAgeGroupsSummaryDescriptor(
     store.numberOfDependents,
     store.dependentsAged3OrUnder,
     store.dependentsAged4To6,
   );
+
+  if (descriptor.segments) {
+    return descriptor.segments
+      .map((segment) => t(segment.key, segment.values ?? {}, segment.plural))
+      .join(" · ");
+  }
 
   return t(descriptor.key, descriptor.values ?? {}, descriptor.plural);
 });

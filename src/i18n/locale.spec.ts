@@ -4,11 +4,15 @@ import { METADATA } from "@/i18n/metadata";
 import {
   DEFAULT_LOCALE,
   detectLocale,
+  getIntlLocale,
   LOCALE_STORAGE_KEY,
   LocaleStorage,
+  normalizeLocale,
   persistLocale,
   readStoredLocale,
+  SUPPORTED_LOCALES,
 } from "@/i18n/locale";
+import { languageNamesByLocale } from "@/i18n/locales";
 
 const createStorage = (
   initialValue?: string,
@@ -44,6 +48,10 @@ describe("locale detection", () => {
     expect(detectLocale({ storage: createStorage("pt-PT") })).toBe("pt-PT");
   });
 
+  it("uses valid stored pt-BR", () => {
+    expect(detectLocale({ storage: createStorage("pt-BR") })).toBe("pt-BR");
+  });
+
   it("ignores invalid stored values", () => {
     expect(
       detectLocale({
@@ -62,7 +70,7 @@ describe("locale detection", () => {
     ).toBe("en");
   });
 
-  it("normalizes Portuguese navigator languages to pt-PT", () => {
+  it("normalizes Portuguese navigator languages to the supported regional locale", () => {
     expect(
       detectLocale({ storage: null, navigatorLike: { languages: ["pt-PT"] } }),
     ).toBe("pt-PT");
@@ -71,16 +79,36 @@ describe("locale detection", () => {
     ).toBe("pt-PT");
     expect(
       detectLocale({ storage: null, navigatorLike: { languages: ["pt-BR"] } }),
-    ).toBe("pt-PT");
+    ).toBe("pt-BR");
     expect(
       detectLocale({ storage: null, navigatorLike: { languages: ["pt_PT"] } }),
+    ).toBe("pt-PT");
+    expect(
+      detectLocale({ storage: null, navigatorLike: { languages: ["pt_BR"] } }),
+    ).toBe("pt-BR");
+    expect(
+      detectLocale({ storage: null, navigatorLike: { languages: ["PT-br"] } }),
+    ).toBe("pt-BR");
+    expect(
+      detectLocale({ storage: null, navigatorLike: { languages: ["pt-AO"] } }),
     ).toBe("pt-PT");
   });
 
   it("falls back to navigator.language", () => {
     expect(
       detectLocale({ storage: null, navigatorLike: { language: "pt-BR" } }),
-    ).toBe("pt-PT");
+    ).toBe("pt-BR");
+  });
+
+  it("normalizes exact locale values without matching generic pt before pt-BR", () => {
+    expect(normalizeLocale("pt-BR")).toBe("pt-BR");
+    expect(normalizeLocale("pt_BR")).toBe("pt-BR");
+    expect(normalizeLocale("PT-br")).toBe("pt-BR");
+    expect(normalizeLocale("pt-PT")).toBe("pt-PT");
+    expect(normalizeLocale("pt")).toBe("pt-PT");
+    expect(normalizeLocale("pt-AO")).toBe("pt-PT");
+    expect(normalizeLocale("en-US")).toBe("en");
+    expect(normalizeLocale("fr-FR")).toBeNull();
   });
 
   it("falls back to English for unsupported or missing navigator values", () => {
@@ -113,6 +141,9 @@ describe("locale persistence and metadata", () => {
 
     expect(persistLocale("pt-PT", storage)).toBe(true);
     expect(readStoredLocale(storage)).toBe("pt-PT");
+
+    expect(persistLocale("pt-BR", storage)).toBe(true);
+    expect(readStoredLocale(storage)).toBe("pt-BR");
   });
 
   it("rejects an invalid locale", () => {
@@ -149,10 +180,30 @@ describe("locale persistence and metadata", () => {
     expect(document.title).toBe(METADATA["pt-PT"].title);
     expect(description?.content).toBe(METADATA["pt-PT"].description);
 
+    changeLocale("pt-BR", createStorage());
+
+    expect(document.documentElement.lang).toBe("pt-BR");
+    expect(document.documentElement.dir).toBe("ltr");
+    expect(document.title).toBe(METADATA["pt-BR"].title);
+    expect(description?.content).toBe(METADATA["pt-BR"].description);
+
     changeLocale("en", createStorage());
 
     expect(document.documentElement.lang).toBe("en");
     expect(document.title).toBe(METADATA.en.title);
     expect(description?.content).toBe(METADATA.en.description);
+  });
+
+  it("has metadata, language names, and Intl formatter locales for every supported locale", () => {
+    expect(SUPPORTED_LOCALES).toEqual(["en", "pt-PT", "pt-BR"]);
+    expect(getIntlLocale("en")).toBe("en-GB");
+    expect(getIntlLocale("pt-PT")).toBe("pt-PT");
+    expect(getIntlLocale("pt-BR")).toBe("pt-BR");
+
+    SUPPORTED_LOCALES.forEach((locale) => {
+      expect(METADATA[locale].title).toBeTruthy();
+      expect(METADATA[locale].description).toBeTruthy();
+      expect(languageNamesByLocale[locale]).toBeTruthy();
+    });
   });
 });

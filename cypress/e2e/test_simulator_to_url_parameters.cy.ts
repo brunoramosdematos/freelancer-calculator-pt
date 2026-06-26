@@ -165,7 +165,7 @@ describe("pass assessment scenario and dependents to url parameters", () => {
     cy.visit("/#/?income=60000&currentTaxRankYear=2024");
 
     cy.get('[data-cy="assessment-scenario-individual"]').should("be.checked");
-    cy.get('[data-cy="final-irs-row"]').should("contain", "12 576.22€");
+    cy.get('[data-cy="final-irs-row"]').should("contain", "€12,576.22");
 
     cy.get('[data-cy="assessment-scenario-joint-single-income"]').check({
       force: true,
@@ -178,9 +178,9 @@ describe("pass assessment scenario and dependents to url parameters", () => {
     openIrsCalculationDetails();
     cy.get('[data-cy="taxable-income-for-rates-row"]').should(
       "contain",
-      "22 500.00€",
+      "€22,500.00",
     );
-    cy.get('[data-cy="final-irs-row"]').should("contain", "8 608.79€");
+    cy.get('[data-cy="final-irs-row"]').should("contain", "€8,608.79");
 
     cy.get('[data-cy="assessment-scenario-individual"]').check({
       force: true,
@@ -188,7 +188,7 @@ describe("pass assessment scenario and dependents to url parameters", () => {
 
     cy.url().should("include", "assessmentScenario=individual");
     cy.get('[data-cy="assessment-scenario-individual"]').should("be.checked");
-    cy.get('[data-cy="final-irs-row"]').should("contain", "12 576.22€");
+    cy.get('[data-cy="final-irs-row"]').should("contain", "€12,576.22");
   });
 
   it("updates dependents, age buckets, URL, and displayed tax", () => {
@@ -214,9 +214,9 @@ describe("pass assessment scenario and dependents to url parameters", () => {
     openIrsCalculationDetails();
     cy.get('[data-cy="dependent-tax-deduction-applied-row"]').should(
       "contain",
-      "1 500.00€",
+      "€1,500.00",
     );
-    cy.get('[data-cy="final-irs-row"]').should("contain", "7 108.79€");
+    cy.get('[data-cy="final-irs-row"]').should("contain", "€7,108.79");
   });
 
   it("clamps age buckets when total dependents is reduced", () => {

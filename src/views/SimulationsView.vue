@@ -61,9 +61,11 @@ import {
 import { useI18n } from "vue-i18n";
 import { useTaxesStore } from "@/store";
 import router from "@/router";
+import { useLocalizedFormatters } from "@/composables/useLocalizedFormatters";
 
 const store = useTaxesStore();
-const { t, locale } = useI18n({ useScope: "global" });
+const { t } = useI18n({ useScope: "global" });
+const { formatDateTime } = useLocalizedFormatters();
 
 const storedSimulationsSortedByDate = computed(() => {
   const simulations = [...store.storedSimulations];
@@ -73,7 +75,7 @@ const storedSimulationsSortedByDate = computed(() => {
 });
 
 const formatSimulationDate = (isoString: string) => {
-  return new Date(isoString).toLocaleString(locale.value);
+  return formatDateTime(isoString);
 };
 
 store.$onAction(({ after, name }) => {

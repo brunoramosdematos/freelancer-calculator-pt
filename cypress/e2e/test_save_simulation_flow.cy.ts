@@ -37,7 +37,7 @@ describe("pass income to url parameters", () => {
     cy.url().should("include", "numberOfDependents=2");
     cy.url().should("include", "dependentsAged3OrUnder=1");
     cy.url().should("include", "dependentsAged4To6=1");
-    cy.get('[data-cy="income"]').should("have.value", "55 000");
+    cy.get('[data-cy="income"]').should("have.value", "55,000");
     cy.get('[data-cy="assessment-scenario-joint-single-income"]').should(
       "be.checked",
     );

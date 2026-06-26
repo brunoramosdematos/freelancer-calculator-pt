@@ -1,7 +1,6 @@
 import { createI18n } from "vue-i18n";
-import en from "@/i18n/locales/en";
-import ptPT from "@/i18n/locales/pt-PT";
 import { applyDocumentMetadata } from "@/i18n/metadata";
+import { messages } from "@/i18n/locales";
 import {
   DEFAULT_LOCALE,
   detectLocale,
@@ -11,10 +10,7 @@ import {
   SupportedLocale,
 } from "@/i18n/locale";
 
-export const messages = {
-  en,
-  "pt-PT": ptPT,
-} as const;
+export { messages };
 
 export const i18n = createI18n({
   legacy: false,

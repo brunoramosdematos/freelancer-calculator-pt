@@ -20,9 +20,13 @@
         >
           <span>
             {{
-              t("navigation.simulations", {
-                count: store.storedSimulationsCount,
-              })
+              t(
+                "navigation.simulations",
+                {
+                  count: store.storedSimulationsCount,
+                },
+                store.storedSimulationsCount,
+              )
             }}
           </span>
         </router-link>

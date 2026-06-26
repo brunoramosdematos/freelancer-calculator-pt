@@ -21,6 +21,14 @@ const translateSummary = (
     aged4To6,
   );
 
+  if (descriptor.segments) {
+    return descriptor.segments
+      .map((segment) =>
+        i18n.global.t(segment.key, segment.values ?? {}, segment.plural),
+      )
+      .join(" · ");
+  }
+
   return i18n.global.t(
     descriptor.key,
     descriptor.values ?? {},
@@ -41,6 +49,12 @@ describe("dependent age groups summary", () => {
     );
   });
 
+  it("summarizes one dependent when all are aged 7+ in pt-BR", () => {
+    expect(translateSummary("pt-BR", 1, 0, 0)).toBe(
+      "O dependente é considerado como tendo 7 anos ou mais.",
+    );
+  });
+
   it("summarizes multiple dependents when all are aged 7+ in English", () => {
     expect(translateSummary("en", 2, 0, 0)).toBe(
       "All 2 dependents are currently treated as aged 7+.",
@@ -50,6 +64,12 @@ describe("dependent age groups summary", () => {
   it("summarizes multiple dependents when all are aged 7+ in pt-PT", () => {
     expect(translateSummary("pt-PT", 2, 0, 0)).toBe(
       "Os 2 dependentes são atualmente considerados como tendo 7 anos ou mais.",
+    );
+  });
+
+  it("summarizes multiple dependents when all are aged 7+ in pt-BR", () => {
+    expect(translateSummary("pt-BR", 2, 0, 0)).toBe(
+      "Os 2 dependentes são considerados como tendo 7 anos ou mais.",
     );
   });
 
@@ -65,6 +85,12 @@ describe("dependent age groups summary", () => {
     );
   });
 
+  it("summarizes mixed age groups with all three counts in pt-BR", () => {
+    expect(translateSummary("pt-BR", 3, 1, 1)).toBe(
+      "1 até 3 anos · 1 de 4 a 6 anos · 1 com 7 anos ou mais",
+    );
+  });
+
   it("keeps zero younger age values visible when another younger group is active in English", () => {
     expect(translateSummary("en", 2, 0, 1)).toBe(
       "0 aged 3 or under · 1 aged 4–6 · 1 aged 7+",
@@ -77,8 +103,15 @@ describe("dependent age groups summary", () => {
     );
   });
 
-  it("returns a stable empty-state summary for zero dependents in both locales", () => {
+  it("keeps zero younger age values visible when another younger group is active in pt-BR", () => {
+    expect(translateSummary("pt-BR", 2, 0, 1)).toBe(
+      "0 até 3 anos · 1 de 4 a 6 anos · 1 com 7 anos ou mais",
+    );
+  });
+
+  it("returns a stable empty-state summary for zero dependents in all locales", () => {
     expect(translateSummary("en", 0, 0, 0)).toBe("No dependents.");
     expect(translateSummary("pt-PT", 0, 0, 0)).toBe("Sem dependentes.");
+    expect(translateSummary("pt-BR", 0, 0, 0)).toBe("Sem dependentes.");
   });
 });

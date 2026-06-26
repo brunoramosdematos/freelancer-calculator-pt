@@ -77,7 +77,7 @@ describe("dependent age groups disclosure", () => {
       "contain",
       "1 aged 3 or under · 1 aged 4–6 · 0 aged 7+",
     );
-    cy.get('[data-cy="final-irs-row"]').should("contain", "7 108.79€");
+    cy.get('[data-cy="final-irs-row"]').should("contain", "€7,108.79");
   });
 
   it("summarizes configured younger groups and derived aged 7+ dependents", () => {

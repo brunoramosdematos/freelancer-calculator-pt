@@ -11,7 +11,7 @@
       <p
         class="text-center text-lg font-semibold text-neutral-700 whitespace-nowrap tabular-nums"
       >
-        {{ asCurrency(grossIncome[displayFrequency]) }}
+        {{ formatCurrency(grossIncome[displayFrequency]) }}
       </p>
       <small class="block text-center text-xs text-neutral-500">
         {{ t("chart.grossIncome") }}
@@ -26,14 +26,15 @@ import { Chart, registerables, type Chart as ChartInstance } from "chart.js";
 import { useI18n } from "vue-i18n";
 
 import { storeToRefs } from "pinia";
-import { asCurrency, asPercentage } from "@/utils.js";
 
 import { useTaxesStore } from "@/store";
 import ChartDataLabels from "chartjs-plugin-datalabels";
+import { useLocalizedFormatters } from "@/composables/useLocalizedFormatters";
 
 const { grossIncome, netIncome, irsPay, ssPay, colors, displayFrequency } =
   storeToRefs(useTaxesStore());
 const { t, locale } = useI18n({ useScope: "global" });
+const { formatCurrency, formatPercentage } = useLocalizedFormatters();
 
 Chart.register(...registerables);
 Chart.register(ChartDataLabels);
@@ -77,7 +78,7 @@ const chartOptions = computed(() => {
           return (
             ctx.chart.data.labels[ctx.dataIndex] +
             "\n" +
-            asPercentage(val / grossIncome.value[displayFrequency.value])
+            formatPercentage(val / grossIncome.value[displayFrequency.value])
           );
         },
         color: "#fff",
@@ -85,7 +86,7 @@ const chartOptions = computed(() => {
       tooltip: {
         callbacks: {
           label: function (item) {
-            return asCurrency(item.raw, 2);
+            return formatCurrency(item.raw as number, 2);
           },
         },
       },

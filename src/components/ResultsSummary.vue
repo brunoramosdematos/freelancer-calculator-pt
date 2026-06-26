@@ -105,7 +105,7 @@ import { useI18n } from "vue-i18n";
 import { storeToRefs } from "pinia";
 import { FrequencyChoices } from "@/typings";
 import { useTaxesStore } from "@/store";
-import { asCurrency } from "@/utils.js";
+import { useLocalizedFormatters } from "@/composables/useLocalizedFormatters";
 import Table from "@/components/Table.vue";
 
 const store = useTaxesStore();
@@ -113,23 +113,31 @@ const { t } = useI18n({ useScope: "global" });
 const {
   displayFrequency,
   grossIncome,
-  netIncomeDisplay,
-  taxesDisplay,
-  ssDisplay,
-  irsDisplay,
+  netIncomeFrequency,
+  ssFrequency,
+  irsFrequency,
 } = storeToRefs(store);
+const { formatCurrency, formatPercentage } = useLocalizedFormatters();
 
 const setFrequency = (frequencyChoice: string) => {
   store.setDisplayFrequency(FrequencyChoices[frequencyChoice]);
 };
 
 const formatSignedPercentage = (value: number) => {
-  return `${value > 0 ? "+" : ""}${value * 100}%`;
+  return formatPercentage(value, 0, { signDisplay: "exceptZero" });
 };
 
 const grossIncomeDisplay = computed(() =>
-  asCurrency(grossIncome.value[displayFrequency.value]),
+  formatCurrency(grossIncome.value[displayFrequency.value]),
 );
+const netIncomeDisplay = computed(() =>
+  formatCurrency(netIncomeFrequency.value),
+);
+const taxesDisplay = computed(() =>
+  formatCurrency(irsFrequency.value + ssFrequency.value),
+);
+const irsDisplay = computed(() => formatCurrency(irsFrequency.value));
+const ssDisplay = computed(() => formatCurrency(ssFrequency.value));
 
 const displayFrequencyLabel = computed(() =>
   t(`frequency.${displayFrequency.value}`),
@@ -150,12 +158,12 @@ const specialSocialSecurityStatus = computed(() => {
 
     if (firstDiscountBelowCap === null) {
       return t("socialSecurityStatus.cappedWithBase", {
-        base: asCurrency(store.ssContributionBase, 2),
+        base: formatCurrency(store.ssContributionBase, 2),
       });
     }
 
     return t("socialSecurityStatus.cappedWithFirstChangingAdjustment", {
-      base: asCurrency(store.ssContributionBase, 2),
+      base: formatCurrency(store.ssContributionBase, 2),
       percentage: formatSignedPercentage(firstDiscountBelowCap),
     });
   }

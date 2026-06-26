@@ -5,11 +5,12 @@
     class="z-0 inline-flex w-full justify-start py-2 placeholder:text-neutral-400 bg-inherit border-b-[1px] border-neutral-600 relative focus:outline-none focus:border-primary"
     :class="class"
     :placeholder="placeholder"
+    inputmode="numeric"
   />
 </template>
 <script setup lang="ts">
 import { computed } from "vue";
-import { reverseCurrency, spacedNumber } from "@/utils.js";
+import { useLocalizedFormatters } from "@/composables/useLocalizedFormatters";
 
 const emits = defineEmits(["update:value"]);
 const props = defineProps({
@@ -26,18 +27,18 @@ const props = defineProps({
     default: "",
   },
 });
+const { formatInputInteger, parseInputInteger } = useLocalizedFormatters();
 
 const internalValue = computed({
   get() {
     const _value = props.value;
     return _value === null || isNaN(_value) || _value === undefined
-      ? null
-      : spacedNumber(_value);
+      ? ""
+      : formatInputInteger(_value);
   },
-  set(newValue) {
-    const _newValue = newValue.replace(/\D/g, "");
-    const result = reverseCurrency(_newValue);
-    emits("update:value", result ? result : 0);
+  set(newValue: string) {
+    const result = parseInputInteger(newValue);
+    emits("update:value", result ?? 0);
   },
 });
 </script>

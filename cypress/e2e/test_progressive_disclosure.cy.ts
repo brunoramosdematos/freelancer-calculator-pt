@@ -71,16 +71,16 @@ describe("progressive disclosure simulator layout", () => {
       "/#/?income=60000&currentTaxRankYear=2024&assessmentScenario=joint-single-income",
     );
 
-    cy.get('[data-cy="final-irs-row"]').should("contain", "8 608.79€");
+    cy.get('[data-cy="final-irs-row"]').should("contain", "€8,608.79");
     openIrsCalculationDetails();
     cy.get('[data-cy="taxable-income-for-rates-row"]')
       .should("be.visible")
-      .and("contain", "22 500.00€");
+      .and("contain", "€22,500.00");
     cy.get('[data-cy="gross-irs-before-dependent-deduction-row"]').should(
       "contain",
-      "8 608.79€",
+      "€8,608.79",
     );
-    cy.get('[data-cy="final-irs-row"]').should("contain", "8 608.79€");
+    cy.get('[data-cy="final-irs-row"]').should("contain", "€8,608.79");
   });
 
   it("reveals Social Security details and capped adjustment status", () => {
@@ -96,16 +96,16 @@ describe("progressive disclosure simulator layout", () => {
     );
     cy.get('[data-cy="ss-relevant-income-before-adjustment"]').should(
       "contain",
-      "7 700.00€",
+      "€7,700.00",
     );
     cy.get('[data-cy="ss-contribution-base-cap"]').should(
       "contain",
-      "6 445.56€",
+      "€6,445.56",
     );
-    cy.get('[data-cy="ss-contribution-base"]').should("contain", "6 445.56€");
+    cy.get('[data-cy="ss-contribution-base"]').should("contain", "€6,445.56");
     cy.get('[data-cy="ss-final-monthly-contribution"]').should(
       "contain",
-      "1 379.35€",
+      "€1,379.35",
     );
     cy.get('[data-cy="ss-adjustment-status-message"]')
       .should("contain", "Maximum contribution base reached")
@@ -174,8 +174,8 @@ describe("progressive disclosure simulator layout", () => {
     });
 
     cy.then(() => {
-      const positions = selectors.map((selector) =>
-        Cypress.$(selector)[0].getBoundingClientRect().top,
+      const positions = selectors.map(
+        (selector) => Cypress.$(selector)[0].getBoundingClientRect().top,
       );
       const sortedPositions = [...positions].sort((a, b) => a - b);
 
@@ -214,9 +214,7 @@ describe("progressive disclosure simulator layout", () => {
       ($button) => {
         const panelId = $button.attr("aria-controls");
 
-        cy.wrap($button)
-          .focus()
-          .should("have.attr", "aria-expanded", "false");
+        cy.wrap($button).focus().should("have.attr", "aria-expanded", "false");
         cy.get(`#${panelId}`).should("not.exist");
       },
     );
@@ -282,35 +280,32 @@ describe("progressive disclosure simulator layout", () => {
     );
 
     cy.get('[data-cy="final-irs-row"]')
-      .should("contain", "0.00€")
+      .should("contain", "€0.00")
       .and("not.contain", "-");
     cy.get('[data-cy="social-security-row"]')
-      .should("contain", "0.00€")
+      .should("contain", "€0.00")
       .and("not.contain", "-");
 
     cy.get('[data-cy="calculation-details-toggle"]').click();
     cy.get('[data-cy="irs-calculation-details-toggle"]').click();
-    cy.get('[data-cy="irs-final-detail-row"]').should("contain", "0.00€");
+    cy.get('[data-cy="irs-final-detail-row"]').should("contain", "€0.00");
 
     cy.get('[data-cy="social-security-calculation-details-toggle"]').click();
     cy.get('[data-cy="ss-final-monthly-contribution"]').should(
       "contain",
-      "0.00€",
+      "€0.00",
     );
     cy.get('[data-cy="ss-annual-final-contribution"]').should(
       "contain",
-      "0.00€",
+      "€0.00",
     );
     cy.get('[data-cy="ss-daily-final-contribution"]').should(
       "contain",
-      "0.00€",
+      "€0.00",
     );
 
     cy.get('[data-cy="deductions-assumptions-details-toggle"]').click();
-    cy.get('[data-cy="expenses-still-needed-row"]').should(
-      "contain",
-      "0.00€",
-    );
+    cy.get('[data-cy="expenses-still-needed-row"]').should("contain", "€0.00");
   });
 
   it("exposes accessible disclosure controls that work by keyboard", () => {

@@ -151,7 +151,7 @@ import { ref } from "vue";
 import { storeToRefs } from "pinia";
 import { useI18n } from "vue-i18n";
 import { useTaxesStore } from "@/store";
-import { asCurrency } from "@/utils.js";
+import { useLocalizedFormatters } from "@/composables/useLocalizedFormatters";
 import TaxRanksDialog from "@/components/TaxRanksDialog.vue";
 
 const {
@@ -175,10 +175,11 @@ const {
 
 const showTaxRanksTable = ref(false);
 const { t } = useI18n({ useScope: "global" });
+const { formatCurrency } = useLocalizedFormatters();
 
 const renderCellValue = (value: number | null | undefined) => {
   return typeof value === "number" && Number.isFinite(value)
-    ? asCurrency(value, 2)
+    ? formatCurrency(value, 2)
     : t("validation.noValue");
 };
 </script>

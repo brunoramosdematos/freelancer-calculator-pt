@@ -219,7 +219,7 @@
         <p class="text-xs text-neutral-500">
           {{ t("advancedSettings.professionalExpenses.maximumRequired") }}
           <span class="font-semibold tabular-nums">
-            {{ asCurrency(expensesNeeded) }}{{ t("units.perYear") }}
+            {{ formatCurrency(expensesNeeded) }}{{ t("units.perYear") }}
           </span>
         </p>
         <div class="flex flex-wrap items-center gap-3">
@@ -263,7 +263,7 @@ import { storeToRefs } from "pinia";
 import { ArrowPathIcon } from "@heroicons/vue/24/outline";
 import { useI18n } from "vue-i18n";
 import { useTaxesStore } from "@/store";
-import { asCurrency } from "@/utils.js";
+import { useLocalizedFormatters } from "@/composables/useLocalizedFormatters";
 import AdjustCounter from "@/components/AdjustCounter.vue";
 import DisclosurePanel from "@/components/DisclosurePanel.vue";
 import DropDown from "@/components/DropDown.vue";
@@ -283,13 +283,14 @@ type AdvancedSummaryItem = {
 const store = useTaxesStore();
 const { expensesNeeded, grossIncome, rnhTax } = storeToRefs(store);
 const { t } = useI18n({ useScope: "global" });
+const { formatCurrency, formatPercentage } = useLocalizedFormatters();
 
 const formatSignedPercentage = (value: number) => {
-  return `${value > 0 ? "+" : ""}${value * 100}%`;
+  return formatPercentage(value, 0, { signDisplay: "exceptZero" });
 };
 
 const renderPercentage = (value: number) => {
-  return `${(value * 100).toFixed(0)}%`;
+  return formatPercentage(value);
 };
 
 const ssDiscountChoices = computed(() => store.ssDiscountChoices);
@@ -325,12 +326,12 @@ const ssAdjustmentStatusMessage = computed(() => {
 
     if (firstDiscountBelowCap === null) {
       return t("socialSecurityStatus.cappedWithBase", {
-        base: asCurrency(store.ssContributionBase, 2),
+        base: formatCurrency(store.ssContributionBase, 2),
       });
     }
 
     return t("socialSecurityStatus.cappedWithFirstChangingAdjustment", {
-      base: asCurrency(store.ssContributionBase, 2),
+      base: formatCurrency(store.ssContributionBase, 2),
       percentage: formatSignedPercentage(firstDiscountBelowCap),
     });
   }

@@ -8,7 +8,7 @@ import {
   YouthIrsRank,
   YouthIrs,
 } from "@/typings";
-import { asCurrency, generateUUID } from "@/utils.js";
+import { generateUUID } from "@/utils.js";
 import { updateUrlQuery, clearUrlQuery } from "@/router";
 import { calculateDependentTaxDeduction } from "@/store/dependentDeduction";
 
@@ -271,7 +271,11 @@ const useTaxesStore = defineStore({
   }),
   getters: {
     showDashboard: (state) => {
-      return state.income !== null && Number.isFinite(state.income) && state.income > 0;
+      return (
+        state.income !== null &&
+        Number.isFinite(state.income) &&
+        state.income > 0
+      );
     },
 
     grossIncome: (state) => {
@@ -516,11 +520,6 @@ const useTaxesStore = defineStore({
         day: yearIrsPay / (YEAR_BUSINESS_DAYS - this.nrDaysOff),
       };
     },
-    taxesDisplay() {
-      return asCurrency(
-        this.irsPay[this.displayFrequency] + this.ssPay[this.displayFrequency],
-      );
-    },
     netIncome() {
       const monthIncome =
         this.grossIncome.month - this.irsPay.month - this.ssPay.month;
@@ -535,20 +534,14 @@ const useTaxesStore = defineStore({
     irsFrequency() {
       return this.irsPay[this.displayFrequency];
     },
-    irsDisplay() {
-      return asCurrency(this.irsFrequency);
-    },
     ssFrequency() {
       return this.ssPay[this.displayFrequency];
     },
-    ssDisplay() {
-      return asCurrency(this.ssFrequency);
+    taxesFrequency() {
+      return this.irsFrequency + this.ssFrequency;
     },
     netIncomeFrequency() {
       return this.netIncome[this.displayFrequency];
-    },
-    netIncomeDisplay(): string {
-      return asCurrency(this.netIncomeFrequency);
     },
     hasStoredSimulations() {
       return this.storedSimulations && this.storedSimulations.length > 0;
@@ -922,12 +915,7 @@ const useTaxesStore = defineStore({
         booleanParser,
         null,
       );
-      this.setParameterFromUrl(
-        params["rnh"],
-        this.setRnh,
-        booleanParser,
-        null,
-      );
+      this.setParameterFromUrl(params["rnh"], this.setRnh, booleanParser, null);
       this.setParameterFromUrl(
         params["benefitsOfYouthIrs"],
         this.setBenefitsOfYouthIrs,

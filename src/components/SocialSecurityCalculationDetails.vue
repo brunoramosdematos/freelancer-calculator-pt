@@ -11,7 +11,7 @@
         class="font-medium text-neutral-900 tabular-nums"
         data-cy="ss-relevant-income-before-adjustment"
       >
-        {{ asCurrency(store.ssRelevantIncomeBeforeAdjustment, 2) }}
+        {{ formatCurrency(store.ssRelevantIncomeBeforeAdjustment, 2) }}
       </dd>
     </div>
     <div
@@ -39,7 +39,7 @@
         class="font-medium text-neutral-900 tabular-nums"
         data-cy="ss-adjusted-relevant-income"
       >
-        {{ asCurrency(store.ssAdjustedRelevantIncome, 2) }}
+        {{ formatCurrency(store.ssAdjustedRelevantIncome, 2) }}
       </dd>
     </div>
     <div
@@ -53,7 +53,7 @@
         class="font-medium text-neutral-900 tabular-nums"
         data-cy="ss-contribution-base-cap"
       >
-        {{ asCurrency(store.ssContributionBaseCap, 2) }}
+        {{ formatCurrency(store.ssContributionBaseCap, 2) }}
       </dd>
     </div>
     <div
@@ -67,7 +67,7 @@
         class="font-medium text-neutral-900 tabular-nums"
         data-cy="ss-contribution-base"
       >
-        {{ asCurrency(store.ssContributionBase, 2) }}
+        {{ formatCurrency(store.ssContributionBase, 2) }}
       </dd>
     </div>
     <div class="grid grid-cols-[minmax(0,1fr)_auto] gap-4 py-3">
@@ -78,7 +78,7 @@
         class="font-medium text-neutral-900 tabular-nums"
         data-cy="ss-calculated-monthly-contribution"
       >
-        {{ asCurrency(store.ssCalculatedMonthlyContribution, 2) }}
+        {{ formatCurrency(store.ssCalculatedMonthlyContribution, 2) }}
       </dd>
     </div>
     <div
@@ -92,7 +92,7 @@
         class="font-medium text-blue-700 tabular-nums"
         data-cy="ss-final-monthly-contribution"
       >
-        {{ asCurrency(store.ssPay.month, 2) }}
+        {{ formatCurrency(store.ssPay.month, 2) }}
       </dd>
     </div>
     <div class="grid grid-cols-[minmax(0,1fr)_auto] gap-4 py-3">
@@ -103,7 +103,7 @@
         class="font-medium text-blue-700 tabular-nums"
         data-cy="ss-annual-final-contribution"
       >
-        {{ asCurrency(store.ssPay.year, 2) }}
+        {{ formatCurrency(store.ssPay.year, 2) }}
       </dd>
     </div>
     <div class="grid grid-cols-[minmax(0,1fr)_auto] gap-4 py-3">
@@ -114,7 +114,7 @@
         class="font-medium text-blue-700 tabular-nums"
         data-cy="ss-daily-final-contribution"
       >
-        {{ asCurrency(store.ssPay.day, 2) }}
+        {{ formatCurrency(store.ssPay.day, 2) }}
       </dd>
     </div>
     <div class="py-3">
@@ -135,13 +135,14 @@
 import { computed } from "vue";
 import { useI18n } from "vue-i18n";
 import { useTaxesStore } from "@/store";
-import { asCurrency } from "@/utils.js";
+import { useLocalizedFormatters } from "@/composables/useLocalizedFormatters";
 
 const store = useTaxesStore();
 const { t } = useI18n({ useScope: "global" });
+const { formatCurrency, formatPercentage } = useLocalizedFormatters();
 
 const renderPercentage = (value: number) => {
-  return `${value > 0 ? "+" : ""}${(value * 100).toFixed(0)}%`;
+  return formatPercentage(value, 0, { signDisplay: "exceptZero" });
 };
 
 const ssAdjustmentStatusMessage = computed(() => {

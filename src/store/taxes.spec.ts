@@ -9,7 +9,6 @@ import {
 } from "@/store";
 import router from "@/router";
 import { AssessmentScenario, FrequencyChoices } from "@/typings";
-import { asCurrency } from "@/utils";
 
 const MONTHS_IN_YEAR = 12;
 
@@ -922,9 +921,9 @@ describe("Taxes Store", () => {
     expect(taxesStore.dependentsAged7OrOver).toBe(0);
   });
 
-  it("should show taxes displayed correctly", () => {
-    expect(taxesStore.taxesDisplay).toBe(
-      asCurrency(taxesStore.irsPay?.month + taxesStore.ssPay?.month),
+  it("should calculate the total taxes for the selected display frequency", () => {
+    expect(taxesStore.taxesFrequency).toBe(
+      taxesStore.irsPay?.month + taxesStore.ssPay?.month,
     );
   });
 
@@ -956,12 +955,6 @@ describe("Taxes Store", () => {
       it(`should calculate correctly the ${key} frequency`, () => {
         expect(taxesStore[`${key}Frequency`]).toBe(
           taxesStore[payProperty]?.month,
-        );
-      });
-
-      it(`should show ${key} displayed correctly`, () => {
-        expect(taxesStore[`${key}Display`]).toBe(
-          asCurrency(taxesStore[`${key}Frequency`]),
         );
       });
     });

@@ -148,12 +148,13 @@ import { useI18n } from "vue-i18n";
 import { storeToRefs } from "pinia";
 import { useTaxesStore } from "@/store";
 import { FrequencyChoices } from "@/typings";
-import { asCurrency } from "@/utils.js";
+import { useLocalizedFormatters } from "@/composables/useLocalizedFormatters";
 import { useBreakpoint } from "@/composables/breakpoints";
 import DisclosurePanel from "@/components/DisclosurePanel.vue";
 
 const { breakpoint } = useBreakpoint();
 const { t } = useI18n({ useScope: "global" });
+const { formatCurrency } = useLocalizedFormatters();
 const { displayFrequency, grossIncome, netIncome, ssPay, irsPay } =
   storeToRefs(useTaxesStore());
 
@@ -165,7 +166,7 @@ const frequencies = [
 
 const renderCellValue = (value: number | null | undefined) => {
   return typeof value === "number" && Number.isFinite(value)
-    ? asCurrency(value, breakpoint.smAndDown ? 0 : 2)
+    ? formatCurrency(value, breakpoint.smAndDown ? 0 : 2)
     : t("validation.noValue");
 };
 

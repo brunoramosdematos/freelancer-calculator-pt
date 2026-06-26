@@ -1,5 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { messages } from "@/i18n";
+import { getIntlLocale, SUPPORTED_LOCALES } from "@/i18n/locale";
+import { languageNamesByLocale, metadataByLocale } from "@/i18n/locales";
 
 const flatten = (
   value: unknown,
@@ -19,20 +21,32 @@ const flatten = (
 };
 
 describe("locale message parity", () => {
-  it("keeps en and pt-PT message keys identical and non-empty", () => {
-    const enMessages = flatten(messages.en);
-    const ptMessages = flatten(messages["pt-PT"]);
+  it("keeps all locale message keys identical and non-empty", () => {
+    const referenceMessages = flatten(messages.en);
+    const referenceKeys = Object.keys(referenceMessages).sort();
 
-    expect(Object.keys(ptMessages).sort()).toEqual(
-      Object.keys(enMessages).sort(),
-    );
+    SUPPORTED_LOCALES.forEach((locale) => {
+      const catalogue = flatten(messages[locale]);
 
-    [enMessages, ptMessages].forEach((catalogue) => {
+      expect(Object.keys(catalogue).sort()).toEqual(referenceKeys);
       Object.entries(catalogue).forEach(([key, value]) => {
         expect(value, key).not.toBeUndefined();
         expect(typeof value, key).toBe("string");
         expect((value as string).trim(), key).not.toBe("");
       });
     });
+  });
+
+  it("keeps locale metadata, language names, and formatter locales complete", () => {
+    SUPPORTED_LOCALES.forEach((locale) => {
+      expect(metadataByLocale[locale].title).toBeTruthy();
+      expect(metadataByLocale[locale].description).toBeTruthy();
+      expect(languageNamesByLocale[locale]).toBeTruthy();
+      expect(getIntlLocale(locale)).toBeTruthy();
+    });
+
+    expect(messages.en).not.toHaveProperty("metadata");
+    expect(messages["pt-PT"]).not.toHaveProperty("metadata");
+    expect(messages["pt-BR"]).not.toHaveProperty("metadata");
   });
 });

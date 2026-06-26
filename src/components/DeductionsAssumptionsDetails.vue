@@ -8,7 +8,7 @@
         {{ t("deductions.professionalExpenses") }}
       </dt>
       <dd class="font-medium text-neutral-900 tabular-nums">
-        {{ asCurrency(store.expenses, 2) }}
+        {{ formatCurrency(store.expenses, 2) }}
       </dd>
     </div>
     <div class="grid grid-cols-[minmax(0,1fr)_auto] gap-4 py-3">
@@ -29,19 +29,19 @@
         {{ t("deductions.expensesStillNeeded") }}
       </dt>
       <dd class="font-medium text-neutral-900 tabular-nums">
-        {{ asCurrency(store.expensesNeeded, 2) }}
+        {{ formatCurrency(store.expensesNeeded, 2) }}
       </dd>
     </div>
     <div class="grid grid-cols-[minmax(0,1fr)_auto] gap-4 py-3">
       <dt class="text-neutral-600">{{ t("deductions.paidMonths") }}</dt>
       <dd class="font-medium text-neutral-900 tabular-nums">
-        {{ store.nrMonthsDisplay }}
+        {{ formatInteger(store.nrMonthsDisplay) }}
       </dd>
     </div>
     <div class="grid grid-cols-[minmax(0,1fr)_auto] gap-4 py-3">
       <dt class="text-neutral-600">{{ t("deductions.unpaidDays") }}</dt>
       <dd class="font-medium text-neutral-900 tabular-nums">
-        {{ store.nrDaysOff }}
+        {{ formatInteger(store.nrDaysOff) }}
       </dd>
     </div>
     <div class="grid grid-cols-[minmax(0,1fr)_auto] gap-4 py-3">
@@ -49,7 +49,7 @@
         {{ t("deductions.businessDaysAssumed") }}
       </dt>
       <dd class="font-medium text-neutral-900 tabular-nums">
-        {{ YEAR_BUSINESS_DAYS }}
+        {{ formatInteger(YEAR_BUSINESS_DAYS) }}
       </dd>
     </div>
     <div class="grid grid-cols-[minmax(0,1fr)_auto] gap-4 py-3">
@@ -87,10 +87,11 @@
 import { computed } from "vue";
 import { useI18n } from "vue-i18n";
 import { useTaxesStore, YEAR_BUSINESS_DAYS } from "@/store";
-import { asCurrency } from "@/utils.js";
+import { useLocalizedFormatters } from "@/composables/useLocalizedFormatters";
 
 const store = useTaxesStore();
 const { t } = useI18n({ useScope: "global" });
+const { formatCurrency, formatInteger } = useLocalizedFormatters();
 
 const youthIrsStatus = computed(() =>
   store.benefitsOfYouthIrs

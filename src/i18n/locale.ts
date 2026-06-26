@@ -1,8 +1,14 @@
-export const SUPPORTED_LOCALES = ["en", "pt-PT"] as const;
+export const SUPPORTED_LOCALES = ["en", "pt-PT", "pt-BR"] as const;
 export type SupportedLocale = (typeof SUPPORTED_LOCALES)[number];
 
 export const DEFAULT_LOCALE: SupportedLocale = "en";
 export const LOCALE_STORAGE_KEY = "freelancer-calculator-pt:locale:v1";
+
+const INTL_LOCALES: Record<SupportedLocale, string> = {
+  en: "en-GB",
+  "pt-PT": "pt-PT",
+  "pt-BR": "pt-BR",
+};
 
 export type LocaleStorage = Pick<Storage, "getItem" | "setItem">;
 
@@ -26,12 +32,23 @@ export const normalizeLocale = (value: unknown): SupportedLocale | null => {
     return "en";
   }
 
-  if (normalized === "pt" || normalized.startsWith("pt-")) {
+  if (normalized === "pt-br") {
+    return "pt-BR";
+  }
+
+  if (normalized === "pt" || normalized === "pt-pt") {
+    return "pt-PT";
+  }
+
+  if (normalized.startsWith("pt-")) {
     return "pt-PT";
   }
 
   return null;
 };
+
+export const getIntlLocale = (locale: SupportedLocale): string =>
+  INTL_LOCALES[locale] ?? INTL_LOCALES[DEFAULT_LOCALE];
 
 const getBrowserStorage = (): LocaleStorage | null => {
   if (typeof window === "undefined") {

@@ -16,7 +16,7 @@ describe("simulator loads", () => {
 describe("pass income through url parameters", () => {
   it("successfully uses income from url", () => {
     cy.visit("/#/?income=50000"); // change URL to match your dev URL
-    cy.get('[data-cy="income"]').should("have.value", "50 000");
+    cy.get('[data-cy="income"]').should("have.value", "50,000");
   });
 
   it("doesn't update income if incorrect from url", () => {
@@ -101,7 +101,7 @@ describe("pass expenses through url parameters", () => {
     openAdvancedTaxSettings();
     cy.get('[data-cy="expenses"] input:first-of-type').should(
       "have.value",
-      "1 534",
+      "1,534",
     );
   });
 
@@ -186,7 +186,7 @@ describe("pass assessment scenario and dependents through url parameters", () =>
       "1",
     );
     cy.get('[data-cy="dependents-aged-7-or-over"]').should("contain", "0");
-    cy.get('[data-cy="final-irs-row"]').should("contain", "7 108.79€");
+    cy.get('[data-cy="final-irs-row"]').should("contain", "€7,108.79");
   });
 
   it("retains individual when assessment scenario from url is invalid", () => {
@@ -195,7 +195,7 @@ describe("pass assessment scenario and dependents through url parameters", () =>
     );
 
     cy.get('[data-cy="assessment-scenario-individual"]').should("be.checked");
-    cy.get('[data-cy="final-irs-row"]').should("contain", "12 576.22€");
+    cy.get('[data-cy="final-irs-row"]').should("contain", "€12,576.22");
   });
 
   it("rejects negative, fractional, and non-numeric dependent values from url", () => {
@@ -244,7 +244,7 @@ describe("pass assessment scenario and dependents through url parameters", () =>
       "have.value",
       "0",
     );
-    cy.get('[data-cy="final-irs-row"]').should("contain", "12 576.22€");
+    cy.get('[data-cy="final-irs-row"]').should("contain", "€12,576.22");
     cy.url().should("not.include", "assessmentScenario=");
     cy.url().should("not.include", "numberOfDependents=");
     cy.url().should("not.include", "dependentsAged3OrUnder=");
