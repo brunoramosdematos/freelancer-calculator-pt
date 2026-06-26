@@ -14,18 +14,18 @@
       />
     </transition>
 
-    <dl class="divide-y divide-neutral-100 text-sm">
+    <dl class="divide-y divide-default text-sm">
       <div class="grid grid-cols-[minmax(0,1fr)_auto] gap-4 py-3">
-        <dt class="text-neutral-600">
+        <dt class="text-muted">
           {{ t("irsCalculation.specificDeductions") }}
         </dt>
-        <dd class="font-medium text-neutral-900 tabular-nums">
+        <dd class="font-medium text-foreground tabular-nums">
           {{ renderCellValue(specificDeductions) }}
         </dd>
       </div>
       <div class="grid grid-cols-[minmax(0,1fr)_auto] gap-4 py-3">
-        <dt class="text-neutral-600">{{ t("irsCalculation.expenses") }}</dt>
-        <dd class="font-medium text-neutral-900 tabular-nums">
+        <dt class="text-muted">{{ t("irsCalculation.expenses") }}</dt>
+        <dd class="font-medium text-foreground tabular-nums">
           {{ renderCellValue(expenses) }}
         </dd>
       </div>
@@ -33,10 +33,10 @@
         v-if="benefitsOfYouthIrs"
         class="grid grid-cols-[minmax(0,1fr)_auto] gap-4 py-3"
       >
-        <dt class="text-neutral-600">
+        <dt class="text-muted">
           {{ t("irsCalculation.youthIrsDiscount") }}
         </dt>
-        <dd class="font-medium text-neutral-900 tabular-nums">
+        <dd class="font-medium text-foreground tabular-nums">
           {{ renderCellValue(youthIrsDiscount) }}
         </dd>
       </div>
@@ -44,10 +44,10 @@
         class="grid grid-cols-[minmax(0,1fr)_auto] gap-4 py-3"
         data-cy="household-taxable-income-row"
       >
-        <dt class="text-neutral-600">
+        <dt class="text-muted">
           {{ t("irsCalculation.householdTaxableIncome") }}
         </dt>
-        <dd class="font-medium text-neutral-900 tabular-nums">
+        <dd class="font-medium text-foreground tabular-nums">
           {{ renderCellValue(taxableIncome) }}
         </dd>
       </div>
@@ -56,41 +56,41 @@
         class="grid grid-cols-[minmax(0,1fr)_auto] gap-4 py-3"
         data-cy="taxable-income-for-rates-row"
       >
-        <dt class="text-neutral-600">
+        <dt class="text-muted">
           {{ t("irsCalculation.taxableIncomeForRates") }}
-          <span v-if="assessmentDivisor > 1" class="text-neutral-500">
+          <span v-if="assessmentDivisor > 1" class="text-subtle">
             {{ t("irsCalculation.dividedBy2") }}
           </span>
         </dt>
-        <dd class="font-medium text-neutral-900 tabular-nums">
+        <dd class="font-medium text-foreground tabular-nums">
           {{ renderCellValue(taxableIncomeForRates) }}
         </dd>
       </div>
       <div v-if="!rnh" class="grid grid-cols-[minmax(0,1fr)_auto] gap-4 py-3">
-        <dt class="text-neutral-600">
+        <dt class="text-muted">
           {{ t("irsCalculation.averageRatePortion") }}
-          <span v-if="assessmentDivisor > 1" class="text-neutral-500">
+          <span v-if="assessmentDivisor > 1" class="text-subtle">
             {{ t("irsCalculation.quotient") }}
           </span>
         </dt>
-        <dd class="font-medium text-neutral-900 tabular-nums">
+        <dd class="font-medium text-foreground tabular-nums">
           {{ renderCellValue(taxIncomeAvg) }}
         </dd>
       </div>
       <div v-if="!rnh" class="grid grid-cols-[minmax(0,1fr)_auto] gap-4 py-3">
-        <dt class="text-neutral-600">
+        <dt class="text-muted">
           {{ t("irsCalculation.normalRatePortion") }}
-          <span v-if="assessmentDivisor > 1" class="text-neutral-500">
+          <span v-if="assessmentDivisor > 1" class="text-subtle">
             {{ t("irsCalculation.quotient") }}
           </span>
         </dt>
-        <dd class="font-medium text-neutral-900 tabular-nums">
+        <dd class="font-medium text-foreground tabular-nums">
           {{ renderCellValue(taxIncomeNormal) }}
         </dd>
       </div>
       <div class="grid grid-cols-[minmax(0,1fr)_auto] gap-4 py-3">
-        <dt class="text-neutral-600">{{ t("irsCalculation.taxRank") }}</dt>
-        <dd class="text-right font-medium text-neutral-900">
+        <dt class="text-muted">{{ t("irsCalculation.taxRank") }}</dt>
+        <dd class="text-right font-medium text-foreground">
           <span class="tabular-nums">
             {{
               t("irsCalculation.levelOfTotal", {
@@ -101,7 +101,8 @@
           </span>
           <button
             type="button"
-            class="ml-2 text-sm font-medium text-sky-700 underline underline-offset-2 hover:text-sky-900 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
+            class="ml-2 text-sm font-medium text-primary underline underline-offset-2 hover:text-foreground focus:outline-none focus-visible:ring-2 focus-visible:ring-focus focus-visible:ring-offset-2"
+            data-cy="view-tax-ranks-button"
             @click="showTaxRanksTable = true"
           >
             {{ t("actions.viewRanks") }}
@@ -112,10 +113,10 @@
         class="grid grid-cols-[minmax(0,1fr)_auto] gap-4 py-3"
         data-cy="gross-irs-before-dependent-deduction-row"
       >
-        <dt class="text-neutral-600">
+        <dt class="text-muted">
           {{ t("irsCalculation.irsBeforeDependentDeduction") }}
         </dt>
-        <dd class="font-medium text-neutral-900 tabular-nums">
+        <dd class="font-medium text-foreground tabular-nums">
           {{ renderCellValue(grossIrsBeforeDependentDeduction) }}
         </dd>
       </div>
@@ -124,10 +125,10 @@
         class="grid grid-cols-[minmax(0,1fr)_auto] gap-4 py-3"
         data-cy="dependent-tax-deduction-applied-row"
       >
-        <dt class="text-neutral-600">
+        <dt class="text-muted">
           {{ t("irsCalculation.dependentDeductionApplied") }}
         </dt>
-        <dd class="font-medium text-neutral-900 tabular-nums">
+        <dd class="font-medium text-foreground tabular-nums">
           {{ renderCellValue(dependentTaxDeductionApplied) }}
         </dd>
       </div>
@@ -135,10 +136,10 @@
         class="grid grid-cols-[minmax(0,1fr)_auto] gap-4 py-3"
         data-cy="irs-final-detail-row"
       >
-        <dt class="font-semibold text-neutral-900">
+        <dt class="font-semibold text-foreground">
           {{ t("irsCalculation.finalIrs") }}
         </dt>
-        <dd class="font-semibold text-red-700 tabular-nums">
+        <dd class="font-semibold text-irs tabular-nums">
           {{ renderCellValue(irsPay.year) }}
         </dd>
       </div>

@@ -10,7 +10,7 @@
       </h4>
       <p
         v-if="!store.hasStoredSimulations"
-        class="text-center text-sm text-neutral-500 lg:text-left"
+        class="text-center text-sm text-subtle lg:text-left"
       >
         {{ t("simulations.empty") }}
       </p>
@@ -18,7 +18,7 @@
         <li
           v-for="simulation in storedSimulationsSortedByDate"
           :key="simulation.id"
-          class="inline-flex gap-4 w-full justify-between border-2 border-gray-300 px-3 py-2 rounded-md"
+          class="inline-flex gap-4 w-full justify-between border-2 border-default px-3 py-2 rounded-md"
         >
           <div>
             <p class="font-semibold">{{ simulation.simulationName }}</p>
@@ -34,7 +34,7 @@
               :aria-label="t('actions.openSimulation')"
             >
               <ArrowRightEndOnRectangleIcon
-                class="w-5 text-gray-500 group-hover:text-gray-900"
+                class="w-5 text-subtle group-hover:text-foreground"
               />
             </router-link>
             <button
@@ -43,7 +43,7 @@
               :aria-label="t('actions.deleteSimulation')"
               @click="store.deleteSimulation(simulation.id)"
             >
-              <TrashIcon class="w-5 text-gray-500 group-hover:text-red-600" />
+              <TrashIcon class="w-5 text-subtle group-hover:text-danger" />
             </button>
           </div>
         </li>

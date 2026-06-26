@@ -30,7 +30,7 @@
           {{ t("app.productHeading") }}
         </h4>
         <p
-          class="md:mt-3 md:mb-5 text-sm md:text-xl text-neutral-600 font-light"
+          class="md:mt-3 md:mb-5 text-sm md:text-xl text-muted font-light"
         >
           {{ t("simulator.tagline") }}
         </p>
@@ -48,14 +48,14 @@
                 />
 
                 <ChevronDownIcon
-                  class="absolute h-4 left-2 bottom-3 text-neutral-600"
+                  class="absolute h-4 left-2 bottom-3 text-muted"
                 />
                 <div
                   class="hidden absolute right-6 bottom-3 transition delay-5 duration-100 ease-in-out"
                   :class="{ 'group-hover:block': breakpoint.mdAndUp }"
                 >
                   <button
-                    class="uppercase text-primary text-xs border-[0.5px] border-primary rounded-full px-5 py-[2px] hover:border-primary hover:text-primary focus:bg-sky-100"
+                    class="uppercase text-primary text-xs border-[0.5px] border-primary rounded-full px-5 py-[2px] hover:border-primary hover:text-primary focus:bg-primary-soft"
                     :aria-label="
                       t('simulator.decreaseIncome', {
                         amount: changeAmount.text,
@@ -68,7 +68,7 @@
                     - {{ changeAmount.text }}
                   </button>
                   <button
-                    class="uppercase text-primary text-xs border-[0.5px] border-primary rounded-full px-5 py-[2px] ml-1 hover:border-primary hover:text-primary focus:bg-sky-100"
+                    class="uppercase text-primary text-xs border-[0.5px] border-primary rounded-full px-5 py-[2px] ml-1 hover:border-primary hover:text-primary focus:bg-primary-soft"
                     :aria-label="
                       t('simulator.increaseIncome', {
                         amount: changeAmount.text,
@@ -82,7 +82,7 @@
                   </button>
                 </div>
                 <CurrencyEuroIcon
-                  class="absolute h-5 text-neutral-600 right-0 bottom-3"
+                  class="absolute h-5 text-muted right-0 bottom-3"
                 />
               </div>
               <transition
@@ -96,7 +96,7 @@
                 <div
                   v-if="showDropdown"
                   v-click-outside="() => (showDropdown = false)"
-                  class="transition delay-5 duration-100 pt-5 pb-5 ease-in-out absolute w-full h-fit bg-neutral-100 rounded-md drop-shadow-md z-10"
+                  class="transition delay-5 duration-100 pt-5 pb-5 ease-in-out absolute w-full h-fit bg-surface-muted rounded-md drop-shadow-md z-10"
                   @click="showDropdown = false"
                 >
                   <div
@@ -127,7 +127,7 @@
             </button>
             <button
               data-cy="share-simulation-button"
-              class="text-sm hover:text-secondary hover:font-medium py-5 flex gap-2 items-center"
+              class="text-sm hover:text-social-security hover:font-medium py-5 flex gap-2 items-center"
               @click="share"
             >
               {{ t("actions.share") }}
@@ -135,7 +135,7 @@
             </button>
             <button
               data-cy="save-simulation-button"
-              class="text-sm hover:text-tertiary hover:font-medium py-5 flex gap-2 items-center"
+              class="text-sm hover:text-warning hover:font-medium py-5 flex gap-2 items-center"
               @click="showNewSimulationDialog = true"
             >
               {{ t("actions.save") }}

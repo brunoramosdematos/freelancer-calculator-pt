@@ -24,6 +24,19 @@ const messages = {
     portuguesePortugal: "Português (Portugal)",
     portugueseBrazil: "Português (Brasil)",
   },
+  preferences: {
+    title: "Preferências",
+    open: "Abrir preferências",
+    close: "Fechar preferências",
+    language: "Idioma",
+    appearance: "Aparência",
+  },
+  theme: {
+    system: "Sistema",
+    light: "Claro",
+    dark: "Escuro",
+    systemDescription: "Segue a preferência de aparência do dispositivo.",
+  },
   actions: {
     reset: "redefinir",
     share: "compartilhar",

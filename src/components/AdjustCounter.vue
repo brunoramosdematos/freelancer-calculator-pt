@@ -1,7 +1,7 @@
 <template>
   <div class="flex justify-start items-center">
     <button
-      class="bg-neutral-300 text-neutral-600 rounded-full font-bold px-1 py-1 hover:bg-neutral-400 hover:text-neutral-100 disabled:bg-neutral-200 disabled:text-neutral-400"
+      class="bg-surface-hover text-muted rounded-full font-bold px-1 py-1 hover:bg-surface-hover hover:text-foreground disabled:bg-surface-muted disabled:text-subtle"
       :disabled="counter <= min"
       :aria-label="resolvedDecreaseLabel"
       data-cy="counter-decrease"
@@ -19,9 +19,9 @@
         />
       </slot>
     </span>
-    <span v-if="unit" class="mr-2 text-neutral-500 text-xs">{{ unit }}</span>
+    <span v-if="unit" class="mr-2 text-subtle text-xs">{{ unit }}</span>
     <button
-      class="bg-neutral-300 text-neutral-600 rounded-full font-bold px-1 py-1 hover:bg-neutral-400 hover:text-neutral-100 disabled:bg-neutral-200 disabled:text-neutral-400"
+      class="bg-surface-hover text-muted rounded-full font-bold px-1 py-1 hover:bg-surface-hover hover:text-foreground disabled:bg-surface-muted disabled:text-subtle"
       :disabled="max !== undefined && counter >= max"
       :aria-label="resolvedIncreaseLabel"
       data-cy="counter-increase"

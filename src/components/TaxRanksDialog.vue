@@ -3,22 +3,23 @@
     id="defaultModal"
     tabindex="-1"
     aria-hidden="true"
-    class="fixed top-0 left-0 right-0 z-50 w-full p-4 overflow-x-hidden overflow-y-auto md:inset-0 h-[calc(100%-1rem)] md:h-full bg-black bg-opacity-15"
+    class="fixed top-0 left-0 right-0 z-50 w-full p-4 overflow-x-hidden overflow-y-auto md:inset-0 h-[calc(100%-1rem)] md:h-full bg-overlay/60"
   >
     <div
       class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-full h-full max-w-2xl md:h-auto"
     >
       <!-- Modal content -->
-      <div class="relative bg-neutral-200 rounded-lg shadow">
+      <div class="relative bg-surface-elevated rounded-lg shadow-theme">
         <!-- Modal header -->
         <div class="flex items-start justify-between p-4 border-b rounded-t">
-          <h3 class="text-xl font-semibold text-gray-900">
+          <h3 class="text-xl font-semibold text-foreground">
             {{ t("irsCalculation.dialog.title") }}
           </h3>
           <button
             type="button"
-            class="text-gray-400 bg-transparent hover:text-gray-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center"
+            class="text-subtle bg-transparent hover:text-foreground rounded-lg text-sm p-1.5 ml-auto inline-flex items-center"
             data-modal-hide="defaultModal"
+            :aria-label="t('actions.closeModal')"
             @click="$emit('close')"
           >
             <XMarkIcon class="w-5 h-5" />
@@ -40,8 +41,8 @@
             </span>
           </p>
 
-          <table class="w-full text-sm text-left text-gray-700 table-auto">
-            <thead class="text-xs text-gray-700 uppercase border-b-2">
+          <table class="w-full text-sm text-left text-muted table-auto">
+            <thead class="text-xs text-muted uppercase border-b-2">
               <tr>
                 <th class="text-center">
                   {{ t("irsCalculation.dialog.level") }}
@@ -64,11 +65,11 @@
               <tr
                 v-for="item in getTaxRanks"
                 :key="item.id"
-                :class="{ 'bg-neutral-300': item.id === taxRank.id }"
+                :class="{ 'bg-surface-hover': item.id === taxRank.id }"
               >
                 <td
                   class="py-1 text-center"
-                  :class="{ 'text-red-500': item.id === taxRank.id }"
+                  :class="{ 'text-irs': item.id === taxRank.id }"
                 >
                   {{ item.id }}
                 </td>

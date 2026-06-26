@@ -24,7 +24,7 @@ const routes = [
 const router = createRouter({
   history: createWebHashHistory(),
   routes,
-  linkActiveClass: "hover:text-neutral-600 decoration-neutral-600",
+  linkActiveClass: "hover:text-foreground decoration-current",
   linkExactActiveClass: "underline underline-offset-8",
 });
 export const updateUrlQuery = (paramValuePair: object) => {

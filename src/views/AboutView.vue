@@ -1,7 +1,9 @@
 <template>
   <div class="flex min-h-screen">
-    <div class="m-auto max-w-3xl p-10 text-neutral-700 space-y-5">
-      <h1 class="text-2xl font-semibold text-neutral-900">
+    <div
+      class="m-auto w-full max-w-3xl px-4 py-10 text-foreground space-y-5 sm:p-10"
+    >
+      <h1 class="text-2xl font-semibold text-foreground">
         {{ t("about.title") }}
       </h1>
       <p>
@@ -10,7 +12,7 @@
       <p>
         {{ t("about.maintained") }}
         <a
-          class="underline underline-offset-4 hover:text-neutral-900"
+          class="break-all underline underline-offset-4 hover:text-foreground"
           href="https://github.com/franciscobmacedo/remotefreelancept"
           target="_blank"
           rel="noopener noreferrer"
@@ -24,7 +26,7 @@
       <div class="flex flex-wrap gap-4">
         <router-link
           to="/"
-          class="hover:text-neutral-600 hover:decoration-neutral-600 underline underline-offset-4"
+          class="hover:text-muted hover:decoration-current underline underline-offset-4"
         >
           {{ t("actions.goToSimulator") }}
         </router-link>
@@ -32,7 +34,7 @@
           target="_blank"
           rel="noopener noreferrer"
           href="https://github.com/brunoramosdematos/freelancer-calculator-pt"
-          class="hover:text-neutral-600 hover:decoration-neutral-600 underline underline-offset-4"
+          class="hover:text-muted hover:decoration-current underline underline-offset-4"
         >
           {{ t("actions.contributeOnGitHub") }}
         </a>

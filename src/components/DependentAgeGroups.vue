@@ -3,7 +3,7 @@
     <div class="flex flex-wrap items-center justify-between gap-3">
       <label
         for="number-of-dependents-input"
-        class="text-sm font-medium text-neutral-700"
+        class="text-sm font-medium text-foreground"
       >
         {{ t("dependents.total.label") }}
       </label>
@@ -22,14 +22,14 @@
 
     <section
       v-if="store.numberOfDependents > 0"
-      class="rounded-lg border border-neutral-200 bg-neutral-50/80"
+      class="rounded-lg border border-default bg-surface-muted/80"
       data-cy="dependent-age-groups"
     >
-      <h3 class="text-sm font-semibold text-neutral-800">
+      <h3 class="text-sm font-semibold text-foreground">
         <button
           :id="toggleId"
           type="button"
-          class="flex w-full items-start justify-between gap-3 rounded-lg px-3 py-3 text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 sm:px-4"
+          class="flex w-full items-start justify-between gap-3 rounded-lg px-3 py-3 text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus focus-visible:ring-offset-2 sm:px-4"
           :aria-expanded="isAgeGroupsOpen"
           :aria-controls="panelId"
           data-cy="dependent-age-groups-toggle"
@@ -38,14 +38,14 @@
           <span class="min-w-0">
             <span class="block">{{ t("dependents.ageGroups.title") }}</span>
             <span
-              class="mt-1 block text-xs font-normal leading-5 text-neutral-600"
+              class="mt-1 block text-xs font-normal leading-5 text-muted"
               data-cy="dependent-age-groups-summary"
             >
               {{ summaryText }}
             </span>
           </span>
           <ChevronDownIcon
-            class="mt-0.5 h-4 w-4 shrink-0 text-neutral-500 motion-safe:transition-transform"
+            class="mt-0.5 h-4 w-4 shrink-0 text-subtle motion-safe:transition-transform"
             :class="isAgeGroupsOpen ? 'rotate-180' : ''"
             aria-hidden="true"
           />
@@ -54,12 +54,12 @@
 
       <div
         :id="panelId"
-        class="space-y-4 border-t border-neutral-200 px-3 pb-3 pt-3 sm:px-4"
+        class="space-y-4 border-t border-default px-3 pb-3 pt-3 sm:px-4"
         :hidden="!isAgeGroupsOpen"
         :aria-labelledby="toggleId"
         data-cy="dependent-age-groups-panel"
       >
-        <p class="text-xs leading-5 text-neutral-500">
+        <p class="text-xs leading-5 text-subtle">
           {{ t("dependents.ageGroups.help") }}
         </p>
 
@@ -67,7 +67,7 @@
           <div class="flex flex-wrap items-center justify-between gap-3">
             <label
               for="dependents-aged-3-or-under-input"
-              class="text-sm font-medium text-neutral-700"
+              class="text-sm font-medium text-foreground"
             >
               {{ t("dependents.ageGroups.aged3OrUnder.label") }}
             </label>
@@ -88,7 +88,7 @@
           <div class="flex flex-wrap items-center justify-between gap-3">
             <label
               for="dependents-aged-4-to-6-input"
-              class="text-sm font-medium text-neutral-700"
+              class="text-sm font-medium text-foreground"
             >
               {{ t("dependents.ageGroups.aged4To6.label") }}
             </label>
@@ -110,20 +110,20 @@
             <div>
               <span
                 :id="aged7OrOverLabelId"
-                class="text-sm font-medium text-neutral-700"
+                class="text-sm font-medium text-foreground"
               >
                 {{ t("dependents.ageGroups.aged7OrOver.label") }}
               </span>
               <p
                 :id="derivedLabelId"
-                class="mt-1 text-xs text-neutral-500"
+                class="mt-1 text-xs text-subtle"
                 data-cy="dependent-age-groups-derived-label"
               >
                 {{ t("dependents.ageGroups.aged7OrOver.calculated") }}
               </p>
             </div>
             <output
-              class="inline-flex min-w-[5rem] justify-center border-b border-neutral-600 py-2 text-sm tabular-nums text-neutral-900"
+              class="inline-flex min-w-[5rem] justify-center border-b border-strong py-2 text-sm tabular-nums text-foreground"
               data-cy="dependents-aged-7-or-over"
               :aria-labelledby="aged7OrOverLabelId"
               :aria-describedby="derivedLabelId"

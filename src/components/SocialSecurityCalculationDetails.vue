@@ -1,14 +1,14 @@
 <template>
-  <dl class="divide-y divide-neutral-100 text-sm">
+  <dl class="divide-y divide-default text-sm">
     <div
       class="grid grid-cols-[minmax(0,1fr)_auto] gap-4 py-3"
       data-cy="ss-relevant-income-row"
     >
-      <dt class="text-neutral-600">
+      <dt class="text-muted">
         {{ t("socialSecurityCalculation.relevantIncome") }}
       </dt>
       <dd
-        class="font-medium text-neutral-900 tabular-nums"
+        class="font-medium text-foreground tabular-nums"
         data-cy="ss-relevant-income-before-adjustment"
       >
         {{ formatCurrency(store.ssRelevantIncomeBeforeAdjustment, 2) }}
@@ -18,11 +18,11 @@
       class="grid grid-cols-[minmax(0,1fr)_auto] gap-4 py-3"
       data-cy="ss-selected-adjustment-row"
     >
-      <dt class="text-neutral-600">
+      <dt class="text-muted">
         {{ t("socialSecurityCalculation.selectedAdjustment") }}
       </dt>
       <dd
-        class="font-medium text-neutral-900 tabular-nums"
+        class="font-medium text-foreground tabular-nums"
         data-cy="ss-selected-adjustment"
       >
         {{ renderPercentage(store.ssDiscount) }}
@@ -32,11 +32,11 @@
       class="grid grid-cols-[minmax(0,1fr)_auto] gap-4 py-3"
       data-cy="ss-adjusted-relevant-income-row"
     >
-      <dt class="text-neutral-600">
+      <dt class="text-muted">
         {{ t("socialSecurityCalculation.adjustedRelevantIncome") }}
       </dt>
       <dd
-        class="font-medium text-neutral-900 tabular-nums"
+        class="font-medium text-foreground tabular-nums"
         data-cy="ss-adjusted-relevant-income"
       >
         {{ formatCurrency(store.ssAdjustedRelevantIncome, 2) }}
@@ -46,11 +46,11 @@
       class="grid grid-cols-[minmax(0,1fr)_auto] gap-4 py-3"
       data-cy="ss-contribution-base-cap-row"
     >
-      <dt class="text-neutral-600">
+      <dt class="text-muted">
         {{ t("socialSecurityCalculation.maximumBase") }}
       </dt>
       <dd
-        class="font-medium text-neutral-900 tabular-nums"
+        class="font-medium text-foreground tabular-nums"
         data-cy="ss-contribution-base-cap"
       >
         {{ formatCurrency(store.ssContributionBaseCap, 2) }}
@@ -60,22 +60,22 @@
       class="grid grid-cols-[minmax(0,1fr)_auto] gap-4 py-3"
       data-cy="ss-contribution-base-row"
     >
-      <dt class="text-neutral-600">
+      <dt class="text-muted">
         {{ t("socialSecurityCalculation.contributionBase") }}
       </dt>
       <dd
-        class="font-medium text-neutral-900 tabular-nums"
+        class="font-medium text-foreground tabular-nums"
         data-cy="ss-contribution-base"
       >
         {{ formatCurrency(store.ssContributionBase, 2) }}
       </dd>
     </div>
     <div class="grid grid-cols-[minmax(0,1fr)_auto] gap-4 py-3">
-      <dt class="text-neutral-600">
+      <dt class="text-muted">
         {{ t("socialSecurityCalculation.calculatedMonthlyContribution") }}
       </dt>
       <dd
-        class="font-medium text-neutral-900 tabular-nums"
+        class="font-medium text-foreground tabular-nums"
         data-cy="ss-calculated-monthly-contribution"
       >
         {{ formatCurrency(store.ssCalculatedMonthlyContribution, 2) }}
@@ -85,44 +85,44 @@
       class="grid grid-cols-[minmax(0,1fr)_auto] gap-4 py-3"
       data-cy="ss-final-monthly-contribution-row"
     >
-      <dt class="text-neutral-600">
+      <dt class="text-muted">
         {{ t("socialSecurityCalculation.finalMonthlyContribution") }}
       </dt>
       <dd
-        class="font-medium text-blue-700 tabular-nums"
+        class="font-medium text-social-security tabular-nums"
         data-cy="ss-final-monthly-contribution"
       >
         {{ formatCurrency(store.ssPay.month, 2) }}
       </dd>
     </div>
     <div class="grid grid-cols-[minmax(0,1fr)_auto] gap-4 py-3">
-      <dt class="text-neutral-600">
+      <dt class="text-muted">
         {{ t("socialSecurityCalculation.annualFinalContribution") }}
       </dt>
       <dd
-        class="font-medium text-blue-700 tabular-nums"
+        class="font-medium text-social-security tabular-nums"
         data-cy="ss-annual-final-contribution"
       >
         {{ formatCurrency(store.ssPay.year, 2) }}
       </dd>
     </div>
     <div class="grid grid-cols-[minmax(0,1fr)_auto] gap-4 py-3">
-      <dt class="text-neutral-600">
+      <dt class="text-muted">
         {{ t("socialSecurityCalculation.dailyFinalContribution") }}
       </dt>
       <dd
-        class="font-medium text-blue-700 tabular-nums"
+        class="font-medium text-social-security tabular-nums"
         data-cy="ss-daily-final-contribution"
       >
         {{ formatCurrency(store.ssPay.day, 2) }}
       </dd>
     </div>
     <div class="py-3">
-      <dt class="text-neutral-600">
+      <dt class="text-muted">
         {{ t("socialSecurityCalculation.currentStatus") }}
       </dt>
       <dd
-        class="mt-1 rounded-md bg-neutral-50 px-3 py-2 text-neutral-700"
+        class="mt-1 rounded-md bg-surface-muted px-3 py-2 text-foreground"
         data-cy="ss-adjustment-status-message"
       >
         {{ ssAdjustmentStatusMessage }}

@@ -9,7 +9,7 @@
     <template #summary>
       <span
         v-if="advancedSummaryItems.length === 0"
-        class="mt-1 block text-xs text-neutral-500"
+        class="mt-1 block text-xs text-subtle"
         data-cy="advanced-tax-settings-summary-default"
       >
         {{ t("advancedSettings.noCustomSettings") }}
@@ -22,7 +22,7 @@
         <span
           v-for="item in advancedSummaryItems"
           :key="item.dataCy"
-          class="rounded border border-neutral-200 bg-neutral-50 px-2 py-0.5 text-xs font-medium text-neutral-700"
+          class="rounded border border-default bg-surface-muted px-2 py-0.5 text-xs font-medium text-foreground"
           :data-cy="item.dataCy"
         >
           {{ item.label }}
@@ -36,7 +36,7 @@
           <div class="flex items-center gap-2">
             <label
               for="ss-discount-input"
-              class="text-sm font-medium text-neutral-700"
+              class="text-sm font-medium text-foreground"
             >
               {{ t("advancedSettings.socialSecurityBaseAdjustment.label") }}
             </label>
@@ -74,7 +74,7 @@
         </div>
         <p
           v-if="ssAdjustmentStatusMessage"
-          class="rounded-md border border-amber-200 bg-amber-50 px-3 py-2 text-xs text-amber-900"
+          class="rounded-md border border-warning-soft bg-warning-soft px-3 py-2 text-xs text-warning"
           role="status"
           aria-live="polite"
           data-cy="ss-adjustment-summary"
@@ -83,7 +83,7 @@
         </p>
         <button
           type="button"
-          class="text-sm font-medium text-sky-700 underline underline-offset-2 hover:text-sky-900 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
+          class="text-sm font-medium text-primary underline underline-offset-2 hover:text-foreground focus:outline-none focus-visible:ring-2 focus-visible:ring-focus focus-visible:ring-offset-2"
           data-cy="view-social-security-calculation"
           @click="$emit('viewSocialSecurityCalculation')"
         >
@@ -116,7 +116,7 @@
           >
             <label
               for="youth-irs-years-dropdown"
-              class="text-sm text-neutral-700"
+              class="text-sm text-foreground"
             >
               {{ t("advancedSettings.youthIrs.year") }}
             </label>
@@ -149,7 +149,7 @@
         </div>
 
         <fieldset>
-          <legend class="text-sm font-medium text-neutral-700">
+          <legend class="text-sm font-medium text-foreground">
             {{ t("advancedSettings.activityYear.label") }}
           </legend>
           <div
@@ -158,11 +158,11 @@
             <label
               v-for="option in activityYearOptions"
               :key="option.value"
-              class="cursor-pointer rounded-lg border px-3 py-2 text-sm transition focus-within:ring-2 focus-within:ring-primary"
+              class="cursor-pointer rounded-lg border px-3 py-2 text-sm transition focus-within:ring-2 focus-within:ring-focus"
               :class="
                 activityYearSelection === option.value
-                  ? 'border-primary bg-sky-50 font-semibold text-neutral-900'
-                  : 'border-neutral-300 text-neutral-700 hover:border-neutral-500'
+                  ? 'border-primary bg-primary-soft font-semibold text-foreground'
+                  : 'border-default text-foreground hover:border-strong'
               "
               :data-cy="option.dataCy"
             >
@@ -204,7 +204,7 @@
 
       <div v-if="expensesNeeded > 0" class="space-y-3">
         <div class="flex items-center gap-2">
-          <h3 class="text-sm font-medium text-neutral-700">
+          <h3 class="text-sm font-medium text-foreground">
             {{ t("advancedSettings.professionalExpenses.title") }}
           </h3>
           <InfoButton
@@ -216,7 +216,7 @@
             </p>
           </InfoButton>
         </div>
-        <p class="text-xs text-neutral-500">
+        <p class="text-xs text-subtle">
           {{ t("advancedSettings.professionalExpenses.maximumRequired") }}
           <span class="font-semibold tabular-nums">
             {{ formatCurrency(expensesNeeded) }}{{ t("units.perYear") }}
@@ -244,7 +244,7 @@
           <button
             id="setExpensesAutoButton"
             type="button"
-            class="inline-flex items-center gap-1 text-xs font-medium text-neutral-500 transition hover:text-neutral-800 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
+            class="inline-flex items-center gap-1 text-xs font-medium text-subtle transition hover:text-foreground focus:outline-none focus-visible:ring-2 focus-visible:ring-focus focus-visible:ring-offset-2"
             :class="store.expensesAuto ? 'invisible' : 'visible'"
             @click="store.setExpensesAuto()"
           >

@@ -3,17 +3,14 @@
     <button
       ref="button"
       type="button"
-      class="inline-flex rounded-full text-neutral-500 hover:text-neutral-800 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
+      class="inline-flex rounded-full text-subtle hover:text-foreground focus:outline-none focus-visible:ring-2 focus-visible:ring-focus focus-visible:ring-offset-2"
       :aria-label="resolvedLabel"
       aria-haspopup="dialog"
       :aria-expanded="isOpen.toString()"
       :aria-controls="panelId"
       @click="toggle"
     >
-      <QuestionMarkCircleIcon
-        class="h-5 w-5 fill-neutral-100"
-        aria-hidden="true"
-      />
+      <QuestionMarkCircleIcon class="h-5 w-5 fill-surface" aria-hidden="true" />
     </button>
     <transition
       enter-active-class="duration-150 ease-out motion-reduce:transition-none"
@@ -28,7 +25,7 @@
         :id="panelId"
         role="dialog"
         :aria-label="resolvedLabel"
-        class="absolute z-50 w-72 rounded-lg border border-neutral-200 bg-white px-4 py-3 text-sm text-neutral-700 shadow-lg"
+        class="absolute z-50 w-72 rounded-lg border border-default bg-surface px-4 py-3 text-sm text-foreground shadow-lg"
         :class="positionClass"
       >
         <slot>
@@ -36,7 +33,7 @@
         </slot>
         <a
           v-if="link"
-          class="mt-3 inline-flex text-sm font-medium text-sky-700 underline underline-offset-2 hover:text-sky-900"
+          class="mt-3 inline-flex text-sm font-medium text-primary underline underline-offset-2 hover:text-foreground"
           :href="link"
           target="_blank"
           rel="noopener noreferrer"

@@ -4,6 +4,34 @@
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#f5f5f5" />
+    <script id="theme-initializer">
+      (() => {
+        const key = "freelancer-calculator-pt:theme:v1";
+        const valid = ["system", "light", "dark"];
+        let preference = "system";
+        try {
+          const stored = window.localStorage.getItem(key);
+          if (valid.includes(stored)) preference = stored;
+        } catch {}
+        let resolved = "light";
+        try {
+          resolved =
+            preference === "dark" ||
+            (preference === "system" &&
+              window.matchMedia?.("(prefers-color-scheme: dark)").matches)
+              ? "dark"
+              : "light";
+        } catch {}
+        const root = document.documentElement;
+        root.dataset.theme = resolved;
+        root.classList.toggle("dark", resolved === "dark");
+        root.style.colorScheme = resolved;
+        const themeColor = resolved === "dark" ? "#0b1220" : "#f5f5f5";
+        const meta = document.querySelector('meta[name="theme-color"]');
+        if (meta) meta.setAttribute("content", themeColor);
+      })();
+    </script>
     <title>Freelancer Calculator Portugal | IRS & Social Security</title>
     <meta
       name="description"
@@ -11,7 +39,6 @@
     />
     <meta name="author" content="Bruno Ramos de Matos" />
     <meta name="robots" content="index, follow" />
-    <meta name="theme-color" content="#76c479" />
     <link rel="canonical" href="https://freelancerpt.brunomatos.dev/" />
     <meta property="og:type" content="website" />
     <meta

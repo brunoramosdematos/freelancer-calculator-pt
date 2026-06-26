@@ -4,7 +4,6 @@ import {
   FrequencyChoices,
   GrossIncome,
   TaxRank,
-  Colors,
   YouthIrsRank,
   YouthIrs,
 } from "@/typings";
@@ -97,7 +96,6 @@ interface TaxesState extends SimulationInputState {
   taxRanks: { [K in (typeof SUPPORTED_TAX_RANK_YEARS)[number]]: TaxRank[] };
   iasPerYear: { [K in (typeof SUPPORTED_TAX_RANK_YEARS)[number]]: number };
   youthIrs: { [K in (typeof SUPPORTED_TAX_RANK_YEARS)[number]]: YouthIrs };
-  colors: Colors;
   rnhTax: number;
   storedSimulations:
     | [
@@ -222,11 +220,6 @@ const useTaxesStore = defineStore({
       2026: 537.13,
     },
     rnhTax: 0.2,
-    colors: {
-      netIncome: "#76c479",
-      irs: "#ff6384",
-      ss: "#36a2eb",
-    },
     youthIrs: {
       2023: {
         1: { maxDiscountPercentage: 0.5, maxDiscountIasMultiplier: 12.5 },

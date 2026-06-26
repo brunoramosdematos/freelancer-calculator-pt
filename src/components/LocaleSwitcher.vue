@@ -5,7 +5,7 @@
     }}</label>
     <select
       :id="selectId"
-      class="max-w-[9.5rem] rounded-md border border-neutral-300 bg-white px-2 py-1 text-xs text-neutral-700 shadow-sm focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 sm:max-w-none sm:text-sm"
+      class="w-full max-w-[12rem] rounded-md border border-default bg-surface px-2 py-1 text-xs text-foreground shadow-sm focus:outline-none focus-visible:ring-2 focus-visible:ring-focus focus-visible:ring-offset-2 focus-visible:ring-offset-surface sm:max-w-none sm:text-sm"
       :value="locale"
       data-cy="locale-switcher"
       @change="onLocaleChange"

@@ -5,6 +5,88 @@
 @tailwind utilities;
 
 @layer base {
+  :root,
+  html[data-theme="light"] {
+    --color-page: 245 245 245;
+    --color-surface: 255 255 255;
+    --color-surface-elevated: 255 255 255;
+    --color-surface-muted: 250 250 250;
+    --color-surface-hover: 229 229 229;
+    --color-text: 23 23 23;
+    --color-text-muted: 82 82 82;
+    --color-text-subtle: 115 115 115;
+    --color-border: 229 229 229;
+    --color-border-strong: 82 82 82;
+    --color-primary: 2 132 199;
+    --color-primary-soft: 224 242 254;
+    --color-focus: 14 165 233;
+    --color-income: 21 128 61;
+    --color-income-soft: 220 252 231;
+    --color-irs: 190 18 60;
+    --color-irs-soft: 255 228 230;
+    --color-social-security: 29 78 216;
+    --color-social-security-soft: 219 234 254;
+    --color-warning: 146 64 14;
+    --color-warning-soft: 254 243 199;
+    --color-danger: 220 38 38;
+    --color-overlay: 15 23 42;
+    --color-shadow: 15 23 42;
+    --color-chart-label: 255 255 255;
+    --color-chart-tooltip: 23 23 23;
+    --color-chart-tooltip-text: 255 255 255;
+  }
+
+  html[data-theme="dark"] {
+    --color-page: 11 18 32;
+    --color-surface: 17 24 39;
+    --color-surface-elevated: 24 34 53;
+    --color-surface-muted: 31 41 55;
+    --color-surface-hover: 51 65 85;
+    --color-text: 243 244 246;
+    --color-text-muted: 203 213 225;
+    --color-text-subtle: 167 176 192;
+    --color-border: 51 65 85;
+    --color-border-strong: 100 116 139;
+    --color-primary: 56 189 248;
+    --color-primary-soft: 12 74 110;
+    --color-focus: 125 211 252;
+    --color-income: 134 239 172;
+    --color-income-soft: 20 83 45;
+    --color-irs: 251 113 133;
+    --color-irs-soft: 136 19 55;
+    --color-social-security: 147 197 253;
+    --color-social-security-soft: 30 64 175;
+    --color-warning: 251 191 36;
+    --color-warning-soft: 120 53 15;
+    --color-danger: 248 113 113;
+    --color-overlay: 2 6 23;
+    --color-shadow: 0 0 0;
+    --color-chart-label: 15 23 42;
+    --color-chart-tooltip: 248 250 252;
+    --color-chart-tooltip-text: 15 23 42;
+  }
+
+  html {
+    background-color: rgb(var(--color-page));
+    color: rgb(var(--color-text));
+    color-scheme: light;
+  }
+
+  html[data-theme="dark"] {
+    color-scheme: dark;
+  }
+
+  body {
+    background-color: rgb(var(--color-page));
+    color: rgb(var(--color-text));
+  }
+
+  *,
+  *::before,
+  *::after {
+    --tw-ring-offset-color: rgb(var(--color-page));
+  }
+
   input[type="number"]::-webkit-outer-spin-button,
   input[type="number"]::-webkit-inner-spin-button,
   input[type="number"] {
@@ -14,9 +96,26 @@
   }
 }
 
-html,
-body {
-  background-color: #f5f5f5;
+@layer utilities {
+  .border-default {
+    border-color: rgb(var(--color-border) / var(--tw-border-opacity, 1));
+  }
+
+  .border-strong {
+    border-color: rgb(var(--color-border-strong) / var(--tw-border-opacity, 1));
+  }
+
+  .shadow-theme {
+    --tw-shadow-color: rgb(var(--color-shadow) / 0.14);
+    --tw-shadow: 0 10px 24px -18px var(--tw-shadow-color);
+    --tw-shadow-colored: 0 10px 24px -18px var(--tw-shadow-color);
+    box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000),
+      var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
+  }
+
+  .divide-default > :not([hidden]) ~ :not([hidden]) {
+    border-color: rgb(var(--color-border) / var(--tw-divide-opacity, 1));
+  }
 }
 
 .v-enter-active,
@@ -35,4 +134,36 @@ body {
 .invisible {
   opacity: 0;
   visibility: visible;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+@media print {
+  html,
+  body,
+  #app {
+    background: #ffffff !important;
+    color: #171717 !important;
+  }
+
+  *,
+  *::before,
+  *::after {
+    background-color: #ffffff !important;
+    color: #171717 !important;
+    box-shadow: none !important;
+  }
+
+  [data-print-hidden="true"] {
+    display: none !important;
+  }
 }

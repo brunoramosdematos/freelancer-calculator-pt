@@ -1,30 +1,30 @@
 <template>
   <section
-    class="rounded-lg border border-neutral-200 bg-white p-4 shadow-sm"
+    class="rounded-lg border border-default bg-surface p-4 shadow-sm"
     data-cy="results-summary"
   >
     <div
       class="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between"
     >
       <div>
-        <h2 class="text-sm font-semibold text-neutral-900">
+        <h2 class="text-sm font-semibold text-foreground">
           {{ t("results.title") }}
         </h2>
-        <p class="mt-1 text-xs text-neutral-500">
+        <p class="mt-1 text-xs text-subtle">
           {{ t("results.shownPer", { frequency: displayFrequencyLabel }) }}
         </p>
       </div>
       <div
-        class="inline-flex rounded-lg border border-neutral-200 bg-neutral-50 p-1"
+        class="inline-flex rounded-lg border border-default bg-surface-muted p-1"
         :aria-label="t('frequency.showIncomePer')"
       >
         <button
           v-for="frequencyChoice in Object.keys(FrequencyChoices)"
           :key="frequencyChoice"
           type="button"
-          class="rounded-md px-3 py-1.5 text-xs font-semibold uppercase text-neutral-700 transition hover:bg-white focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
+          class="rounded-md px-3 py-1.5 text-xs font-semibold uppercase text-foreground transition hover:bg-surface-elevated focus:outline-none focus-visible:ring-2 focus-visible:ring-focus focus-visible:ring-offset-2"
           :class="{
-            'bg-secondary hover:bg-secondary cursor-default':
+            'bg-secondary hover:bg-secondary ring-1 ring-primary cursor-default':
               displayFrequency === FrequencyChoices[frequencyChoice],
           }"
           data-cy="frequency-button"
@@ -36,47 +36,41 @@
     </div>
 
     <div class="mt-5 grid grid-cols-1 gap-3 lg:grid-cols-3">
-      <div class="rounded-lg border border-neutral-200 p-4">
-        <p
-          class="text-xs font-semibold uppercase tracking-wide text-neutral-500"
-        >
+      <div class="rounded-lg border border-default p-4">
+        <p class="text-xs font-semibold uppercase tracking-wide text-subtle">
           {{ t("results.grossIncome") }}
         </p>
-        <p class="mt-2 text-2xl font-semibold text-neutral-900 tabular-nums">
+        <p class="mt-2 text-2xl font-semibold text-foreground tabular-nums">
           {{ grossIncomeDisplay }}
         </p>
-        <p class="mt-1 text-xs text-neutral-500">
-          / {{ displayFrequencyLabel }}
-        </p>
+        <p class="mt-1 text-xs text-subtle">/ {{ displayFrequencyLabel }}</p>
       </div>
-      <div class="rounded-lg border border-green-200 p-4">
-        <p class="text-xs font-semibold uppercase tracking-wide text-green-700">
+      <div class="rounded-lg border border-income-soft p-4">
+        <p class="text-xs font-semibold uppercase tracking-wide text-income">
           {{ t("results.netIncome") }}
         </p>
-        <p class="mt-2 text-2xl font-semibold text-green-700 tabular-nums">
+        <p class="mt-2 text-2xl font-semibold text-income tabular-nums">
           {{ netIncomeDisplay }}
         </p>
-        <p class="mt-1 text-xs text-neutral-500">
-          / {{ displayFrequencyLabel }}
-        </p>
+        <p class="mt-1 text-xs text-subtle">/ {{ displayFrequencyLabel }}</p>
       </div>
-      <div class="rounded-lg border border-red-200 p-4">
-        <p class="text-xs font-semibold uppercase tracking-wide text-red-700">
+      <div class="rounded-lg border border-irs-soft p-4">
+        <p class="text-xs font-semibold uppercase tracking-wide text-irs">
           {{ t("results.totalTaxes") }}
         </p>
-        <p class="mt-2 text-2xl font-semibold text-red-700 tabular-nums">
+        <p class="mt-2 text-2xl font-semibold text-irs tabular-nums">
           {{ taxesDisplay }}
         </p>
-        <dl class="mt-3 space-y-1 text-xs text-neutral-600">
+        <dl class="mt-3 space-y-1 text-xs text-muted">
           <div class="flex justify-between gap-3">
             <dt>IRS</dt>
-            <dd class="font-medium tabular-nums text-red-700">
+            <dd class="font-medium tabular-nums text-irs">
               {{ irsDisplay }}
             </dd>
           </div>
           <div class="flex justify-between gap-3">
             <dt>{{ t("table.socialSecurity") }}</dt>
-            <dd class="font-medium tabular-nums text-blue-700">
+            <dd class="font-medium tabular-nums text-social-security">
               {{ ssDisplay }}
             </dd>
           </div>
@@ -86,7 +80,7 @@
 
     <p
       v-if="specialSocialSecurityStatus"
-      class="mt-4 rounded-md border border-amber-200 bg-amber-50 px-3 py-2 text-xs text-amber-900"
+      class="mt-4 rounded-md border border-warning-soft bg-warning-soft px-3 py-2 text-xs text-warning"
       role="status"
       data-cy="ss-special-status"
     >

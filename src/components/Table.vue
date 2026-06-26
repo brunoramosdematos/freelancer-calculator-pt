@@ -1,8 +1,8 @@
 <template>
   <div data-cy="financial-summary-table">
-    <table v-if="breakpoint.mdAndUp" class="w-full text-sm text-neutral-700">
+    <table v-if="breakpoint.mdAndUp" class="w-full text-sm text-foreground">
       <thead
-        class="border-b border-neutral-200 text-xs uppercase tracking-wide text-neutral-500"
+        class="border-b border-default text-xs uppercase tracking-wide text-subtle"
       >
         <tr>
           <th scope="col" class="py-3 text-left font-semibold">
@@ -19,9 +19,9 @@
           </th>
         </tr>
       </thead>
-      <tbody class="divide-y divide-neutral-100">
+      <tbody class="divide-y divide-default">
         <tr data-cy="gross-income-row">
-          <th scope="row" class="py-3 text-left font-medium text-neutral-900">
+          <th scope="row" class="py-3 text-left font-medium text-foreground">
             {{ t("table.grossIncome") }}
           </th>
           <td class="py-3 text-right tabular-nums whitespace-nowrap">
@@ -35,61 +35,55 @@
           </td>
         </tr>
         <tr data-cy="final-irs-row">
-          <th scope="row" class="py-3 text-left font-medium text-neutral-900">
+          <th scope="row" class="py-3 text-left font-medium text-foreground">
             IRS
           </th>
-          <td
-            class="py-3 text-right tabular-nums whitespace-nowrap text-red-700"
-          >
+          <td class="py-3 text-right tabular-nums whitespace-nowrap text-irs">
             {{ renderCellValue(irsPay.year) }}
           </td>
-          <td
-            class="py-3 text-right tabular-nums whitespace-nowrap text-red-700"
-          >
+          <td class="py-3 text-right tabular-nums whitespace-nowrap text-irs">
             {{ renderCellValue(irsPay.month) }}
           </td>
-          <td
-            class="py-3 text-right tabular-nums whitespace-nowrap text-red-700"
-          >
+          <td class="py-3 text-right tabular-nums whitespace-nowrap text-irs">
             {{ renderCellValue(irsPay.day) }}
           </td>
         </tr>
         <tr data-cy="social-security-row">
-          <th scope="row" class="py-3 text-left font-medium text-neutral-900">
+          <th scope="row" class="py-3 text-left font-medium text-foreground">
             {{ t("table.socialSecurity") }}
           </th>
           <td
-            class="py-3 text-right tabular-nums whitespace-nowrap text-blue-700"
+            class="py-3 text-right tabular-nums whitespace-nowrap text-social-security"
           >
             {{ renderCellValue(ssPay.year) }}
           </td>
           <td
-            class="py-3 text-right tabular-nums whitespace-nowrap text-blue-700"
+            class="py-3 text-right tabular-nums whitespace-nowrap text-social-security"
           >
             {{ renderCellValue(ssPay.month) }}
           </td>
           <td
-            class="py-3 text-right tabular-nums whitespace-nowrap text-blue-700"
+            class="py-3 text-right tabular-nums whitespace-nowrap text-social-security"
           >
             {{ renderCellValue(ssPay.day) }}
           </td>
         </tr>
         <tr data-cy="net-income-row">
-          <th scope="row" class="py-3 text-left font-semibold text-neutral-900">
+          <th scope="row" class="py-3 text-left font-semibold text-foreground">
             {{ t("table.netIncome") }}
           </th>
           <td
-            class="py-3 text-right font-semibold tabular-nums whitespace-nowrap text-green-700"
+            class="py-3 text-right font-semibold tabular-nums whitespace-nowrap text-income"
           >
             {{ renderCellValue(netIncome.year) }}
           </td>
           <td
-            class="py-3 text-right font-semibold tabular-nums whitespace-nowrap text-green-700"
+            class="py-3 text-right font-semibold tabular-nums whitespace-nowrap text-income"
           >
             {{ renderCellValue(netIncome.month) }}
           </td>
           <td
-            class="py-3 text-right font-semibold tabular-nums whitespace-nowrap text-green-700"
+            class="py-3 text-right font-semibold tabular-nums whitespace-nowrap text-income"
           >
             {{ renderCellValue(netIncome.day) }}
           </td>
@@ -101,10 +95,10 @@
       <div
         v-for="row in mobileRows"
         :key="row.label"
-        class="flex items-center justify-between gap-3 border-b border-neutral-100 py-2 text-sm"
+        class="flex items-center justify-between gap-3 border-b border-default py-2 text-sm"
         :data-cy="row.dataCy"
       >
-        <span class="font-medium text-neutral-700">{{ row.label }}</span>
+        <span class="font-medium text-foreground">{{ row.label }}</span>
         <span
           class="text-right tabular-nums whitespace-nowrap"
           :class="row.valueClass"
@@ -118,14 +112,14 @@
         heading-level="3"
         toggle-data-cy="mobile-frequency-comparison-toggle"
       >
-        <div class="grid grid-cols-3 gap-2 text-xs text-neutral-600">
+        <div class="grid grid-cols-3 gap-2 text-xs text-muted">
           <template v-for="frequency in frequencies" :key="frequency">
             <div class="font-semibold uppercase">
               {{ t(`frequency.${frequency}`) }}
             </div>
           </template>
           <template v-for="row in comparisonRows" :key="row.label">
-            <div class="col-span-3 mt-2 font-medium text-neutral-900">
+            <div class="col-span-3 mt-2 font-medium text-foreground">
               {{ row.label }}
             </div>
             <div
@@ -175,25 +169,25 @@ const mobileRows = computed(() => [
     label: t("table.grossIncome"),
     dataCy: "gross-income-row",
     value: grossIncome.value[displayFrequency.value],
-    valueClass: "text-neutral-900",
+    valueClass: "text-foreground",
   },
   {
     label: "IRS",
     dataCy: "final-irs-row",
     value: irsPay.value[displayFrequency.value],
-    valueClass: "text-red-700",
+    valueClass: "text-irs",
   },
   {
     label: t("table.socialSecurity"),
     dataCy: "social-security-row",
     value: ssPay.value[displayFrequency.value],
-    valueClass: "text-blue-700",
+    valueClass: "text-social-security",
   },
   {
     label: t("table.netIncome"),
     dataCy: "net-income-row",
     value: netIncome.value[displayFrequency.value],
-    valueClass: "font-semibold text-green-700",
+    valueClass: "font-semibold text-income",
   },
 ]);
 

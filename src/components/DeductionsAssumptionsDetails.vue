@@ -1,19 +1,19 @@
 <template>
-  <dl class="divide-y divide-neutral-100 text-sm">
+  <dl class="divide-y divide-default text-sm">
     <div
       class="grid grid-cols-[minmax(0,1fr)_auto] gap-4 py-3"
       data-cy="professional-expenses-row"
     >
-      <dt class="text-neutral-600">
+      <dt class="text-muted">
         {{ t("deductions.professionalExpenses") }}
       </dt>
-      <dd class="font-medium text-neutral-900 tabular-nums">
+      <dd class="font-medium text-foreground tabular-nums">
         {{ formatCurrency(store.expenses, 2) }}
       </dd>
     </div>
     <div class="grid grid-cols-[minmax(0,1fr)_auto] gap-4 py-3">
-      <dt class="text-neutral-600">{{ t("deductions.expensesMode") }}</dt>
-      <dd class="font-medium text-neutral-900">
+      <dt class="text-muted">{{ t("deductions.expensesMode") }}</dt>
+      <dd class="font-medium text-foreground">
         {{
           store.expensesAuto
             ? t("deductions.automatic")
@@ -25,56 +25,56 @@
       class="grid grid-cols-[minmax(0,1fr)_auto] gap-4 py-3"
       data-cy="expenses-still-needed-row"
     >
-      <dt class="text-neutral-600">
+      <dt class="text-muted">
         {{ t("deductions.expensesStillNeeded") }}
       </dt>
-      <dd class="font-medium text-neutral-900 tabular-nums">
+      <dd class="font-medium text-foreground tabular-nums">
         {{ formatCurrency(store.expensesNeeded, 2) }}
       </dd>
     </div>
     <div class="grid grid-cols-[minmax(0,1fr)_auto] gap-4 py-3">
-      <dt class="text-neutral-600">{{ t("deductions.paidMonths") }}</dt>
-      <dd class="font-medium text-neutral-900 tabular-nums">
+      <dt class="text-muted">{{ t("deductions.paidMonths") }}</dt>
+      <dd class="font-medium text-foreground tabular-nums">
         {{ formatInteger(store.nrMonthsDisplay) }}
       </dd>
     </div>
     <div class="grid grid-cols-[minmax(0,1fr)_auto] gap-4 py-3">
-      <dt class="text-neutral-600">{{ t("deductions.unpaidDays") }}</dt>
-      <dd class="font-medium text-neutral-900 tabular-nums">
+      <dt class="text-muted">{{ t("deductions.unpaidDays") }}</dt>
+      <dd class="font-medium text-foreground tabular-nums">
         {{ formatInteger(store.nrDaysOff) }}
       </dd>
     </div>
     <div class="grid grid-cols-[minmax(0,1fr)_auto] gap-4 py-3">
-      <dt class="text-neutral-600">
+      <dt class="text-muted">
         {{ t("deductions.businessDaysAssumed") }}
       </dt>
-      <dd class="font-medium text-neutral-900 tabular-nums">
+      <dd class="font-medium text-foreground tabular-nums">
         {{ formatInteger(YEAR_BUSINESS_DAYS) }}
       </dd>
     </div>
     <div class="grid grid-cols-[minmax(0,1fr)_auto] gap-4 py-3">
-      <dt class="text-neutral-600">{{ t("deductions.youthIrs") }}</dt>
-      <dd class="font-medium text-neutral-900">
+      <dt class="text-muted">{{ t("deductions.youthIrs") }}</dt>
+      <dd class="font-medium text-foreground">
         {{ youthIrsStatus }}
       </dd>
     </div>
     <div class="grid grid-cols-[minmax(0,1fr)_auto] gap-4 py-3">
-      <dt class="text-neutral-600">
+      <dt class="text-muted">
         {{ t("deductions.activityYearReduction") }}
       </dt>
-      <dd class="font-medium text-neutral-900">
+      <dd class="font-medium text-foreground">
         {{ activityYearStatus }}
       </dd>
     </div>
     <div class="grid grid-cols-[minmax(0,1fr)_auto] gap-4 py-3">
-      <dt class="text-neutral-600">NHR / RNH</dt>
-      <dd class="font-medium text-neutral-900">
+      <dt class="text-muted">NHR / RNH</dt>
+      <dd class="font-medium text-foreground">
         {{ store.rnh ? t("deductions.active") : t("deductions.notActive") }}
       </dd>
     </div>
     <div class="grid grid-cols-[minmax(0,1fr)_auto] gap-4 py-3">
-      <dt class="text-neutral-600">{{ t("deductions.ssFirstYear") }}</dt>
-      <dd class="font-medium text-neutral-900">
+      <dt class="text-muted">{{ t("deductions.ssFirstYear") }}</dt>
+      <dd class="font-medium text-foreground">
         {{
           store.ssFirstYear ? t("deductions.active") : t("deductions.notActive")
         }}

@@ -2,27 +2,27 @@
   <div class="relative" @click="showDropdown = !showDropdown">
     <input
       type="button"
-      class="cursor-pointer w-full text-start py-2 placeholder:text-neutral-400 bg-inherit border-b-2 border-neutral-400 relative focus:outline-none focus:border-indigo-400"
+      class="cursor-pointer w-full text-start py-2 placeholder:text-subtle bg-inherit border-b-2 border-strong relative focus:outline-none focus:border-focus"
       :value="value"
       :id="id"
       :aria-label="label"
       :aria-expanded="showDropdown.toString()"
       aria-haspopup="true"
-      :class="{ 'text-indigo-400': showDropdown }"
+      :class="{ 'text-primary': showDropdown }"
     />
     <ChevronDownIcon
-      class="absolute h-5 right-0 bottom-3 text-neutral-500"
-      :class="{ ' fill-indigo-400': showDropdown }"
+      class="absolute h-5 right-0 bottom-3 text-subtle"
+      :class="{ ' fill-primary': showDropdown }"
     />
     <div
       v-if="showDropdown"
-      class="absolute top-full shadow-lg bg-defaultbg overflow-y-auto overflow-x-hidden h-max-64 z-10 min-w-full w-20"
+      class="absolute top-full shadow-theme bg-surface-elevated overflow-y-auto overflow-x-hidden h-max-64 z-10 min-w-full w-20"
     >
       <button
         v-for="choice in choices"
         :key="choice"
         type="button"
-        class="text-gray-700 block px-4 py-2 text-sm hover:bg-neutral-200 w-full"
+        class="text-muted block px-4 py-2 text-sm hover:bg-surface-hover w-full"
         @click="changeChoice(choice)"
       >
         {{ getChoiceLabel(choice) }}

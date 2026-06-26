@@ -7,6 +7,7 @@ const productionUrl = "https://freelancerpt.brunomatos.dev/";
 const forbiddenBasePath = "/freelancer-calculator-pt/";
 const oldDomain = "freelancept.fmacedo.com";
 const splitbeeHost = "cdn.splitbee.io";
+const themeStorageKey = "freelancer-calculator-pt:theme:v1";
 
 const fail = (message) => {
   console.error(`Production build verification failed: ${message}`);
@@ -40,6 +41,39 @@ if (!existsSync(indexPath)) {
 
   if (html.includes(splitbeeHost)) {
     fail(`${splitbeeHost} remains in dist/index.html.`);
+  }
+
+  const themeInitializerIndex = html.indexOf('id="theme-initializer"');
+  const mainModuleIndex = html.search(
+    /<script[^>]+type="module"[^>]+src="\/assets\//,
+  );
+  const cssAssetIndex = html.search(
+    /<link[^>]+rel="stylesheet"[^>]+href="\/assets\//,
+  );
+
+  if (themeInitializerIndex === -1) {
+    fail("theme initializer is absent from dist/index.html.");
+  }
+
+  if (!html.includes(themeStorageKey)) {
+    fail(`theme initializer does not contain ${themeStorageKey}.`);
+  }
+
+  if (mainModuleIndex === -1) {
+    fail("main Vite module reference is absent from dist/index.html.");
+  } else if (
+    themeInitializerIndex !== -1 &&
+    themeInitializerIndex > mainModuleIndex
+  ) {
+    fail("theme initializer appears after the main Vite module reference.");
+  }
+
+  if (
+    cssAssetIndex !== -1 &&
+    themeInitializerIndex !== -1 &&
+    themeInitializerIndex > cssAssetIndex
+  ) {
+    fail("theme initializer appears after the generated stylesheet.");
   }
 }
 

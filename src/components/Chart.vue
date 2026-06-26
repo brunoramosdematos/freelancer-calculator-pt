@@ -9,11 +9,11 @@
       class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2"
     >
       <p
-        class="text-center text-lg font-semibold text-neutral-700 whitespace-nowrap tabular-nums"
+        class="text-center text-lg font-semibold text-foreground whitespace-nowrap tabular-nums"
       >
         {{ formatCurrency(grossIncome[displayFrequency]) }}
       </p>
-      <small class="block text-center text-xs text-neutral-500">
+      <small class="block text-center text-xs text-subtle">
         {{ t("chart.grossIncome") }}
       </small>
     </div>
@@ -30,11 +30,13 @@ import { storeToRefs } from "pinia";
 import { useTaxesStore } from "@/store";
 import ChartDataLabels from "chartjs-plugin-datalabels";
 import { useLocalizedFormatters } from "@/composables/useLocalizedFormatters";
+import { useTheme } from "@/composables/useTheme";
 
-const { grossIncome, netIncome, irsPay, ssPay, colors, displayFrequency } =
+const { grossIncome, netIncome, irsPay, ssPay, displayFrequency } =
   storeToRefs(useTaxesStore());
 const { t, locale } = useI18n({ useScope: "global" });
 const { formatCurrency, formatPercentage } = useLocalizedFormatters();
+const { resolvedTheme } = useTheme();
 
 Chart.register(...registerables);
 Chart.register(ChartDataLabels);
@@ -43,6 +45,25 @@ const canvasRef = ref<HTMLCanvasElement | null>(null);
 let chart: ChartInstance<"doughnut"> | null = null;
 onMounted(() => {
   buildChart();
+});
+
+const getThemeRgb = (name: string, fallback: string) => {
+  const root = document.documentElement;
+  const value = getComputedStyle(root).getPropertyValue(name).trim();
+  return value ? `rgb(${value})` : fallback;
+};
+
+const chartPalette = computed(() => {
+  resolvedTheme.value;
+
+  return {
+    netIncome: getThemeRgb("--color-income", "#15803d"),
+    irs: getThemeRgb("--color-irs", "#be123c"),
+    ss: getThemeRgb("--color-social-security", "#1d4ed8"),
+    label: getThemeRgb("--color-chart-label", "#ffffff"),
+    tooltipBackground: getThemeRgb("--color-chart-tooltip", "#171717"),
+    tooltipText: getThemeRgb("--color-chart-tooltip-text", "#ffffff"),
+  };
 });
 
 const chartData = computed(() => {
@@ -56,9 +77,9 @@ const chartData = computed(() => {
           ssPay.value[displayFrequency.value],
         ],
         backgroundColor: [
-          colors.value.netIncome,
-          colors.value.irs,
-          colors.value.ss,
+          chartPalette.value.netIncome,
+          chartPalette.value.irs,
+          chartPalette.value.ss,
         ],
         hoverOffset: 4,
       },
@@ -81,9 +102,12 @@ const chartOptions = computed(() => {
             formatPercentage(val / grossIncome.value[displayFrequency.value])
           );
         },
-        color: "#fff",
+        color: chartPalette.value.label,
       },
       tooltip: {
+        backgroundColor: chartPalette.value.tooltipBackground,
+        bodyColor: chartPalette.value.tooltipText,
+        titleColor: chartPalette.value.tooltipText,
         callbacks: {
           label: function (item) {
             return formatCurrency(item.raw as number, 2);
@@ -96,7 +120,12 @@ const chartOptions = computed(() => {
 });
 
 watch(
-  () => [chartData.value, chartOptions.value, locale.value],
+  () => [
+    chartData.value,
+    chartOptions.value,
+    locale.value,
+    resolvedTheme.value,
+  ],
   (newData) => {
     if (!chart) {
       return;
@@ -111,6 +140,7 @@ watch(
     chart.data.labels = data.labels;
     data.datasets.forEach((d, i) => {
       chart.data.datasets[i].data = d.data;
+      chart.data.datasets[i].backgroundColor = d.backgroundColor;
     });
     chart.options = options;
     chart.update();

@@ -23,12 +23,6 @@ export interface TaxRank {
   averageTax: number | null;
 }
 
-export interface Colors {
-  netIncome: string;
-  irs: string;
-  ss: string;
-}
-
 export interface YouthIrsRank {
   maxDiscountPercentage: number;
   maxDiscountIasMultiplier: number;

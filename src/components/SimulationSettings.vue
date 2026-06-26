@@ -1,14 +1,14 @@
 <template>
   <section
-    class="rounded-lg border border-neutral-200 bg-white p-4 shadow-sm"
+    class="rounded-lg border border-default bg-surface p-4 shadow-sm"
     data-cy="simulation-settings"
   >
     <div class="mb-4 flex items-start justify-between gap-4">
       <div>
-        <h2 class="text-sm font-semibold text-neutral-900">
+        <h2 class="text-sm font-semibold text-foreground">
           {{ t("simulationSettings.title") }}
         </h2>
-        <p class="mt-1 text-xs text-neutral-500">
+        <p class="mt-1 text-xs text-subtle">
           {{ t("simulationSettings.summary") }}
         </p>
       </div>
@@ -23,7 +23,7 @@
       <div class="grid grid-cols-[minmax(0,1fr)_5rem] items-center gap-4">
         <label
           for="tax-rank-years-dropdown"
-          class="text-sm font-medium text-neutral-700"
+          class="text-sm font-medium text-foreground"
         >
           {{ t("simulationSettings.taxYear") }}
         </label>
@@ -37,18 +37,18 @@
       </div>
 
       <fieldset data-cy="assessment-scenario">
-        <legend class="text-sm font-medium text-neutral-700">
+        <legend class="text-sm font-medium text-foreground">
           {{ t("assessment.label") }}
         </legend>
         <div
           class="mt-2 grid grid-cols-1 gap-2 sm:grid-cols-2 lg:grid-cols-1 xl:grid-cols-2"
         >
           <label
-            class="cursor-pointer rounded-lg border px-3 py-2 transition focus-within:ring-2 focus-within:ring-primary"
+            class="cursor-pointer rounded-lg border px-3 py-2 transition focus-within:ring-2 focus-within:ring-focus"
             :class="
               store.assessmentScenario === AssessmentScenario.Individual
-                ? 'border-primary bg-sky-50'
-                : 'border-neutral-300 hover:border-neutral-500'
+                ? 'border-primary bg-primary-soft'
+                : 'border-default hover:border-strong'
             "
           >
             <input
@@ -66,16 +66,16 @@
             <span class="block text-sm font-semibold">
               {{ t("assessment.individual.label") }}
             </span>
-            <span class="block text-xs text-neutral-500">
+            <span class="block text-xs text-subtle">
               {{ t("assessment.individual.description") }}
             </span>
           </label>
           <label
-            class="cursor-pointer rounded-lg border px-3 py-2 transition focus-within:ring-2 focus-within:ring-primary"
+            class="cursor-pointer rounded-lg border px-3 py-2 transition focus-within:ring-2 focus-within:ring-focus"
             :class="
               store.assessmentScenario === AssessmentScenario.JointSingleIncome
-                ? 'border-primary bg-sky-50'
-                : 'border-neutral-300 hover:border-neutral-500'
+                ? 'border-primary bg-primary-soft'
+                : 'border-default hover:border-strong'
             "
           >
             <input
@@ -96,7 +96,7 @@
             <span class="block text-sm font-semibold">
               {{ t("assessment.jointSingleIncome.label") }}
             </span>
-            <span class="block text-xs text-neutral-500">
+            <span class="block text-xs text-subtle">
               {{ t("assessment.jointSingleIncome.description") }}
             </span>
           </label>
@@ -105,7 +105,7 @@
           v-if="
             store.assessmentScenario === AssessmentScenario.JointSingleIncome
           "
-          class="mt-2 text-xs text-neutral-500"
+          class="mt-2 text-xs text-subtle"
         >
           {{ t("assessment.jointSingleIncome.help") }}
         </p>
@@ -119,7 +119,7 @@
         <div>
           <label
             for="paid-months-per-year-input"
-            class="mb-2 block text-sm font-medium text-neutral-700"
+            class="mb-2 block text-sm font-medium text-foreground"
           >
             {{ t("schedule.paidMonths.label") }}
           </label>
@@ -138,7 +138,7 @@
         <div>
           <label
             for="unpaid-days-off-input"
-            class="mb-2 block text-sm font-medium text-neutral-700"
+            class="mb-2 block text-sm font-medium text-foreground"
           >
             {{ t("schedule.unpaidDays.label") }}
           </label>

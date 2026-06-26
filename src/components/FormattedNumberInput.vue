@@ -2,7 +2,7 @@
   <input
     v-model="internalValue"
     type="text"
-    class="z-0 inline-flex w-full justify-start py-2 placeholder:text-neutral-400 bg-inherit border-b-[1px] border-neutral-600 relative focus:outline-none focus:border-primary"
+    class="z-0 inline-flex w-full justify-start py-2 placeholder:text-subtle bg-inherit border-b-[1px] border-strong relative focus:outline-none focus:border-focus"
     :class="class"
     :placeholder="placeholder"
     inputmode="numeric"

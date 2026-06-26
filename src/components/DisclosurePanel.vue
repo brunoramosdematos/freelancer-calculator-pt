@@ -1,10 +1,10 @@
 <template>
-  <section class="rounded-lg border border-neutral-200 bg-white shadow-sm">
+  <section class="rounded-lg border border-default bg-surface shadow-sm">
     <component :is="headingTag" class="m-0">
       <button
         :id="buttonId"
         type="button"
-        class="flex w-full items-center justify-between gap-4 rounded-lg px-4 py-3 text-left focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
+        class="flex w-full items-center justify-between gap-4 rounded-lg px-4 py-3 text-left focus:outline-none focus-visible:ring-2 focus-visible:ring-focus focus-visible:ring-offset-2"
         :aria-expanded="isOpen.toString()"
         :aria-controls="panelId"
         :data-cy="toggleDataCy"
@@ -12,20 +12,20 @@
         @keydown="onButtonKeydown"
       >
         <span class="min-w-0">
-          <span class="block text-sm font-semibold text-neutral-900">
+          <span class="block text-sm font-semibold text-foreground">
             {{ title }}
           </span>
           <slot name="summary">
             <span
               v-if="summary"
-              class="mt-0.5 block truncate text-xs text-neutral-500"
+              class="mt-0.5 block truncate text-xs text-subtle"
             >
               {{ summary }}
             </span>
           </slot>
         </span>
         <ChevronDownIcon
-          class="h-5 w-5 shrink-0 text-neutral-500 transition-transform motion-reduce:transition-none"
+          class="h-5 w-5 shrink-0 text-subtle transition-transform motion-reduce:transition-none"
           :class="{ 'rotate-180': isOpen }"
           aria-hidden="true"
         />
@@ -36,7 +36,7 @@
       v-show="isOpen"
       :id="panelId"
       :aria-labelledby="buttonId"
-      class="border-t border-neutral-200 px-4 py-4"
+      class="border-t border-default px-4 py-4"
       :data-cy="panelDataCy"
     >
       <slot />
