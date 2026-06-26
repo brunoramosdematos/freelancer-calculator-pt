@@ -139,19 +139,76 @@ const contrastRatio = (foreground: string, background: string) => {
   return (lighter + 0.05) / (darker + 0.05);
 };
 
-const expectContrastAtLeast = (
+const isTransparent = (value: string) =>
+  value === "transparent" ||
+  value === "rgba(0, 0, 0, 0)" ||
+  value === "rgba(0,0,0,0)";
+
+const getEffectiveBackgroundColor = (element: Element) => {
+  let current: Element | null = element;
+
+  while (current) {
+    const background = getComputedStyle(current).backgroundColor;
+
+    if (background && !isTransparent(background)) {
+      return background;
+    }
+
+    current = current.parentElement;
+  }
+
+  return getComputedStyle(document.body).backgroundColor;
+};
+
+const expectContrastAgainstEffectiveBackground = (
   selector: string,
-  foregroundProperty: "color" | "border-color",
-  backgroundProperty: "background-color",
+  foregroundProperty: "color" | "border-color" = "color",
   minimum = 4.5,
 ) => {
-  cy.get(selector).should(($element) => {
-    const styles = getComputedStyle($element[0]);
-    expect(
-      contrastRatio(styles[foregroundProperty], styles[backgroundProperty]),
-      selector,
-    ).to.be.gte(minimum);
-  });
+  cy.get(selector)
+    .first()
+    .should(($element) => {
+      const styles = getComputedStyle($element[0]);
+      const background = getEffectiveBackgroundColor($element[0]);
+
+      expect(
+        contrastRatio(styles[foregroundProperty], background),
+        selector,
+      ).to.be.gte(minimum);
+    });
+};
+
+const expectFocusRingContrastAtLeast = (selector: string, minimum = 3) => {
+  cy.get(selector)
+    .focus()
+    .should(($element) => {
+      const styles = getComputedStyle($element[0]);
+      const ringColor = styles.boxShadow.match(/rgba?\([^)]+\)/)?.[0];
+
+      expect(ringColor, `${selector} focus ring color`).to.be.a("string");
+      expect(
+        contrastRatio(
+          ringColor as string,
+          getEffectiveBackgroundColor($element[0]),
+        ),
+        `${selector} focus ring`,
+      ).to.be.gte(minimum);
+    });
+};
+
+const expectRepresentativeContrast = () => {
+  expectContrastAgainstEffectiveBackground("body");
+  expectContrastAgainstEffectiveBackground(".text-subtle", "color", 4.5);
+  expectContrastAgainstEffectiveBackground('[data-cy="results-summary"]');
+  expectContrastAgainstEffectiveBackground('[data-cy="net-income-row"]');
+  expectContrastAgainstEffectiveBackground('[data-cy="final-irs-row"]');
+  expectContrastAgainstEffectiveBackground('[data-cy="social-security-row"]');
+  expectContrastAgainstEffectiveBackground('[data-cy="ss-special-status"]');
+  expectContrastAgainstEffectiveBackground('[data-cy="income"]');
+  expectContrastAgainstEffectiveBackground(
+    '[data-cy="frequency-button"].bg-secondary',
+  );
+  expectFocusRingContrastAtLeast('[data-cy="preferences-toggle"]');
 };
 
 describe("appearance themes", () => {
@@ -414,30 +471,10 @@ describe("appearance themes", () => {
 
   it("meets representative token contrast in both themes", () => {
     visitWithScheme("light", "/#/?income=50000&ssFirstYear=true");
-    expectContrastAtLeast("body", "color", "background-color");
-    expectContrastAtLeast(
-      '[data-cy="results-summary"]',
-      "color",
-      "background-color",
-    );
-    expectContrastAtLeast(
-      '[data-cy="ss-special-status"]',
-      "color",
-      "background-color",
-    );
+    expectRepresentativeContrast();
 
     setThemePreference("dark");
-    expectContrastAtLeast("body", "color", "background-color");
-    expectContrastAtLeast(
-      '[data-cy="results-summary"]',
-      "color",
-      "background-color",
-    );
-    expectContrastAtLeast(
-      '[data-cy="ss-special-status"]',
-      "color",
-      "background-color",
-    );
+    expectRepresentativeContrast();
   });
 
   it("keeps chart localization and a single canvas across theme and locale changes", () => {

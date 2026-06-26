@@ -2,7 +2,9 @@
   <div
     id="defaultModal"
     tabindex="-1"
-    aria-hidden="true"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="tax-ranks-dialog-title"
     class="fixed top-0 left-0 right-0 z-50 w-full p-4 overflow-x-hidden overflow-y-auto md:inset-0 h-[calc(100%-1rem)] md:h-full bg-overlay/60"
   >
     <div
@@ -12,7 +14,10 @@
       <div class="relative bg-surface-elevated rounded-lg shadow-theme">
         <!-- Modal header -->
         <div class="flex items-start justify-between p-4 border-b rounded-t">
-          <h3 class="text-xl font-semibold text-foreground">
+          <h3
+            id="tax-ranks-dialog-title"
+            class="text-xl font-semibold text-foreground"
+          >
             {{ t("irsCalculation.dialog.title") }}
           </h3>
           <button
@@ -41,22 +46,22 @@
             </span>
           </p>
 
-          <table class="w-full text-sm text-left text-muted table-auto">
-            <thead class="text-xs text-muted uppercase border-b-2">
+          <table class="w-full text-sm text-left text-foreground table-auto">
+            <thead class="text-xs text-foreground uppercase border-b-2">
               <tr>
-                <th class="text-center">
+                <th scope="col" class="text-center">
                   {{ t("irsCalculation.dialog.level") }}
                 </th>
-                <th class="text-center">
+                <th scope="col" class="text-center">
                   {{ t("irsCalculation.dialog.minimum") }}
                 </th>
-                <th class="text-center">
+                <th scope="col" class="text-center">
                   {{ t("irsCalculation.dialog.maximum") }}
                 </th>
-                <th class="text-center">
+                <th scope="col" class="text-center">
                   {{ t("irsCalculation.dialog.normalTax") }}
                 </th>
-                <th class="text-center">
+                <th scope="col" class="text-center">
                   {{ t("irsCalculation.dialog.averageTax") }}
                 </th>
               </tr>
@@ -65,7 +70,7 @@
               <tr
                 v-for="item in getTaxRanks"
                 :key="item.id"
-                :class="{ 'bg-surface-hover': item.id === taxRank.id }"
+                :class="{ 'bg-page': item.id === taxRank.id }"
               >
                 <td
                   class="py-1 text-center"
@@ -73,16 +78,16 @@
                 >
                   {{ item.id }}
                 </td>
-                <td class="py-1 text-center whitespace-nowrap">
+                <td class="py-1 text-center whitespace-nowrap text-foreground">
                   {{ formatCurrency(item.min) }}
                 </td>
-                <td class="py-1 text-center whitespace-nowrap">
+                <td class="py-1 text-center whitespace-nowrap text-foreground">
                   {{ formatCurrency(item.max) }}
                 </td>
-                <td class="py-1 text-center whitespace-nowrap">
+                <td class="py-1 text-center whitespace-nowrap text-foreground">
                   {{ formatPercentage(item.normalTax) }}
                 </td>
-                <td class="py-1 text-center whitespace-nowrap">
+                <td class="py-1 text-center whitespace-nowrap text-foreground">
                   {{ formatPercentage(item.averageTax) }}
                 </td>
               </tr>

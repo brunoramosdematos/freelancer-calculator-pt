@@ -15,7 +15,7 @@
           :id="inputId"
           v-model:value="counterDisplay"
           class="text-center"
-          :aria-label="inputId ? undefined : resolvedInputLabel"
+          :aria-label="resolvedInputLabel"
         />
       </slot>
     </span>

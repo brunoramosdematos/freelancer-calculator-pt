@@ -13,6 +13,9 @@ System, Light, and Dark appearance preferences. Localization architecture and
 glossary guidance are documented in [docs/I18N.md](docs/I18N.md), appearance
 architecture is documented in [docs/THEMING.md](docs/THEMING.md), and local/CI
 quality gates are documented in [docs/QUALITY_GATES.md](docs/QUALITY_GATES.md).
+Accessibility expectations are documented in
+[docs/ACCESSIBILITY.md](docs/ACCESSIBILITY.md), and performance budgets are
+documented in [docs/PERFORMANCE.md](docs/PERFORMANCE.md).
 
 ## Scope
 
@@ -68,6 +71,13 @@ Run the release-hardening local quality gate:
 
 ```bash
 npm run check
+```
+
+Run the full release gate, including bundle budgets, Lighthouse, Cypress E2E
+and axe accessibility checks:
+
+```bash
+npm run check:release
 ```
 
 Run Cypress E2E tests:

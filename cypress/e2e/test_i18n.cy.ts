@@ -84,7 +84,7 @@ describe("internationalization", () => {
       "Freelancer Calculator Portugal | IRS & Social Security",
     );
     cy.contains("span", "simulator");
-    cy.contains("h4", "Freelancer Calculator Portugal 🇵🇹");
+    cy.contains("h1", "Freelancer Calculator Portugal 🇵🇹");
     cy.get('[data-cy="income"]').should("have.attr", "placeholder", "Income");
     openPreferences();
     cy.get('[data-cy="locale-switcher"]').should("have.value", "en");
@@ -104,7 +104,7 @@ describe("internationalization", () => {
       .invoke("attr", "content")
       .should("contain", "rendimento líquido");
     cy.contains("span", "simulador");
-    cy.contains("h4", "Calculadora para Freelancers em Portugal 🇵🇹");
+    cy.contains("h1", "Calculadora para Freelancers em Portugal 🇵🇹");
     cy.contains('[data-cy="simulation-settings"]', "Ano fiscal");
     cy.get("@initialUrl").then((initialUrl) => {
       cy.location("href").should("eq", initialUrl);
@@ -127,7 +127,7 @@ describe("internationalization", () => {
       .invoke("attr", "content")
       .should("contain", "renda líquida");
     cy.contains("span", "simulador");
-    cy.contains("h4", "Calculadora para Freelancers em Portugal 🇵🇹");
+    cy.contains("h1", "Calculadora para Freelancers em Portugal 🇵🇹");
     cy.contains('[data-cy="simulation-settings"]', "Ano fiscal");
     cy.contains('[data-cy="results-summary"]', "Renda líquida");
     cy.get("@initialUrl").then((initialUrl) => {
@@ -181,12 +181,12 @@ describe("internationalization", () => {
     switchLocale("pt-BR");
     cy.reload();
     cy.get("html").should("have.attr", "lang", "pt-BR");
-    cy.contains("h4", "Calculadora para Freelancers em Portugal 🇵🇹");
+    cy.contains("h1", "Calculadora para Freelancers em Portugal 🇵🇹");
 
     switchLocale("en");
     cy.reload();
     cy.get("html").should("have.attr", "lang", "en");
-    cy.contains("h4", "Freelancer Calculator Portugal 🇵🇹");
+    cy.contains("h1", "Freelancer Calculator Portugal 🇵🇹");
   });
 
   it("reset preserves the selected pt-BR locale", () => {
@@ -196,7 +196,7 @@ describe("internationalization", () => {
     cy.get('[data-cy="reset-simulation-button"]').click();
 
     cy.get("html").should("have.attr", "lang", "pt-BR");
-    cy.contains("h4", "Calculadora para Freelancers em Portugal 🇵🇹");
+    cy.contains("h1", "Calculadora para Freelancers em Portugal 🇵🇹");
     cy.location("href").should("not.include", "locale=");
   });
 
@@ -259,7 +259,7 @@ describe("internationalization", () => {
     saveSimulation("Navegação");
 
     cy.get('[data-cy="simulations-menu"]').click();
-    cy.contains("h4", "Simulações salvas");
+    cy.contains("h1", "Simulações salvas");
     cy.contains("a", "sobre").click();
     cy.contains("h1", "Calculadora para Freelancers em Portugal");
     cy.contains("a", "ir para o simulador").click();

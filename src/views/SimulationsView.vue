@@ -3,11 +3,11 @@
     <div
       class="w-full pt-10 mx-2 md:mx-5 lg:mx-10 xl:mx-32 2xl:mx-60 3xl:mx-80"
     >
-      <h4
+      <h1
         class="font-semibold text-center lg:text-left text-lg md:text-xl lg:text-2xl lg:w-[500px] mb-8"
       >
         {{ t("simulations.title") }}
-      </h4>
+      </h1>
       <p
         v-if="!store.hasStoredSimulations"
         class="text-center text-sm text-subtle lg:text-left"

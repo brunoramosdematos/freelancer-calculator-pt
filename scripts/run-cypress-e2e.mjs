@@ -1,4 +1,6 @@
-import { createServer } from "vite";
+import { spawn } from "node:child_process";
+import http from "node:http";
+import { join } from "node:path";
 
 const DEFAULT_PORT = 8261;
 const HOST = "127.0.0.1";
@@ -6,11 +8,13 @@ const HOST = "127.0.0.1";
 const parseMode = (rawMode) => {
   const mode = rawMode ?? "run";
 
-  if (mode === "run" || mode === "open") {
+  if (mode === "run" || mode === "open" || mode === "a11y") {
     return mode;
   }
 
-  throw new Error(`Unsupported Cypress mode "${mode}". Use "run" or "open".`);
+  throw new Error(
+    `Unsupported Cypress mode "${mode}". Use "run", "open" or "a11y".`,
+  );
 };
 
 const parsePort = (rawPort) => {
@@ -52,16 +56,18 @@ const getRunExitCode = (result) => {
   return 1;
 };
 
-let server;
+let serverProcess;
+let stopping = false;
 
 const closeServer = async () => {
-  if (!server) {
+  if (!serverProcess || serverProcess.killed) {
     return;
   }
 
-  const activeServer = server;
-  server = undefined;
-  await activeServer.close();
+  stopping = true;
+  const child = serverProcess;
+  serverProcess = undefined;
+  await stopChildProcess(child, "Vite dev server");
 };
 
 const installSignalHandlers = () => {
@@ -83,31 +89,119 @@ const installSignalHandlers = () => {
 };
 
 const startServer = async (port) => {
-  const originalCi = process.env.CI;
-
-  // Vite registers a stdin-end exit handler outside CI; Cypress closes stdin while spawning.
-  if (originalCi === undefined) {
-    process.env.CI = "true";
-  }
-
-  try {
-    server = await createServer({
-      server: {
-        host: HOST,
-        port,
-        strictPort: true,
+  serverProcess = spawn(
+    process.execPath,
+    [
+      join("node_modules", "vite", "bin", "vite.js"),
+      "--host",
+      HOST,
+      "--port",
+      String(port),
+      "--strictPort",
+    ],
+    {
+      stdio: ["ignore", "pipe", "pipe"],
+      env: {
+        ...process.env,
+        CI: "true",
       },
-    });
-  } finally {
-    if (originalCi === undefined) {
-      delete process.env.CI;
-    } else {
-      process.env.CI = originalCi;
+    },
+  );
+
+  serverProcess.stdout.on("data", (chunk) => {
+    process.stdout.write(chunk);
+  });
+  serverProcess.stderr.on("data", (chunk) => {
+    process.stderr.write(chunk);
+  });
+
+  serverProcess.once("exit", (code) => {
+    if (!stopping && code !== 0) {
+      console.error(`Vite dev server exited unexpectedly with code ${code}.`);
     }
+  });
+};
+
+const wait = (milliseconds) =>
+  new Promise((resolve) => {
+    setTimeout(resolve, milliseconds);
+  });
+
+const waitForServer = async (baseUrl) => {
+  const deadline = Date.now() + 20_000;
+
+  while (Date.now() < deadline) {
+    const ready = await new Promise((resolve) => {
+      const request = http.get(baseUrl, (response) => {
+        response.resume();
+        resolve(response.statusCode && response.statusCode < 500);
+      });
+
+      request.on("error", () => resolve(false));
+      request.setTimeout(1_000, () => {
+        request.destroy();
+        resolve(false);
+      });
+    });
+
+    if (ready) {
+      return;
+    }
+
+    await wait(250);
   }
 
-  await server.listen();
-  server.printUrls();
+  throw new Error(`Timed out waiting for Cypress server at ${baseUrl}.`);
+};
+
+const stopChildProcess = async (child, label) => {
+  if (!child || child.killed) {
+    return;
+  }
+
+  await new Promise((resolve) => {
+    let settled = false;
+    const finish = () => {
+      if (!settled) {
+        settled = true;
+        resolve();
+      }
+    };
+
+    child.once("exit", finish);
+
+    try {
+      child.kill();
+    } catch (error) {
+      console.warn(`${label} cleanup warning: ${error.message}`);
+      finish();
+      return;
+    }
+
+    setTimeout(() => {
+      if (settled) {
+        return;
+      }
+
+      try {
+        child.kill("SIGKILL");
+      } catch (error) {
+        console.warn(`${label} force cleanup warning: ${error.message}`);
+      }
+    }, 2_000);
+
+    setTimeout(() => {
+      if (!settled) {
+        console.warn(`${label} cleanup timed out; releasing process handles.`);
+        child.stdout?.destroy();
+        child.stderr?.destroy();
+        child.stdin?.destroy();
+        child.unref();
+      }
+
+      finish();
+    }, 5_000);
+  });
 };
 
 let cypressModule;
@@ -122,9 +216,18 @@ const getCypress = async () => {
   return cypressModule;
 };
 
-const runCypress = async (baseUrl) => {
+const runCypress = async (
+  baseUrl,
+  { label = "E2E", spec, specPattern } = {},
+) => {
   const cypress = await getCypress();
-  console.info(`Starting Cypress E2E run against ${baseUrl}.`);
+  console.info(`Starting Cypress ${label} run against ${baseUrl}.`);
+  const config = [`baseUrl=${baseUrl}`];
+
+  if (specPattern) {
+    config.push(`specPattern=${specPattern}`);
+  }
+
   const runOptions = await cypress.cli.parseRunArguments([
     "cypress",
     "run",
@@ -132,11 +235,12 @@ const runCypress = async (baseUrl) => {
     "--project",
     process.cwd(),
     "--config",
-    `baseUrl=${baseUrl}`,
+    config.join(","),
+    ...(spec ? ["--spec", spec] : []),
     "--posix-exit-codes",
   ]);
   const result = await cypress.run(runOptions);
-  console.info("Cypress E2E run finished.");
+  console.info(`Cypress ${label} run finished.`);
 
   return getRunExitCode(result);
 };
@@ -162,10 +266,20 @@ try {
 
   installSignalHandlers();
   await startServer(port);
+  await waitForServer(baseUrl);
+  await wait(5_000);
 
   try {
     process.exitCode =
-      mode === "open" ? await openCypress(baseUrl) : await runCypress(baseUrl);
+      mode === "open"
+        ? await openCypress(baseUrl)
+        : mode === "a11y"
+          ? await runCypress(baseUrl, {
+              label: "accessibility",
+              spec: "cypress/a11y/test_accessibility.cy.ts",
+              specPattern: "cypress/a11y/**/*.cy.ts",
+            })
+          : await runCypress(baseUrl);
   } catch (error) {
     console.error("Cypress failed before completing the requested mode.");
     console.error(error);

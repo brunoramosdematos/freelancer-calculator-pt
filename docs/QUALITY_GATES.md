@@ -12,11 +12,18 @@ This project uses local and CI gates to keep releases reproducible.
   `vue-tsc --noEmit`.
 - `npm run vitest -- --run` runs unit tests.
 - `npm run cy:e2e:run` runs Cypress end-to-end tests.
+- `npm run cy:a11y` runs the dedicated Cypress axe accessibility suite.
 - `npm run build` builds production assets.
 - `npm run verify:production-build` checks the production artifact.
+- `npm run verify:bundle-budget` checks production asset sizes, hashes, chunk
+  count and absence of test/runtime leakage.
+- `npm run lighthouse:ci` runs desktop Lighthouse smoke checks against local
+  production preview URLs.
 - `npm run check` runs production audit, critical audit, formatting, lint,
   typecheck, Vitest, build and production verification.
 - `npm run check:e2e` runs `check` plus Cypress.
+- `npm run check:release` runs `check`, bundle budget verification, Lighthouse,
+  Cypress E2E and Cypress axe accessibility checks.
 
 ## Vue Type Checking
 
@@ -35,7 +42,7 @@ application type gate. Application code is still checked by `vue-tsc`.
 The GitHub Actions workflow runs on Node 24. The deploy dependency chain is:
 
 ```text
-quality + vitest + cypress-run + production-audit -> deploy
+quality + vitest + cypress-run + production-audit + accessibility-performance -> deploy
 ```
 
 The `quality` job runs:
@@ -49,6 +56,20 @@ npm run typecheck
 
 The deploy job still builds, verifies and uploads `dist` to GitHub Pages.
 
+The `accessibility-performance` job runs:
+
+```bash
+npm ci
+npm run build
+npm run verify:production-build
+npm run verify:bundle-budget
+npm run lighthouse:ci
+npm run cy:a11y
+```
+
+This keeps bundle budgets, Lighthouse smoke checks and axe accessibility
+coverage visible as a dedicated CI gate.
+
 ## Handling Failures
 
 Format failures should be fixed with `npm run format` and a careful diff
@@ -58,6 +79,6 @@ should be handled with precise types and without changing fiscal formulas.
 
 ## Future Gates
 
-Good future additions include accessibility regression checks, bundle budgets,
-Lighthouse smoke checks and a stricter warning policy once the codebase is
-ready for it.
+Good future additions include mobile Lighthouse once it is stable in CI, deeper
+manual accessibility checklists and a stricter warning policy once the codebase
+is ready for it.

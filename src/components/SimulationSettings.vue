@@ -66,7 +66,14 @@
             <span class="block text-sm font-semibold">
               {{ t("assessment.individual.label") }}
             </span>
-            <span class="block text-xs text-subtle">
+            <span
+              class="block text-xs"
+              :class="
+                store.assessmentScenario === AssessmentScenario.Individual
+                  ? 'text-muted'
+                  : 'text-subtle'
+              "
+            >
               {{ t("assessment.individual.description") }}
             </span>
           </label>
@@ -96,7 +103,15 @@
             <span class="block text-sm font-semibold">
               {{ t("assessment.jointSingleIncome.label") }}
             </span>
-            <span class="block text-xs text-subtle">
+            <span
+              class="block text-xs"
+              :class="
+                store.assessmentScenario ===
+                AssessmentScenario.JointSingleIncome
+                  ? 'text-muted'
+                  : 'text-subtle'
+              "
+            >
               {{ t("assessment.jointSingleIncome.description") }}
             </span>
           </label>

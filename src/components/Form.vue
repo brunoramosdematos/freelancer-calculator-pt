@@ -21,14 +21,14 @@
   >
     <div class="m-auto container max-w-2xl">
       <div class="relative md:h-44">
-        <h4
+        <h1
           class="font-semibold mt-4 md:mt-0"
           data-cy="product-heading"
           :data-state="hasIncome ? 'active' : 'landing'"
           :class="headingClass"
         >
           {{ t("app.productHeading") }}
-        </h4>
+        </h1>
         <p class="md:mt-3 md:mb-5 text-sm md:text-xl text-muted font-light">
           {{ t("simulator.tagline") }}
         </p>

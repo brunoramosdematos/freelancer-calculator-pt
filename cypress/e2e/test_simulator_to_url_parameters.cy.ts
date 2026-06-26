@@ -10,7 +10,7 @@ const openIrsCalculationDetails = () => {
 describe("simulator loads", () => {
   it("successfully loads the home page", () => {
     cy.visit("/#/");
-    cy.contains("h4", "Freelancer Calculator Portugal 🇵🇹");
+    cy.contains("h1", "Freelancer Calculator Portugal 🇵🇹");
   });
 });
 
