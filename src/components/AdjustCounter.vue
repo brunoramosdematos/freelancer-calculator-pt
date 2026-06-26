@@ -12,9 +12,9 @@
     <span type="number" class="text-center py-2 w-20">
       <slot>
         <FormattedNumberInput
+          :id="inputId"
           v-model:value="counterDisplay"
           class="text-center"
-          :id="inputId"
           :aria-label="inputId ? undefined : resolvedInputLabel"
         />
       </slot>

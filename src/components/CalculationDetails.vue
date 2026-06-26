@@ -13,7 +13,7 @@
         id="irs-calculation-details"
         :title="t('calculationDetails.irsTitle')"
         :summary="t('calculationDetails.irsSummary')"
-        heading-level="3"
+        :heading-level="3"
         toggle-data-cy="irs-calculation-details-toggle"
         panel-data-cy="irs-calculation-details-panel"
       >
@@ -24,7 +24,7 @@
         id="social-security-calculation-details"
         :title="t('calculationDetails.socialSecurityTitle')"
         :summary="t('calculationDetails.socialSecuritySummary')"
-        heading-level="3"
+        :heading-level="3"
         :open="socialSecurityOpen"
         toggle-data-cy="social-security-calculation-details-toggle"
         panel-data-cy="social-security-calculation-details-panel"
@@ -37,7 +37,7 @@
         id="deductions-assumptions-details"
         :title="t('calculationDetails.deductionsTitle')"
         :summary="t('calculationDetails.deductionsSummary')"
-        heading-level="3"
+        :heading-level="3"
         toggle-data-cy="deductions-assumptions-details-toggle"
         panel-data-cy="deductions-assumptions-details-panel"
       >

@@ -6,6 +6,7 @@
     "jsx": "preserve",
     "types": ["vitest/globals"],
     "esModuleInterop": true,
+    "skipLibCheck": true,
     "baseUrl": "./",
     "paths": {
       "@/*": ["./src/*"],

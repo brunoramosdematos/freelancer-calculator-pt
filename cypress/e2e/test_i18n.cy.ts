@@ -18,10 +18,6 @@ const visitWithNavigatorLanguages = (languages: string[], path = "/#/") => {
   });
 };
 
-const setInputValue = (selector: string, value: string) => {
-  cy.get(selector).invoke("val", value).trigger("input");
-};
-
 const openPreferences = () => {
   cy.get('[data-cy="preferences-toggle"]').then(($button) => {
     if ($button.attr("aria-expanded") === "false") {

@@ -3,10 +3,10 @@
     <input
       type="button"
       class="cursor-pointer w-full text-start py-2 placeholder:text-subtle bg-inherit border-b-2 border-strong relative focus:outline-none focus:border-focus"
-      :value="value"
       :id="id"
+      :value="value"
       :aria-label="label"
-      :aria-expanded="showDropdown.toString()"
+      :aria-expanded="showDropdown"
       aria-haspopup="true"
       :class="{ 'text-primary': showDropdown }"
     />
@@ -33,29 +33,38 @@
 <script setup lang="ts">
 import { computed, ref } from "vue";
 import { ChevronDownIcon } from "@heroicons/vue/24/outline";
-const emit = defineEmits(["change"]);
-const props = defineProps({
-  id: {
-    type: String,
-    default: "menu-button",
+
+type Choice = string | number;
+
+const emit = defineEmits<{
+  (event: "change", value: Choice): void;
+}>();
+
+const props = withDefaults(
+  defineProps<{
+    id?: string;
+    value?: Choice;
+    displayValue?: string;
+    label?: string;
+    choices?: Choice[];
+    choiceLabels?: Record<string, string>;
+  }>(),
+  {
+    id: "menu-button",
+    value: "",
+    displayValue: undefined,
+    label: "",
+    choices: () => [],
+    choiceLabels: () => ({}),
   },
-  value: { type: String || Number },
-  displayValue: { type: String, required: false },
-  label: { type: String, required: false },
-  choices: { type: Array },
-  choiceLabels: {
-    type: Object,
-    required: false,
-    default: () => ({}),
-  },
-});
+);
 
 const showDropdown = ref(false);
-const value = computed(() => props.displayValue ?? props.value);
-const getChoiceLabel = (choice: any) => {
-  return props.choiceLabels[String(choice)] ?? choice;
+const value = computed(() => props.displayValue ?? props.value ?? "");
+const getChoiceLabel = (choice: Choice) => {
+  return props.choiceLabels[String(choice)] ?? String(choice);
 };
-const changeChoice = (choice: any) => {
+const changeChoice = (choice: Choice) => {
   emit("change", choice);
 };
 </script>

@@ -1,8 +1,19 @@
 {
-  "name": "remotefreelancept",
+  "name": "freelancer-calculator-pt",
   "private": true,
-  "version": "0.0.0",
+  "version": "0.5.0",
+  "description": "Open-source IRS, Social Security and net income calculator for freelancers in Portugal.",
   "type": "module",
+  "author": "Bruno Ramos de Matos",
+  "license": "MIT",
+  "homepage": "https://freelancerpt.brunomatos.dev/",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/brunoramosdematos/freelancer-calculator-pt.git"
+  },
+  "bugs": {
+    "url": "https://github.com/brunoramosdematos/freelancer-calculator-pt/issues"
+  },
   "engines": {
     "node": ">=24 <25"
   },
@@ -17,8 +28,13 @@
     "coverage": "vitest run --coverage",
     "cy:e2e:open": "node scripts/run-cypress-e2e.mjs open",
     "cy:e2e:run": "node scripts/run-cypress-e2e.mjs run",
-    "lint": "eslint --ext .js,.vue --ignore-path .gitignore --fix src",
-    "format": "prettier .  --write"
+    "typecheck": "vue-tsc --noEmit",
+    "lint": "eslint . --ext .js,.cjs,.mjs,.ts,.vue",
+    "lint:fix": "eslint . --ext .js,.cjs,.mjs,.ts,.vue --fix",
+    "format": "prettier . --write",
+    "format:check": "prettier . --check",
+    "check": "npm run audit:prod && npm run audit:critical && npm run format:check && npm run lint && npm run typecheck && npm run vitest -- --run && npm run build && npm run verify:production-build",
+    "check:e2e": "npm run check && npm run cy:e2e:run"
   },
   "dependencies": {
     "@heroicons/vue": "^2.1.1",
@@ -35,6 +51,8 @@
     "@intlify/devtools-types": "^11.1.12",
     "@types/lodash": "^4.14.202",
     "@types/node": "^24.13.2",
+    "@typescript-eslint/eslint-plugin": "^8.62.0",
+    "@typescript-eslint/parser": "^8.62.0",
     "@vitejs/plugin-vue": "^6.0.7",
     "@vue/test-utils": "^2.4.3",
     "autoprefixer": "^10.4.17",
@@ -49,6 +67,8 @@
     "tailwindcss": "^3.4.1",
     "typescript": "^5.9.3",
     "vite": "^7.3.6",
-    "vitest": "^4.1.9"
+    "vitest": "^4.1.9",
+    "vue-eslint-parser": "^10.4.1",
+    "vue-tsc": "^3.3.5"
   }
 }

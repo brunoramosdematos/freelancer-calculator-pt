@@ -11,16 +11,16 @@
 
 Intentionally changed:
 
-| Package | Before | After |
-| --- | ---: | ---: |
-| `vite` | 5.0.12 | 7.3.6 |
-| `vitest` | 1.2.1 | 4.1.9 |
-| `@vitejs/plugin-vue` | 5.0.3 | 6.0.7 |
-| `typescript` | 4.9.5 | 5.9.3 |
-| `@types/node` | 18.11.18 | 24.13.2 |
-| `msw` | 2.1.3 | removed |
-| `rollup` | 4.9.6 | 4.62.2 |
-| `esbuild` | 0.19.11 | 0.28.1 |
+| Package              |   Before |   After |
+| -------------------- | -------: | ------: |
+| `vite`               |   5.0.12 |   7.3.6 |
+| `vitest`             |    1.2.1 |   4.1.9 |
+| `@vitejs/plugin-vue` |    5.0.3 |   6.0.7 |
+| `typescript`         |    4.9.5 |   5.9.3 |
+| `@types/node`        | 18.11.18 | 24.13.2 |
+| `msw`                |    2.1.3 | removed |
+| `rollup`             |    4.9.6 |  4.62.2 |
+| `esbuild`            |  0.19.11 |  0.28.1 |
 
 Explicitly excluded: Cypress, Tailwind, ESLint, Vue runtime, Pinia, Vue Router,
 Chart.js, Sass, package name, package version, fiscal logic, UI behavior, URL
@@ -44,18 +44,18 @@ Installed toolchain:
 
 Baseline command results:
 
-| Command | Exit | Result |
-| --- | ---: | --- |
-| `npm ci` | 0 | 549 packages installed; 32 vulnerabilities reported in full tree |
-| `npm run audit:prod` | 0 | production audit clean |
-| `npm audit --omit=dev --json` | 0 | 0 vulnerabilities |
-| `npm audit --json` | 1 | 32 total: 4 low, 10 moderate, 15 high, 3 critical |
-| `npm audit signatures` | 0 | passed |
-| `npm run vitest -- --run` | 0 | 2 files, 92 tests passed |
-| `npm run build` | 0 | Vite 5.0.12 build passed |
-| `npm run verify:production-build` | 0 | production artifact verified |
-| `npm run cy:e2e:run` | 0 | 6 specs, 105 tests passed |
-| `npx tsc --noEmit` | 1 | unsupported baseline diagnostic |
+| Command                           | Exit | Result                                                           |
+| --------------------------------- | ---: | ---------------------------------------------------------------- |
+| `npm ci`                          |    0 | 549 packages installed; 32 vulnerabilities reported in full tree |
+| `npm run audit:prod`              |    0 | production audit clean                                           |
+| `npm audit --omit=dev --json`     |    0 | 0 vulnerabilities                                                |
+| `npm audit --json`                |    1 | 32 total: 4 low, 10 moderate, 15 high, 3 critical                |
+| `npm audit signatures`            |    0 | passed                                                           |
+| `npm run vitest -- --run`         |    0 | 2 files, 92 tests passed                                         |
+| `npm run build`                   |    0 | Vite 5.0.12 build passed                                         |
+| `npm run verify:production-build` |    0 | production artifact verified                                     |
+| `npm run cy:e2e:run`              |    0 | 6 specs, 105 tests passed                                        |
+| `npx tsc --noEmit`                |    1 | unsupported baseline diagnostic                                  |
 
 Relevant vulnerable paths before:
 
@@ -64,19 +64,19 @@ Relevant vulnerable paths before:
 - Direct `vitest` advisories, including critical API/UI-server advisories.
 - Transitive `rollup` advisory through Vite.
 - MSW development-tooling paths: `msw > @bundled-es-modules/cookie`, `msw >
-  chokidar`, `msw > path-to-regexp`, and `msw > inquirer > external-editor >
-  tmp`.
+chokidar`, `msw > path-to-regexp`, and `msw > inquirer > external-editor >
+tmp`.
 
 Baseline artifact metadata:
 
-| File | Raw bytes | Gzip bytes | SHA-256 |
-| --- | ---: | ---: | --- |
-| `favicon.svg` | 775 | 458 | `a36b79d4696918776e7dcd201ddb27fd0d3716c31ac70048036f8008293e57e3` |
-| `index.html` | 1,992 | 626 | `85be4b534efa184808318a76e853d4da321970f77eb9d7bad3d56d32e30da749` |
-| `robots.txt` | 81 | 96 | `58c144de55e1a79c7d482b0780366d4db7b45b318846a958ae4b47d2ff12655b` |
-| `sitemap.xml` | 179 | 159 | `beb6963fd8d9d454e2c915b44a2575034d9b5190c2b83c8cc7d003c50c1b9269` |
-| `assets/index-Ke9NscWn.css` | 33,598 | 6,441 | `f69af5fe5f94b89316c4741c351a9edf89509ff9c7f659b7396f898b4f8bee73` |
-| `assets/index-sLkUeQuZ.js` | 396,058 | 136,906 | `28959ab1d9a69466ccdce50c5a08345d3678222ab5db1a9463957ff172ecda1f` |
+| File                        | Raw bytes | Gzip bytes | SHA-256                                                            |
+| --------------------------- | --------: | ---------: | ------------------------------------------------------------------ |
+| `favicon.svg`               |       775 |        458 | `a36b79d4696918776e7dcd201ddb27fd0d3716c31ac70048036f8008293e57e3` |
+| `index.html`                |     1,992 |        626 | `85be4b534efa184808318a76e853d4da321970f77eb9d7bad3d56d32e30da749` |
+| `robots.txt`                |        81 |         96 | `58c144de55e1a79c7d482b0780366d4db7b45b318846a958ae4b47d2ff12655b` |
+| `sitemap.xml`               |       179 |        159 | `beb6963fd8d9d454e2c915b44a2575034d9b5190c2b83c8cc7d003c50c1b9269` |
+| `assets/index-Ke9NscWn.css` |    33,598 |      6,441 | `f69af5fe5f94b89316c4741c351a9edf89509ff9c7f659b7396f898b4f8bee73` |
+| `assets/index-sLkUeQuZ.js`  |   396,058 |    136,906 | `28959ab1d9a69466ccdce50c5a08345d3678222ab5db1a9463957ff172ecda1f` |
 
 Baseline title: `Freelancer Calculator Portugal | IRS & Social Security`.
 Baseline canonical: `https://freelancerpt.brunomatos.dev/`.
@@ -217,24 +217,24 @@ Installed versions after fresh `npm ci`:
 
 Final command results:
 
-| Command | Exit | Result |
-| --- | ---: | --- |
-| `node --version` / `npm --version` | 0 | `v24.14.0` / `11.16.0` |
-| `npm ci` | 0 | 489 packages installed; lockfile reproducible |
-| `npx vite --version` | 0 | `vite/7.3.6 win32-x64 node-v24.14.0` |
-| `npx vitest --version` | 0 | `vitest/4.1.9 win32-x64 node-v24.14.0` |
-| `npx tsc --version` | 0 | `Version 5.9.3` |
-| `npm ls vite vitest @vitejs/plugin-vue msw typescript @types/node rollup esbuild` | 0 | no invalid, unmet or extraneous peers |
-| `npm run audit:prod` | 0 | production audit clean |
-| `npm audit --omit=dev --json` | 0 | 0 vulnerabilities |
-| `npm audit --json` | 1 | 22 total: 0 low, 8 moderate, 12 high, 2 critical |
-| `npm audit signatures` | 0 | passed |
-| `npm outdated --json` | 1 | outdated packages remain outside scope |
-| `npm run vitest -- --run` | 0 | 2 files, 92 tests passed |
-| `npm run build` | 0 | Vite 7.3.6 build passed |
-| `npm run verify:production-build` | 0 | production artifact verified |
-| `npm run cy:e2e:run` | 0 | 6 specs, 105 tests passed |
-| `npx tsc --noEmit` | 1 | diagnostic-only, still not a clean project typecheck |
+| Command                                                                           | Exit | Result                                               |
+| --------------------------------------------------------------------------------- | ---: | ---------------------------------------------------- |
+| `node --version` / `npm --version`                                                |    0 | `v24.14.0` / `11.16.0`                               |
+| `npm ci`                                                                          |    0 | 489 packages installed; lockfile reproducible        |
+| `npx vite --version`                                                              |    0 | `vite/7.3.6 win32-x64 node-v24.14.0`                 |
+| `npx vitest --version`                                                            |    0 | `vitest/4.1.9 win32-x64 node-v24.14.0`               |
+| `npx tsc --version`                                                               |    0 | `Version 5.9.3`                                      |
+| `npm ls vite vitest @vitejs/plugin-vue msw typescript @types/node rollup esbuild` |    0 | no invalid, unmet or extraneous peers                |
+| `npm run audit:prod`                                                              |    0 | production audit clean                               |
+| `npm audit --omit=dev --json`                                                     |    0 | 0 vulnerabilities                                    |
+| `npm audit --json`                                                                |    1 | 22 total: 0 low, 8 moderate, 12 high, 2 critical     |
+| `npm audit signatures`                                                            |    0 | passed                                               |
+| `npm outdated --json`                                                             |    1 | outdated packages remain outside scope               |
+| `npm run vitest -- --run`                                                         |    0 | 2 files, 92 tests passed                             |
+| `npm run build`                                                                   |    0 | Vite 7.3.6 build passed                              |
+| `npm run verify:production-build`                                                 |    0 | production artifact verified                         |
+| `npm run cy:e2e:run`                                                              |    0 | 6 specs, 105 tests passed                            |
+| `npx tsc --noEmit`                                                                |    1 | diagnostic-only, still not a clean project typecheck |
 
 Final complete-tree audit totals:
 
@@ -277,14 +277,14 @@ Remaining high/critical development findings:
 
 Functional fiscal checks:
 
-| Scenario | Result |
-| --- | ---: |
-| 2024, EUR 60,000 annual gross, individual | IRS EUR 12,576.22 |
-| 2024, EUR 60,000 annual gross, joint single-income | IRS EUR 8,608.78998 |
-| 2024, EUR 60,000 annual gross, joint single-income with dependents aged 2 and 5 | IRS EUR 7,108.78998 |
-| 2026, EUR 11,000 monthly, SS 0% | EUR 1,379.34984/month |
-| 2026, EUR 11,000 monthly, SS -20% | EUR 1,318.24/month |
-| 2026, EUR 11,000 monthly, SS -25% | EUR 1,235.85/month |
+| Scenario                                                                        |                Result |
+| ------------------------------------------------------------------------------- | --------------------: |
+| 2024, EUR 60,000 annual gross, individual                                       |     IRS EUR 12,576.22 |
+| 2024, EUR 60,000 annual gross, joint single-income                              |   IRS EUR 8,608.78998 |
+| 2024, EUR 60,000 annual gross, joint single-income with dependents aged 2 and 5 |   IRS EUR 7,108.78998 |
+| 2026, EUR 11,000 monthly, SS 0%                                                 | EUR 1,379.34984/month |
+| 2026, EUR 11,000 monthly, SS -20%                                               |    EUR 1,318.24/month |
+| 2026, EUR 11,000 monthly, SS -25%                                               |    EUR 1,235.85/month |
 
 ## Artifact comparison
 
@@ -292,14 +292,14 @@ Final title: `Freelancer Calculator Portugal | IRS & Social Security`.
 Final canonical: `https://freelancerpt.brunomatos.dev/`.
 Final assets: `/assets/index-CShlC_Aq.js`, `/assets/index-CCTCWyl7.css`.
 
-| File | Raw bytes | Gzip bytes | SHA-256 |
-| --- | ---: | ---: | --- |
-| `favicon.svg` | 775 | 458 | `a36b79d4696918776e7dcd201ddb27fd0d3716c31ac70048036f8008293e57e3` |
-| `index.html` | 1,992 | 625 | `d6a7424309d9a8fa396f014dd0810578a01c6d3465a063da6605c2d18a5160f7` |
-| `robots.txt` | 81 | 96 | `58c144de55e1a79c7d482b0780366d4db7b45b318846a958ae4b47d2ff12655b` |
-| `sitemap.xml` | 179 | 159 | `beb6963fd8d9d454e2c915b44a2575034d9b5190c2b83c8cc7d003c50c1b9269` |
-| `assets/index-CCTCWyl7.css` | 33,574 | 6,441 | `7be4e91463d565c67fe64ac38663e1199bae8ce8e1ada53045c6c7ceb0e75da8` |
-| `assets/index-CShlC_Aq.js` | 394,422 | 136,205 | `9b723c6bb730d35846b5a43ed8a94a7c5b3a2a86fe54f6d2326706ee3ab80067` |
+| File                        | Raw bytes | Gzip bytes | SHA-256                                                            |
+| --------------------------- | --------: | ---------: | ------------------------------------------------------------------ |
+| `favicon.svg`               |       775 |        458 | `a36b79d4696918776e7dcd201ddb27fd0d3716c31ac70048036f8008293e57e3` |
+| `index.html`                |     1,992 |        625 | `d6a7424309d9a8fa396f014dd0810578a01c6d3465a063da6605c2d18a5160f7` |
+| `robots.txt`                |        81 |         96 | `58c144de55e1a79c7d482b0780366d4db7b45b318846a958ae4b47d2ff12655b` |
+| `sitemap.xml`               |       179 |        159 | `beb6963fd8d9d454e2c915b44a2575034d9b5190c2b83c8cc7d003c50c1b9269` |
+| `assets/index-CCTCWyl7.css` |    33,574 |      6,441 | `7be4e91463d565c67fe64ac38663e1199bae8ce8e1ada53045c6c7ceb0e75da8` |
+| `assets/index-CShlC_Aq.js`  |   394,422 |    136,205 | `9b723c6bb730d35846b5a43ed8a94a7c5b3a2a86fe54f6d2326706ee3ab80067` |
 
 Size deltas:
 
@@ -357,14 +357,14 @@ Rollback target:
 
 Expected direct package versions after rollback:
 
-| Package | Version after rollback |
-| --- | ---: |
-| `vite` | 5.0.12 |
-| `vitest` | 1.2.1 |
-| `@vitejs/plugin-vue` | 5.0.3 |
-| `typescript` | 4.9.5 |
-| `@types/node` | 18.11.18 |
-| `msw` | 2.1.3 |
+| Package              | Version after rollback |
+| -------------------- | ---------------------: |
+| `vite`               |                 5.0.12 |
+| `vitest`             |                  1.2.1 |
+| `@vitejs/plugin-vue` |                  5.0.3 |
+| `typescript`         |                  4.9.5 |
+| `@types/node`        |               18.11.18 |
+| `msw`                |                  2.1.3 |
 
 Verification commands after rollback:
 

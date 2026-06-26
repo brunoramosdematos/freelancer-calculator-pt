@@ -109,7 +109,7 @@
       <DisclosurePanel
         id="mobile-frequency-comparison"
         :title="t('frequency.compare')"
-        heading-level="3"
+        :heading-level="3"
         toggle-data-cy="mobile-frequency-comparison-toggle"
       >
         <div class="grid grid-cols-3 gap-2 text-xs text-muted">

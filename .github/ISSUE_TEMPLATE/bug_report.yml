@@ -1,0 +1,65 @@
+name: Bug report
+description: Report a reproducible problem in the calculator.
+title: "[Bug]: "
+labels: ["bug"]
+body:
+  - type: dropdown
+    id: locale
+    attributes:
+      label: Locale
+      options:
+        - English
+        - Portugues (Portugal)
+        - Portugues (Brasil)
+        - Not sure
+    validations:
+      required: true
+  - type: input
+    id: browser
+    attributes:
+      label: Browser
+      placeholder: "Chrome 126, Safari 18, Firefox 128..."
+  - type: input
+    id: device
+    attributes:
+      label: Device
+      placeholder: "Desktop, iPhone, Android tablet..."
+  - type: dropdown
+    id: theme
+    attributes:
+      label: Theme
+      options:
+        - System
+        - Light
+        - Dark
+        - Not sure
+  - type: textarea
+    id: safe-url
+    attributes:
+      label: URL or query parameters, if safe to share
+      description: Do not include private income or personal financial details.
+      placeholder: "Example: /#/?currentTaxRankYear=2026"
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behavior
+    validations:
+      required: true
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual behavior
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      placeholder: "1. Open...\n2. Select...\n3. See..."
+    validations:
+      required: true
+  - type: textarea
+    id: screenshots
+    attributes:
+      label: Screenshots
+      description: Add screenshots when useful, without private financial data.

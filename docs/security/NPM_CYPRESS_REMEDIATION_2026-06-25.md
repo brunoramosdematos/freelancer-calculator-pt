@@ -11,20 +11,20 @@
 
 Intentionally changed:
 
-| Package or tool | Before | After |
-| --- | ---: | ---: |
-| `cypress` package | 13.6.3 | 15.18.0 |
-| Cypress binary | 13.6.3 | 15.18.0 |
-| Cypress Electron | 25.8.4 | 37.6.0 |
-| Cypress bundled Node | 18.15.0 | 22.19.0 |
-| `@cypress/request` | 3.0.1 | 4.0.1 |
-| `form-data` in Cypress path | 2.3.3 | 4.0.6 |
-| `tmp` in Cypress path | 0.2.1 | 0.2.7 |
-| `lodash` in Cypress path | 4.17.21 | 4.18.1 |
-| `start-server-and-test` | 2.0.3 | removed |
-| `wait-on` | 7.2.0 | removed |
-| `axios` | 1.6.5 | removed |
-| `cypress-io/github-action` | v6 | v7.4.0 |
+| Package or tool             |  Before |   After |
+| --------------------------- | ------: | ------: |
+| `cypress` package           |  13.6.3 | 15.18.0 |
+| Cypress binary              |  13.6.3 | 15.18.0 |
+| Cypress Electron            |  25.8.4 |  37.6.0 |
+| Cypress bundled Node        | 18.15.0 | 22.19.0 |
+| `@cypress/request`          |   3.0.1 |   4.0.1 |
+| `form-data` in Cypress path |   2.3.3 |   4.0.6 |
+| `tmp` in Cypress path       |   0.2.1 |   0.2.7 |
+| `lodash` in Cypress path    | 4.17.21 |  4.18.1 |
+| `start-server-and-test`     |   2.0.3 | removed |
+| `wait-on`                   |   7.2.0 | removed |
+| `axios`                     |   1.6.5 | removed |
+| `cypress-io/github-action`  |      v6 |  v7.4.0 |
 
 Explicitly excluded: Vite, Vitest, TypeScript, `@types/node`, Vue, Pinia, Vue
 Router, Tailwind, ESLint, Sass, PostCSS, production domain, GitHub Pages
@@ -37,18 +37,18 @@ No application runtime file under `src/` changed.
 
 Baseline command results:
 
-| Command | Exit | Result |
-| --- | ---: | --- |
-| `npm ci` | 0 | 489 packages; 22 vulnerabilities |
-| `npm run audit:prod` | 0 | production audit clean |
-| `npm audit --omit=dev --json` | 0 | 0 vulnerabilities |
-| `npm audit --json` | 1 | 22 total: 0 low, 8 moderate, 12 high, 2 critical |
-| `npm audit signatures` | 0 | 489 packages with verified registry signatures; 36 attestations |
-| `npm run vitest -- --run` | 0 | 2 files, 92 tests passed |
-| `npm run build` | 0 | production build passed |
-| `npm run verify:production-build` | 0 | production artifact verified |
-| `npm run cy:e2e:run` | 0 | 6 specs, 105 tests passed |
-| `npx tsc --noEmit` | 2 | diagnostic-only baseline |
+| Command                           | Exit | Result                                                          |
+| --------------------------------- | ---: | --------------------------------------------------------------- |
+| `npm ci`                          |    0 | 489 packages; 22 vulnerabilities                                |
+| `npm run audit:prod`              |    0 | production audit clean                                          |
+| `npm audit --omit=dev --json`     |    0 | 0 vulnerabilities                                               |
+| `npm audit --json`                |    1 | 22 total: 0 low, 8 moderate, 12 high, 2 critical                |
+| `npm audit signatures`            |    0 | 489 packages with verified registry signatures; 36 attestations |
+| `npm run vitest -- --run`         |    0 | 2 files, 92 tests passed                                        |
+| `npm run build`                   |    0 | production build passed                                         |
+| `npm run verify:production-build` |    0 | production artifact verified                                    |
+| `npm run cy:e2e:run`              |    0 | 6 specs, 105 tests passed                                       |
+| `npx tsc --noEmit`                |    2 | diagnostic-only baseline                                        |
 
 Relevant vulnerable paths before:
 
@@ -73,14 +73,14 @@ Baseline Cypress details:
 
 Baseline artifact metadata:
 
-| File | Raw bytes | Gzip bytes | SHA-256 |
-| --- | ---: | ---: | --- |
-| `assets/index-CCTCWyl7.css` | 33,574 | 6,441 | `7be4e91463d565c67fe64ac38663e1199bae8ce8e1ada53045c6c7ceb0e75da8` |
-| `assets/index-CShlC_Aq.js` | 394,422 | 136,205 | `9b723c6bb730d35846b5a43ed8a94a7c5b3a2a86fe54f6d2326706ee3ab80067` |
-| `favicon.svg` | 775 | 458 | `a36b79d4696918776e7dcd201ddb27fd0d3716c31ac70048036f8008293e57e3` |
-| `index.html` | 1,992 | 625 | `d6a7424309d9a8fa396f014dd0810578a01c6d3465a063da6605c2d18a5160f7` |
-| `robots.txt` | 81 | 96 | `58c144de55e1a79c7d482b0780366d4db7b45b318846a958ae4b47d2ff12655b` |
-| `sitemap.xml` | 179 | 159 | `beb6963fd8d9d454e2c915b44a2575034d9b5190c2b83c8cc7d003c50c1b9269` |
+| File                        | Raw bytes | Gzip bytes | SHA-256                                                            |
+| --------------------------- | --------: | ---------: | ------------------------------------------------------------------ |
+| `assets/index-CCTCWyl7.css` |    33,574 |      6,441 | `7be4e91463d565c67fe64ac38663e1199bae8ce8e1ada53045c6c7ceb0e75da8` |
+| `assets/index-CShlC_Aq.js`  |   394,422 |    136,205 | `9b723c6bb730d35846b5a43ed8a94a7c5b3a2a86fe54f6d2326706ee3ab80067` |
+| `favicon.svg`               |       775 |        458 | `a36b79d4696918776e7dcd201ddb27fd0d3716c31ac70048036f8008293e57e3` |
+| `index.html`                |     1,992 |        625 | `d6a7424309d9a8fa396f014dd0810578a01c6d3465a063da6605c2d18a5160f7` |
+| `robots.txt`                |        81 |         96 | `58c144de55e1a79c7d482b0780366d4db7b45b318846a958ae4b47d2ff12655b` |
+| `sitemap.xml`               |       179 |        159 | `beb6963fd8d9d454e2c915b44a2575034d9b5190c2b83c8cc7d003c50c1b9269` |
 
 Baseline title: `Freelancer Calculator Portugal | IRS & Social Security`.
 Baseline canonical: `https://freelancerpt.brunomatos.dev/`.
@@ -212,26 +212,26 @@ Final Cypress details:
 Final command results after deleting `node_modules` and running fresh
 `npm ci`:
 
-| Command | Exit | Result |
-| --- | ---: | --- |
-| `node --version` | 0 | `v24.14.0` |
-| `npm --version` | 0 | `11.16.0` |
-| `npm ci` | 0 | 483 packages; 13 vulnerabilities |
-| `npx cypress install` | 0 | Cypress 15.18.0 already installed in cache |
-| `npx cypress verify` | 0 | Cypress verified |
-| `npx cypress version` | 0 | package/binary 15.18.0; Electron 37.6.0; bundled Node 22.19.0 |
-| `npx cypress info` | 0 | Chrome, Edge and Firefox detected |
-| `npm run audit:prod` | 0 | production audit clean |
-| `npm run audit:critical` | 0 | complete-tree critical count zero |
-| `npm audit --omit=dev --json` | 0 | 0 vulnerabilities |
-| `npm audit --json` | 1 | 13 total: 0 low, 4 moderate, 9 high, 0 critical |
-| `npm audit signatures` | 0 | 483 packages with verified registry signatures; 38 attestations |
-| `npm outdated --json` | 1 | outdated packages remain outside this execution |
-| `npm run vitest -- --run` | 0 | 2 files, 92 tests passed |
-| `npm run build` | 0 | production build passed |
-| `npm run verify:production-build` | 0 | production artifact verified |
-| `npm run cy:e2e:run` | 0 | 6 specs, 105 tests passed |
-| `npx tsc --noEmit` | 2 | diagnostic-only; no new Cypress type category |
+| Command                           | Exit | Result                                                          |
+| --------------------------------- | ---: | --------------------------------------------------------------- |
+| `node --version`                  |    0 | `v24.14.0`                                                      |
+| `npm --version`                   |    0 | `11.16.0`                                                       |
+| `npm ci`                          |    0 | 483 packages; 13 vulnerabilities                                |
+| `npx cypress install`             |    0 | Cypress 15.18.0 already installed in cache                      |
+| `npx cypress verify`              |    0 | Cypress verified                                                |
+| `npx cypress version`             |    0 | package/binary 15.18.0; Electron 37.6.0; bundled Node 22.19.0   |
+| `npx cypress info`                |    0 | Chrome, Edge and Firefox detected                               |
+| `npm run audit:prod`              |    0 | production audit clean                                          |
+| `npm run audit:critical`          |    0 | complete-tree critical count zero                               |
+| `npm audit --omit=dev --json`     |    0 | 0 vulnerabilities                                               |
+| `npm audit --json`                |    1 | 13 total: 0 low, 4 moderate, 9 high, 0 critical                 |
+| `npm audit signatures`            |    0 | 483 packages with verified registry signatures; 38 attestations |
+| `npm outdated --json`             |    1 | outdated packages remain outside this execution                 |
+| `npm run vitest -- --run`         |    0 | 2 files, 92 tests passed                                        |
+| `npm run build`                   |    0 | production build passed                                         |
+| `npm run verify:production-build` |    0 | production artifact verified                                    |
+| `npm run cy:e2e:run`              |    0 | 6 specs, 105 tests passed                                       |
+| `npx tsc --noEmit`                |    2 | diagnostic-only; no new Cypress type category                   |
 
 Remaining complete-tree findings:
 
@@ -244,7 +244,7 @@ Removed findings:
 - `@cypress/request` critical path.
 - Vulnerable `form-data` critical path through Cypress/request.
 - Vulnerable `form-data` path through `start-server-and-test > wait-on >
-  axios`.
+axios`.
 - `axios`, `follow-redirects`, `joi`, `qs`, old `lodash`, old `tmp` and
   related wait-on paths.
 
@@ -256,14 +256,14 @@ Typecheck diagnostic:
 
 Functional fiscal checks:
 
-| Scenario | Result |
-| --- | ---: |
-| 2024, EUR 60,000 annual gross, individual IRS | `12576.22` |
-| 2024, EUR 60,000 annual gross, joint single-income IRS | `8608.78998` |
-| 2024, EUR 60,000 annual gross, joint single-income with dependents aged 2 and 5 IRS | `7108.78998` |
-| 2026, EUR 11,000 monthly, SS 0% | `1379.3498399999999` |
-| 2026, EUR 11,000 monthly, SS -20% | `1318.24` |
-| 2026, EUR 11,000 monthly, SS -25% | `1235.8499999999997` |
+| Scenario                                                                            |               Result |
+| ----------------------------------------------------------------------------------- | -------------------: |
+| 2024, EUR 60,000 annual gross, individual IRS                                       |           `12576.22` |
+| 2024, EUR 60,000 annual gross, joint single-income IRS                              |         `8608.78998` |
+| 2024, EUR 60,000 annual gross, joint single-income with dependents aged 2 and 5 IRS |         `7108.78998` |
+| 2026, EUR 11,000 monthly, SS 0%                                                     | `1379.3498399999999` |
+| 2026, EUR 11,000 monthly, SS -20%                                                   |            `1318.24` |
+| 2026, EUR 11,000 monthly, SS -25%                                                   | `1235.8499999999997` |
 
 `npm run cy:e2e:run` released port `8261` after completion:
 `port_8261_listening=false`.
@@ -276,14 +276,14 @@ Headless run mode and CI are the deployment gates.
 
 The final production artifact is byte-for-byte identical to the baseline.
 
-| File | Raw bytes | Gzip bytes | SHA-256 |
-| --- | ---: | ---: | --- |
-| `assets/index-CCTCWyl7.css` | 33,574 | 6,441 | `7be4e91463d565c67fe64ac38663e1199bae8ce8e1ada53045c6c7ceb0e75da8` |
-| `assets/index-CShlC_Aq.js` | 394,422 | 136,205 | `9b723c6bb730d35846b5a43ed8a94a7c5b3a2a86fe54f6d2326706ee3ab80067` |
-| `favicon.svg` | 775 | 458 | `a36b79d4696918776e7dcd201ddb27fd0d3716c31ac70048036f8008293e57e3` |
-| `index.html` | 1,992 | 625 | `d6a7424309d9a8fa396f014dd0810578a01c6d3465a063da6605c2d18a5160f7` |
-| `robots.txt` | 81 | 96 | `58c144de55e1a79c7d482b0780366d4db7b45b318846a958ae4b47d2ff12655b` |
-| `sitemap.xml` | 179 | 159 | `beb6963fd8d9d454e2c915b44a2575034d9b5190c2b83c8cc7d003c50c1b9269` |
+| File                        | Raw bytes | Gzip bytes | SHA-256                                                            |
+| --------------------------- | --------: | ---------: | ------------------------------------------------------------------ |
+| `assets/index-CCTCWyl7.css` |    33,574 |      6,441 | `7be4e91463d565c67fe64ac38663e1199bae8ce8e1ada53045c6c7ceb0e75da8` |
+| `assets/index-CShlC_Aq.js`  |   394,422 |    136,205 | `9b723c6bb730d35846b5a43ed8a94a7c5b3a2a86fe54f6d2326706ee3ab80067` |
+| `favicon.svg`               |       775 |        458 | `a36b79d4696918776e7dcd201ddb27fd0d3716c31ac70048036f8008293e57e3` |
+| `index.html`                |     1,992 |        625 | `d6a7424309d9a8fa396f014dd0810578a01c6d3465a063da6605c2d18a5160f7` |
+| `robots.txt`                |        81 |         96 | `58c144de55e1a79c7d482b0780366d4db7b45b318846a958ae4b47d2ff12655b` |
+| `sitemap.xml`               |       179 |        159 | `beb6963fd8d9d454e2c915b44a2575034d9b5190c2b83c8cc7d003c50c1b9269` |
 
 Final title: `Freelancer Calculator Portugal | IRS & Social Security`.
 Final canonical: `https://freelancerpt.brunomatos.dev/`.

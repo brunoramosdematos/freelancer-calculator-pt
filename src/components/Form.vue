@@ -29,9 +29,7 @@
         >
           {{ t("app.productHeading") }}
         </h4>
-        <p
-          class="md:mt-3 md:mb-5 text-sm md:text-xl text-muted font-light"
-        >
+        <p class="md:mt-3 md:mb-5 text-sm md:text-xl text-muted font-light">
           {{ t("simulator.tagline") }}
         </p>
         <div class="flex flex-col justify-around items-center md:flex-row">
@@ -207,6 +205,8 @@ const defaultIncomes = computed(() => {
       return [3000, 5000, 6000, 7000, 10000];
     case FrequencyChoices.Day:
       return [200, 300, 500, 700, 1000];
+    default:
+      return [30000, 50000, 60000, 70000, 100000];
   }
 });
 

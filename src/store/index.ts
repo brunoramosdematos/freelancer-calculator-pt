@@ -4,7 +4,6 @@ import {
   FrequencyChoices,
   GrossIncome,
   TaxRank,
-  YouthIrsRank,
   YouthIrs,
 } from "@/typings";
 import { generateUUID } from "@/utils.js";
@@ -19,6 +18,9 @@ export const SUPPORTED_TAX_RANK_YEARS = [2023, 2024, 2025, 2026].sort(
 export const DEFAULT_TAX_RANK_YEAR: (typeof SUPPORTED_TAX_RANK_YEARS)[number] = 2025;
 const SIMULATIONS_LOCAL_STORE_KEY = "net_income_simulations";
 const ASSESSMENT_SCENARIOS = Object.values(AssessmentScenario);
+type UrlParameterParser<T> = (value: unknown) => T;
+type UrlParameterValidator<T> = (value: T) => boolean;
+type UrlParameterSetter<T> = (value: T, syncUrl: boolean) => void;
 const FALLBACK_TAX_RANK: TaxRank = {
   id: 1,
   min: 0,
@@ -767,25 +769,23 @@ const useTaxesStore = defineStore({
         });
       }
     },
-    setParameterFromUrl(
-      value: any,
-      setter: CallableFunction,
-      parser: Function | null = null,
-      validator: CallableFunction | null = null,
+    setParameterFromUrl<T>(
+      value: unknown,
+      setter: UrlParameterSetter<T>,
+      parser: UrlParameterParser<T> | null = null,
+      validator: UrlParameterValidator<T> | null = null,
     ): boolean {
       if (value === undefined) {
         // undefined means the parameter was not in the URL
         return false;
       }
-      if (parser !== null) {
-        value = parser(value);
-      }
+      const parsedValue = parser === null ? (value as T) : parser(value);
 
-      if (validator !== null && !validator(value)) {
+      if (validator !== null && !validator(parsedValue)) {
         return false;
       }
 
-      setter(value, false);
+      setter(parsedValue, false);
       return true;
     },
     setParametersFromURL(params: Record<string, unknown>) {

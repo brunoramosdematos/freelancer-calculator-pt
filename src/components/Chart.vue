@@ -22,7 +22,12 @@
 
 <script lang="ts" setup>
 import { computed, onBeforeUnmount, onMounted, ref, watch } from "vue";
-import { Chart, registerables, type Chart as ChartInstance } from "chart.js";
+import {
+  Chart,
+  registerables,
+  type Chart as ChartInstance,
+  type ChartOptions,
+} from "chart.js";
 import { useI18n } from "vue-i18n";
 
 import { storeToRefs } from "pinia";
@@ -54,15 +59,21 @@ const getThemeRgb = (name: string, fallback: string) => {
 };
 
 const chartPalette = computed(() => {
-  resolvedTheme.value;
+  const isDark = resolvedTheme.value === "dark";
 
   return {
-    netIncome: getThemeRgb("--color-income", "#15803d"),
-    irs: getThemeRgb("--color-irs", "#be123c"),
-    ss: getThemeRgb("--color-social-security", "#1d4ed8"),
-    label: getThemeRgb("--color-chart-label", "#ffffff"),
-    tooltipBackground: getThemeRgb("--color-chart-tooltip", "#171717"),
-    tooltipText: getThemeRgb("--color-chart-tooltip-text", "#ffffff"),
+    netIncome: getThemeRgb("--color-income", isDark ? "#86efac" : "#15803d"),
+    irs: getThemeRgb("--color-irs", isDark ? "#fb7185" : "#be123c"),
+    ss: getThemeRgb("--color-social-security", isDark ? "#93c5fd" : "#1d4ed8"),
+    label: getThemeRgb("--color-chart-label", isDark ? "#0f172a" : "#ffffff"),
+    tooltipBackground: getThemeRgb(
+      "--color-chart-tooltip",
+      isDark ? "#f8fafc" : "#171717",
+    ),
+    tooltipText: getThemeRgb(
+      "--color-chart-tooltip-text",
+      isDark ? "#0f172a" : "#ffffff",
+    ),
   };
 });
 
@@ -86,7 +97,7 @@ const chartData = computed(() => {
     ],
   };
 });
-const chartOptions = computed(() => {
+const chartOptions = computed<ChartOptions<"doughnut">>(() => {
   return {
     plugins: {
       legend: {
@@ -94,7 +105,7 @@ const chartOptions = computed(() => {
       },
       datalabels: {
         display: true,
-        textAlign: "center",
+        textAlign: "center" as const,
         formatter: (val, ctx) => {
           return (
             ctx.chart.data.labels[ctx.dataIndex] +
@@ -119,33 +130,19 @@ const chartOptions = computed(() => {
   };
 });
 
-watch(
-  () => [
-    chartData.value,
-    chartOptions.value,
-    locale.value,
-    resolvedTheme.value,
-  ],
-  (newData) => {
-    if (!chart) {
-      return;
-    }
+watch([chartData, chartOptions, locale, resolvedTheme], ([data, options]) => {
+  if (!chart) {
+    return;
+  }
 
-    const [data, options] = newData as [
-      typeof chartData.value,
-      typeof chartOptions.value,
-      string,
-    ];
-
-    chart.data.labels = data.labels;
-    data.datasets.forEach((d, i) => {
-      chart.data.datasets[i].data = d.data;
-      chart.data.datasets[i].backgroundColor = d.backgroundColor;
-    });
-    chart.options = options;
-    chart.update();
-  },
-);
+  chart.data.labels = data.labels;
+  data.datasets.forEach((d, i) => {
+    chart.data.datasets[i].data = d.data;
+    chart.data.datasets[i].backgroundColor = d.backgroundColor;
+  });
+  chart.options = options;
+  chart.update();
+});
 
 onBeforeUnmount(() => {
   chart?.destroy();

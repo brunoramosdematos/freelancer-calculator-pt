@@ -10,8 +10,9 @@ Repository: https://github.com/brunoramosdematos/freelancer-calculator-pt
 
 The UI supports English, Português (Portugal), Português (Brasil), and the
 System, Light, and Dark appearance preferences. Localization architecture and
-glossary guidance are documented in [docs/I18N.md](docs/I18N.md). Appearance
-architecture is documented in [docs/THEMING.md](docs/THEMING.md).
+glossary guidance are documented in [docs/I18N.md](docs/I18N.md), appearance
+architecture is documented in [docs/THEMING.md](docs/THEMING.md), and local/CI
+quality gates are documented in [docs/QUALITY_GATES.md](docs/QUALITY_GATES.md).
 
 ## Scope
 
@@ -63,6 +64,12 @@ Run unit tests:
 npm run vitest -- --run
 ```
 
+Run the release-hardening local quality gate:
+
+```bash
+npm run check
+```
+
 Run Cypress E2E tests:
 
 ```bash
@@ -91,6 +98,12 @@ The latest Cypress toolchain remediation report is documented in
 [docs/security/NPM_CYPRESS_REMEDIATION_2026-06-25.md](docs/security/NPM_CYPRESS_REMEDIATION_2026-06-25.md).
 Audit findings change as advisories and package versions change, and dependency
 remediation is tracked in dated reports rather than changing README totals.
+
+## Contributing And Security
+
+Contributor setup, branch expectations and tax-rule contribution guidance are
+documented in [CONTRIBUTING.md](CONTRIBUTING.md). Vulnerability reporting and
+dependency audit policy are documented in [SECURITY.md](SECURITY.md).
 
 ## Upstream Attribution
 

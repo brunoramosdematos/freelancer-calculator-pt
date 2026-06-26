@@ -1,0 +1,52 @@
+name: Tax rule issue
+description: Report a possible tax, deduction or Social Security rule issue.
+title: "[Tax rule]: "
+labels: ["tax-rule"]
+body:
+  - type: input
+    id: tax-year
+    attributes:
+      label: Tax year
+      placeholder: "2024, 2025, 2026..."
+    validations:
+      required: true
+  - type: dropdown
+    id: assessment
+    attributes:
+      label: Assessment scenario
+      options:
+        - Individual
+        - Joint single-income
+        - Not sure
+    validations:
+      required: true
+  - type: input
+    id: dependents
+    attributes:
+      label: Dependents
+      placeholder: "Example: 2 dependents, aged 2 and 5"
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected rule or result
+      description: Use anonymized numbers only.
+    validations:
+      required: true
+  - type: textarea
+    id: actual
+    attributes:
+      label: Current calculator behavior
+    validations:
+      required: true
+  - type: textarea
+    id: source
+    attributes:
+      label: Official source
+      description: Link to Autoridade Tributaria, Seguranca Social or legislation.
+    validations:
+      required: true
+  - type: textarea
+    id: notes
+    attributes:
+      label: Additional notes
+      description: Do not attach private tax returns, invoices or bank records.

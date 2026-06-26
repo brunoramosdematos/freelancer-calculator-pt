@@ -6,7 +6,7 @@
       class="inline-flex rounded-full text-subtle hover:text-foreground focus:outline-none focus-visible:ring-2 focus-visible:ring-focus focus-visible:ring-offset-2"
       :aria-label="resolvedLabel"
       aria-haspopup="dialog"
-      :aria-expanded="isOpen.toString()"
+      :aria-expanded="isOpen"
       :aria-controls="panelId"
       @click="toggle"
     >

@@ -5,7 +5,7 @@
         :id="buttonId"
         type="button"
         class="flex w-full items-center justify-between gap-4 rounded-lg px-4 py-3 text-left focus:outline-none focus-visible:ring-2 focus-visible:ring-focus focus-visible:ring-offset-2"
-        :aria-expanded="isOpen.toString()"
+        :aria-expanded="isOpen"
         :aria-controls="panelId"
         :data-cy="toggleDataCy"
         @click="toggle"
