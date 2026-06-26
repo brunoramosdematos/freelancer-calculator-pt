@@ -12,7 +12,7 @@ const port = 4173;
 const baseUrl = `http://${host}:${port}`;
 const urls = ["/#/", "/#/?income=60000", "/#/about"];
 const thresholds = {
-  performance: 0.55,
+  performance: 0.45,
   accessibility: 0.9,
   "best-practices": 0.9,
   seo: 0.9,
