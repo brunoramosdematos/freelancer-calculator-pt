@@ -155,6 +155,8 @@ describe("automated accessibility coverage", () => {
 
     cy.get('[data-cy="view-tax-ranks-button"]').click();
     cy.get("#tax-ranks-dialog-title").should("be.visible");
+    // The tax-rank dialog is wrapped in a Vue opacity transition; run axe after it settles.
+    cy.wait(200);
     checkA11y("IRS tax-rank dialog pt-PT dark");
     cy.get('button[aria-label="Fechar janela"]').click();
 
