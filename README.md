@@ -21,7 +21,9 @@ governance is documented in [docs/RELEASE_PROCESS.md](docs/RELEASE_PROCESS.md),
 [docs/VERSIONING.md](docs/VERSIONING.md),
 [docs/TAX_UPDATE_POLICY.md](docs/TAX_UPDATE_POLICY.md),
 [docs/BRANCH_PROTECTION.md](docs/BRANCH_PROTECTION.md) and
-[docs/ROADMAP.md](docs/ROADMAP.md).
+[docs/ROADMAP.md](docs/ROADMAP.md). Versioned release notes live under
+[docs/releases](docs/releases), starting with
+[docs/releases/v0.5.0.md](docs/releases/v0.5.0.md).
 
 ## Scope
 

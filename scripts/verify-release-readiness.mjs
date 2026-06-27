@@ -48,6 +48,7 @@ const requiredFiles = [
   "CHANGELOG.md",
   "CONTRIBUTING.md",
   "SECURITY.md",
+  `docs/releases/v${packageJson.version}.md`,
   "docs/RELEASE_PROCESS.md",
   "docs/VERSIONING.md",
   "docs/TAX_UPDATE_POLICY.md",

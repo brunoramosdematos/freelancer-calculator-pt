@@ -20,8 +20,8 @@ This project uses local and CI gates to keep releases reproducible.
 - `npm run lighthouse:ci` runs desktop Lighthouse smoke checks against local
   production preview URLs.
 - `npm run verify:release-readiness` verifies release governance files,
-  changelog structure, CODEOWNERS, issue templates, workflow jobs and required
-  package scripts.
+  versioned release notes, changelog structure, CODEOWNERS, issue templates,
+  workflow jobs and required package scripts.
 - `npm run check` runs production audit, critical audit, formatting, lint,
   typecheck, Vitest, build and production verification.
 - `npm run check:e2e` runs `check` plus Cypress.

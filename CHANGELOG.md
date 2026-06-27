@@ -8,34 +8,11 @@ GitHub releases, support references and public production checkpoints.
 
 ## [Unreleased]
 
-### Added
+No changes yet.
 
-- Release governance documentation, release validation workflow and release
-  readiness checks.
-- Manual branch-protection checklist and CODEOWNERS ownership metadata.
-- Tax data update policy and maintenance roadmap.
+## [0.5.0] - 2026-06-27
 
-### Changed
-
-- `check:release` now includes release-readiness verification.
-
-### Fixed
-
-- No application fixes in this unreleased governance update.
-
-### Security
-
-- No production dependency changes in this unreleased governance update.
-
-### Documentation
-
-- Added release process, versioning, tax update, branch protection and roadmap
-  documentation.
-
-## [0.5.0] - 2026-06-26
-
-Historical baseline captured as `0.5.0`. No Git tag existed at the time this
-baseline was documented.
+First formal public release of Freelancer Calculator Portugal.
 
 ### Added
 
@@ -52,10 +29,17 @@ baseline was documented.
 - Vite, Vitest and Cypress modernization.
 - Accessibility and performance gates.
 - Quality, typecheck, lint and format gates.
+- Release governance documentation, release validation workflow and release
+  readiness checks.
+- Manual branch-protection checklist and CODEOWNERS ownership metadata.
+- Tax data update policy and maintenance roadmap.
+- Durable versioned release notes in `docs/releases/v0.5.0.md`.
 
 ### Changed
 
 - GitHub Actions deploy from `main` requires the full pre-deploy gate set.
+- `check:release` includes bundle budget, Lighthouse, Cypress E2E, Cypress axe
+  accessibility and release-readiness verification.
 
 ### Fixed
 
@@ -72,7 +56,9 @@ baseline was documented.
 
 - Added contributor, security, deployment, i18n, theming, accessibility,
   performance and dependency-security documentation.
+- Added release process, versioning, tax update, branch protection and roadmap
+  documentation.
 
-[unreleased]: https://github.com/brunoramosdematos/freelancer-calculator-pt/compare/4520fa75381d553747fd9c39dd43b9a363063af7...HEAD
-[0.5.0]: https://github.com/brunoramosdematos/freelancer-calculator-pt/tree/4520fa75381d553747fd9c39dd43b9a363063af7
+[unreleased]: https://github.com/brunoramosdematos/freelancer-calculator-pt/compare/v0.5.0...HEAD
+[0.5.0]: https://github.com/brunoramosdematos/freelancer-calculator-pt/tree/v0.5.0
 [production]: https://freelancerpt.brunomatos.dev/

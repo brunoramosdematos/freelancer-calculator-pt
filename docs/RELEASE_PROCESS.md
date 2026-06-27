@@ -69,7 +69,8 @@ unvalidated commits.
 
 Use the title format `vMAJOR.MINOR.PATCH`.
 
-Release notes should come from `CHANGELOG.md` and include:
+Durable release notes live in `docs/releases/vMAJOR.MINOR.PATCH.md` and should
+be drafted from `CHANGELOG.md`. They should include:
 
 - deployment URL;
 - release type;
@@ -85,7 +86,7 @@ Release notes should come from `CHANGELOG.md` and include:
 - Theme switching works.
 - One representative calculation works.
 - Saved simulations still open.
-- GitHub Release links to `CHANGELOG.md`.
+- GitHub Release links to `CHANGELOG.md` and the versioned release notes.
 
 ## Rollback
 
