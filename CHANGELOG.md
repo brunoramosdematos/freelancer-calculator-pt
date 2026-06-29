@@ -8,7 +8,11 @@ GitHub releases, support references and public production checkpoints.
 
 ## [Unreleased]
 
-No changes yet.
+### Changed
+
+- Reduced initial JavaScript by lazy-loading the income breakdown chart and
+  secondary routes.
+- Raised the Lighthouse performance gate after measuring the optimized build.
 
 ## [0.5.0] - 2026-06-27
 

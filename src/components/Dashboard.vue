@@ -30,11 +30,20 @@
           id="income-breakdown-chart"
           :title="t('chart.title')"
           :summary="t('chart.summary')"
+          :open="chartOpen"
           toggle-data-cy="income-breakdown-chart-toggle"
           panel-data-cy="income-breakdown-chart-panel"
           :unmount-content="true"
+          @update:open="setChartOpen"
         >
-          <Chart />
+          <Suspense v-if="chartRequested">
+            <AsyncChart />
+            <template #fallback>
+              <p class="py-6 text-center text-sm text-muted" role="status">
+                {{ t("chart.loading") }}
+              </p>
+            </template>
+          </Suspense>
         </DisclosurePanel>
       </div>
 
@@ -54,18 +63,27 @@
 </template>
 
 <script setup lang="ts">
-import { nextTick, ref } from "vue";
+import { defineAsyncComponent, nextTick, ref } from "vue";
 import { useI18n } from "vue-i18n";
 import AdvancedTaxSettings from "@/components/AdvancedTaxSettings.vue";
 import CalculationDetails from "@/components/CalculationDetails.vue";
-import Chart from "@/components/Chart.vue";
 import DisclosurePanel from "@/components/DisclosurePanel.vue";
 import ResultsSummary from "@/components/ResultsSummary.vue";
 import SimulationSettings from "@/components/SimulationSettings.vue";
 
+const AsyncChart = defineAsyncComponent(() => import("@/components/Chart.vue"));
 const calculationDetailsOpen = ref(false);
 const socialSecurityDetailsOpen = ref(false);
+const chartOpen = ref(false);
+const chartRequested = ref(false);
 const { t } = useI18n({ useScope: "global" });
+
+const setChartOpen = (open: boolean) => {
+  chartOpen.value = open;
+  if (open) {
+    chartRequested.value = true;
+  }
+};
 
 const openSocialSecurityDetails = async () => {
   calculationDetailsOpen.value = true;

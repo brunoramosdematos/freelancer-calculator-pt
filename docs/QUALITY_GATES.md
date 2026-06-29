@@ -15,8 +15,9 @@ This project uses local and CI gates to keep releases reproducible.
 - `npm run cy:a11y` runs the dedicated Cypress axe accessibility suite.
 - `npm run build` builds production assets.
 - `npm run verify:production-build` checks the production artifact.
-- `npm run verify:bundle-budget` checks production asset sizes, hashes, chunk
-  count and absence of test/runtime leakage.
+- `npm run verify:bundle-budget` checks production asset sizes, hashes,
+  initial-versus-lazy JavaScript chunks, chunk count and absence of
+  test/runtime leakage.
 - `npm run lighthouse:ci` runs desktop Lighthouse smoke checks against local
   production preview URLs.
 - `npm run verify:release-readiness` verifies release governance files,
@@ -79,6 +80,11 @@ npm run cy:a11y
 
 This keeps bundle budgets, Lighthouse smoke checks and axe accessibility
 coverage visible as a dedicated CI gate.
+
+The bundle budget gate reads `dist/index.html` to classify module scripts and
+`modulepreload` JavaScript links as initial assets. Other JavaScript files are
+reported as lazy chunks, so intentional route/chart splitting is allowed while
+accidental growth of the first simulator path still fails the gate.
 
 ## Handling Failures
 

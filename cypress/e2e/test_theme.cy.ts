@@ -480,6 +480,10 @@ describe("appearance themes", () => {
   it("keeps chart localization and a single canvas across theme and locale changes", () => {
     visitWithScheme("light", "/#/?income=50000");
 
+    cy.get('[data-cy="income-breakdown-chart-panel"]').should("not.exist");
+    cy.get('[data-cy="income-breakdown-chart-container"] canvas').should(
+      "not.exist",
+    );
     cy.get('[data-cy="income-breakdown-chart-toggle"]').click();
     cy.get('[data-cy="income-breakdown-chart-panel"] canvas')
       .should("have.length", 1)
@@ -499,6 +503,16 @@ describe("appearance themes", () => {
         "aria-label",
         "Gráfico da distribuição da renda entre renda líquida, IRS e Segurança Social.",
       );
+
+    cy.get('[data-cy="income-breakdown-chart-toggle"]').click();
+    cy.get('[data-cy="income-breakdown-chart-container"] canvas').should(
+      "not.exist",
+    );
+    cy.get('[data-cy="income-breakdown-chart-toggle"]').click();
+    cy.get('[data-cy="income-breakdown-chart-panel"] canvas').should(
+      "have.length",
+      1,
+    );
   });
 });
 

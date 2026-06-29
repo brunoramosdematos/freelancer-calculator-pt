@@ -237,6 +237,7 @@ const messages = {
   chart: {
     title: "Income breakdown chart",
     summary: "Visual split of net income, IRS and Social Security",
+    loading: "Loading income breakdown chart...",
     grossIncome: "gross income",
     grossIncomeLabel: "Gross income",
     netIncome: "Net income",
