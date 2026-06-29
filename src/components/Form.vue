@@ -14,12 +14,15 @@
     />
   </transition>
   <div
-    class="text-center transition delay-5 duration-100 ease-in-out flex"
+    class="flex text-center transition delay-5 duration-100 ease-in-out"
     data-cy="income-form-shell"
     :data-state="hasIncome ? 'active' : 'landing'"
-    :class="{ 'h-screen': !hasIncome }"
+    :class="formShellClass"
   >
-    <div class="m-auto container max-w-2xl">
+    <div
+      class="container mx-auto w-full max-w-2xl"
+      data-cy="income-form-container"
+    >
       <div class="relative md:h-44">
         <h1
           class="font-semibold mt-4 md:mt-0"
@@ -195,6 +198,12 @@ const headingClass = computed(() =>
   hasIncome.value
     ? "text-lg md:text-xl lg:text-2xl"
     : "text-lg sm:text-xl md:text-2-xl lg:text-3xl xl:text-4xl",
+);
+
+const formShellClass = computed(() =>
+  hasIncome.value
+    ? "items-start justify-center pt-10 pb-6 sm:pt-12 lg:pt-14"
+    : "min-h-[calc(100vh-var(--app-header-height,3.5rem))] items-center justify-center py-6 sm:py-8",
 );
 
 const defaultIncomes = computed(() => {

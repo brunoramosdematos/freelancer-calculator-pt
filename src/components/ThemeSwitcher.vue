@@ -7,11 +7,12 @@
     <legend class="text-sm font-semibold text-foreground">
       {{ t("preferences.appearance") }}
     </legend>
-    <div class="grid gap-2 sm:grid-cols-3">
+    <div class="grid gap-2">
       <label
         v-for="option in themeOptions"
         :key="option.value"
-        class="flex cursor-pointer items-center gap-2 rounded-md border px-3 py-2 text-sm transition focus-within:ring-2 focus-within:ring-focus focus-within:ring-offset-2 focus-within:ring-offset-surface"
+        class="flex w-full min-w-0 cursor-pointer items-center gap-2.5 rounded-md border px-3 py-2 text-sm leading-snug transition focus-within:ring-2 focus-within:ring-focus focus-within:ring-offset-2 focus-within:ring-offset-surface"
+        :data-cy="option.optionDataCy"
         :class="
           preference === option.value
             ? 'border-primary bg-primary-soft text-foreground'
@@ -19,7 +20,7 @@
         "
       >
         <input
-          class="h-4 w-4 accent-primary"
+          class="h-4 w-4 shrink-0 accent-primary"
           type="radio"
           name="theme-preference"
           :value="option.value"
@@ -28,7 +29,12 @@
           @change="setThemePreference(option.value)"
         />
         <component :is="option.icon" class="h-5 w-5 shrink-0" aria-hidden />
-        <span>{{ option.label }}</span>
+        <span
+          class="min-w-0 flex-1 whitespace-normal leading-snug"
+          data-cy="theme-option-label"
+        >
+          {{ option.label }}
+        </span>
       </label>
     </div>
     <p :id="descriptionId" class="text-xs leading-5 text-subtle">
@@ -58,6 +64,7 @@ const themeOptions = computed<
     value: ThemePreference;
     label: string;
     dataCy: string;
+    optionDataCy: string;
     icon: typeof ComputerDesktopIcon;
   }[]
 >(() => [
@@ -65,18 +72,21 @@ const themeOptions = computed<
     value: "system",
     label: t("theme.system"),
     dataCy: "theme-system",
+    optionDataCy: "theme-option-system",
     icon: ComputerDesktopIcon,
   },
   {
     value: "light",
     label: t("theme.light"),
     dataCy: "theme-light",
+    optionDataCy: "theme-option-light",
     icon: SunIcon,
   },
   {
     value: "dark",
     label: t("theme.dark"),
     dataCy: "theme-dark",
+    optionDataCy: "theme-option-dark",
     icon: MoonIcon,
   },
 ]);
