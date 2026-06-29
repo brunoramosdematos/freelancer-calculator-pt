@@ -5,14 +5,16 @@ import { gzipSync } from "node:zlib";
 
 const distDir = "dist";
 const budgets = {
-  totalJsRaw: 550_000,
-  totalJsGzip: 185_000,
+  initialJsRaw: 420_000,
+  initialJsGzip: 140_000,
+  totalJsRaw: 570_000,
+  totalJsGzip: 190_000,
   largestJsRaw: 550_000,
   largestJsGzip: 185_000,
   totalCssRaw: 45_000,
   totalCssGzip: 12_000,
-  indexHtmlRaw: 8_000,
-  maxJsChunks: 1,
+  indexHtmlRaw: 9_000,
+  maxJsChunks: 4,
 };
 
 const forbiddenBuiltCodePatterns = [
@@ -62,6 +64,88 @@ const assertBudget = (name, actual, limit) => {
   }
 };
 
+const getAttribute = (tag, attributeName) => {
+  const attributePattern = new RegExp(
+    String.raw`\b${attributeName}\s*=\s*["']([^"']+)["']`,
+    "i",
+  );
+
+  return attributePattern.exec(tag)?.[1];
+};
+
+const normalizeDistReference = (reference) => {
+  if (!reference || /^[a-z][a-z\d+.-]*:/i.test(reference)) {
+    return undefined;
+  }
+
+  const withoutQuery = reference.split(/[?#]/, 1)[0];
+  const withoutLeadingSlash = withoutQuery
+    .replace(/^\/+/, "")
+    .replace(/^\.\//, "");
+
+  if (withoutLeadingSlash.startsWith("assets/")) {
+    return withoutLeadingSlash;
+  }
+
+  const assetsIndex = withoutLeadingSlash.indexOf("/assets/");
+
+  return assetsIndex >= 0
+    ? withoutLeadingSlash.slice(assetsIndex + 1)
+    : withoutLeadingSlash;
+};
+
+const collectInitialJsReferences = (indexHtml) => {
+  const initialReferences = new Set();
+  const tagPattern = /<(script|link)\b[^>]*>/gi;
+  let match;
+
+  while ((match = tagPattern.exec(indexHtml.text)) !== null) {
+    const [, tagName] = match;
+    const tag = match[0];
+
+    if (tagName.toLowerCase() === "script") {
+      const source = getAttribute(tag, "src");
+      const normalized = normalizeDistReference(source);
+
+      if (normalized?.endsWith(".js")) {
+        initialReferences.add(normalized);
+      }
+
+      continue;
+    }
+
+    const rel = getAttribute(tag, "rel");
+    const href = getAttribute(tag, "href");
+    const normalized = normalizeDistReference(href);
+
+    if (
+      rel?.split(/\s+/).includes("modulepreload") &&
+      normalized?.endsWith(".js")
+    ) {
+      initialReferences.add(normalized);
+    }
+  }
+
+  return initialReferences;
+};
+
+const summarizeFiles = (label, files) => {
+  console.log(`${label}:`);
+
+  if (files.length === 0) {
+    console.log("- (none)");
+    return;
+  }
+
+  for (const file of files) {
+    console.log(
+      `- ${file.relativePath}: raw ${formatBytes(file.size)}, gzip ${formatBytes(
+        file.gzipSize,
+      )}, sha256 ${file.sha256}`,
+    );
+  }
+};
+
 if (!existsSync(distDir)) {
   fail("dist does not exist. Run npm run build before verifying budgets.");
 } else {
@@ -79,7 +163,34 @@ if (!existsSync(distDir)) {
     (largest, file) => (file.size > largest.size ? file : largest),
     { size: 0, gzipSize: 0, relativePath: "(none)" },
   );
+  const initialJsReferences = indexHtml
+    ? collectInitialJsReferences(indexHtml)
+    : new Set();
+  const initialJsFiles = jsFiles.filter((file) =>
+    initialJsReferences.has(file.relativePath),
+  );
+  const lazyJsFiles = jsFiles.filter(
+    (file) => !initialJsReferences.has(file.relativePath),
+  );
+  const referencedMissingJs = [...initialJsReferences].filter(
+    (reference) => !jsFiles.some((file) => file.relativePath === reference),
+  );
+  const initialJsRaw = initialJsFiles.reduce((sum, file) => sum + file.size, 0);
+  const initialJsGzip = initialJsFiles.reduce(
+    (sum, file) => sum + file.gzipSize,
+    0,
+  );
 
+  assertBudget(
+    "initial JavaScript raw size",
+    initialJsRaw,
+    budgets.initialJsRaw,
+  );
+  assertBudget(
+    "initial JavaScript gzip size",
+    initialJsGzip,
+    budgets.initialJsGzip,
+  );
   assertBudget("total JavaScript raw size", totalJsRaw, budgets.totalJsRaw);
   assertBudget("total JavaScript gzip size", totalJsGzip, budgets.totalJsGzip);
   assertBudget(
@@ -101,6 +212,18 @@ if (!existsSync(distDir)) {
     fail("index.html is missing from dist.");
   }
 
+  if (initialJsFiles.length === 0) {
+    fail("no initial JavaScript entry was found in index.html.");
+  }
+
+  if (referencedMissingJs.length > 0) {
+    fail(
+      `index.html references JavaScript files not found in dist: ${referencedMissingJs.join(
+        ", ",
+      )}`,
+    );
+  }
+
   if (jsFiles.length > budgets.maxJsChunks) {
     fail(
       `JavaScript chunk count is ${jsFiles.length}, above ${budgets.maxJsChunks}.`,
@@ -109,7 +232,9 @@ if (!existsSync(distDir)) {
 
   if (sourceMaps.length > 0) {
     fail(
-      `source maps are present: ${sourceMaps.map((file) => file.relativePath).join(", ")}`,
+      `source maps are present: ${sourceMaps
+        .map((file) => file.relativePath)
+        .join(", ")}`,
     );
   }
 
@@ -122,7 +247,17 @@ if (!existsSync(distDir)) {
   }
 
   console.log("Bundle budget summary:");
-  for (const file of files) {
+  summarizeFiles("Initial JavaScript files", initialJsFiles);
+  summarizeFiles("Lazy JavaScript files", lazyJsFiles);
+  summarizeFiles("CSS files", cssFiles);
+  summarizeFiles("HTML files", htmlFiles);
+  console.log("Other files:");
+  for (const file of files.filter(
+    (file) =>
+      !file.relativePath.endsWith(".js") &&
+      !file.relativePath.endsWith(".css") &&
+      !file.relativePath.endsWith(".html"),
+  )) {
     console.log(
       `- ${file.relativePath}: raw ${formatBytes(file.size)}, gzip ${formatBytes(
         file.gzipSize,
@@ -130,11 +265,15 @@ if (!existsSync(distDir)) {
     );
   }
   console.log(
-    `Totals: JS raw ${formatBytes(totalJsRaw)}, JS gzip ${formatBytes(
-      totalJsGzip,
-    )}, CSS raw ${formatBytes(totalCssRaw)}, CSS gzip ${formatBytes(
-      totalCssGzip,
-    )}, largest JS ${largestJs.relativePath}.`,
+    `Totals: initial JS raw ${formatBytes(
+      initialJsRaw,
+    )}, initial JS gzip ${formatBytes(initialJsGzip)}, total JS raw ${formatBytes(
+      totalJsRaw,
+    )}, total JS gzip ${formatBytes(totalJsGzip)}, CSS raw ${formatBytes(
+      totalCssRaw,
+    )}, CSS gzip ${formatBytes(totalCssGzip)}, largest JS ${
+      largestJs.relativePath
+    }, JS chunks ${jsFiles.length}.`,
   );
 }
 

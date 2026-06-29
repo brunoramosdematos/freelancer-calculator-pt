@@ -241,6 +241,7 @@ const messages = {
   chart: {
     title: "Gráfico da distribuição da renda",
     summary: "Divisão visual entre renda líquida, IRS e Segurança Social",
+    loading: "Carregando o gráfico da distribuição da renda...",
     grossIncome: "renda bruta",
     grossIncomeLabel: "Renda bruta",
     netIncome: "Renda líquida",
