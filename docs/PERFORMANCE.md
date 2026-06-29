@@ -114,6 +114,13 @@ performance scores from 0.59 to 0.67:
 CI scores can still vary with the Ubuntu runner, but the gate now requires a
 measured improvement while retaining headroom below the local low score.
 
+The first PR CI run for this optimization observed performance scores from
+0.70 to 0.73 in the `accessibility-performance` job:
+
+- `/#/`: 0.70;
+- `/#/?income=60000`: 0.73;
+- `/#/about`: 0.73.
+
 ## Source Maps
 
 Source maps are not published in `dist`. The bundle budget gate fails if any
