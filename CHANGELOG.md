@@ -13,6 +13,8 @@ GitHub releases, support references and public production checkpoints.
 - Prevented Portuguese theme-option labels from overflowing inside the
   preferences panel.
 - Stabilized the simulator hero spacing between the landing and active states.
+- Stabilized local formatting checks across Windows and Linux by documenting
+  and enforcing repository line-ending policy.
 
 ### Changed
 

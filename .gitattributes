@@ -1,0 +1,12 @@
+* text=auto eol=lf
+
+# Binary assets
+*.gif binary
+*.ico binary
+*.jpg binary
+*.jpeg binary
+*.png binary
+*.zip binary
+
+# Text assets
+*.svg text eol=lf

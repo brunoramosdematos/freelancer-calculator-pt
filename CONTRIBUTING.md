@@ -48,6 +48,16 @@ npm run cy:e2e:run
 `npm run typecheck` is the supported Vue-aware TypeScript check. Plain
 `npx tsc --noEmit` is diagnostic-only for this Vue SFC project.
 
+## Line Endings
+
+Tracked text files use LF line endings. `.gitattributes` enforces this on every
+platform, so Windows contributors do not need to change global Git settings.
+
+Run `npm run format:check` before opening a pull request. If it reports
+formatting drift, run `npm run format` and review the diff before committing.
+After pulling the line-ending policy into an older working tree, `git add
+--renormalize .` or a clean checkout can refresh stale local files.
+
 ## Branches And Commits
 
 Keep pull requests focused on one concern. Include the validation commands you
