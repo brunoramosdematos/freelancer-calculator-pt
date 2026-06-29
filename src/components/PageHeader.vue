@@ -1,6 +1,7 @@
 <template>
   <header
     class="sticky top-0 z-50 border-b border-default bg-page/95 backdrop-blur"
+    data-cy="page-header"
   >
     <nav class="flex items-center justify-between gap-3 px-4 py-2 sm:px-5">
       <div

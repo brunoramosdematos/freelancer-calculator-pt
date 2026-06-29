@@ -4,6 +4,29 @@ const PREFERS_DARK_QUERY = "(prefers-color-scheme: dark)";
 
 type Scheme = "light" | "dark";
 type Locale = "en" | "pt-PT" | "pt-BR";
+type ThemePreference = "system" | "light" | "dark";
+
+const THEME_OPTIONS: {
+  preference: ThemePreference;
+  card: string;
+  input: string;
+}[] = [
+  {
+    preference: "system",
+    card: '[data-cy="theme-option-system"]',
+    input: '[data-cy="theme-system"]',
+  },
+  {
+    preference: "light",
+    card: '[data-cy="theme-option-light"]',
+    input: '[data-cy="theme-light"]',
+  },
+  {
+    preference: "dark",
+    card: '[data-cy="theme-option-dark"]',
+    input: '[data-cy="theme-dark"]',
+  },
+];
 
 const installThemeMediaStub = (win: Cypress.AUTWindow, scheme: Scheme) => {
   const listeners = new Set<(event: MediaQueryListEvent) => void>();
@@ -91,6 +114,44 @@ const closePreferences = () => {
 const switchLocale = (locale: Locale) => {
   openPreferences();
   cy.get('[data-cy="locale-switcher"]').select(locale);
+};
+
+const expectNoHorizontalDocumentOverflow = () => {
+  cy.document().then((document) => {
+    expect(document.documentElement.scrollWidth).to.be.lte(
+      document.documentElement.clientWidth + 1,
+    );
+  });
+};
+
+const expectThemeOptionLabelsContained = (tolerance = 2) => {
+  THEME_OPTIONS.forEach(({ card }) => {
+    cy.get(card)
+      .should("be.visible")
+      .then(($card) => {
+        const cardRect = $card[0].getBoundingClientRect();
+
+        cy.wrap($card)
+          .find('[data-cy="theme-option-label"]')
+          .should("be.visible")
+          .then(($label) => {
+            const labelRect = $label[0].getBoundingClientRect();
+
+            expect(labelRect.left, `${card} label left`).to.be.gte(
+              cardRect.left - tolerance,
+            );
+            expect(labelRect.right, `${card} label right`).to.be.lte(
+              cardRect.right + tolerance,
+            );
+            expect(labelRect.top, `${card} label top`).to.be.gte(
+              cardRect.top - tolerance,
+            );
+            expect(labelRect.bottom, `${card} label bottom`).to.be.lte(
+              cardRect.bottom + tolerance,
+            );
+          });
+      });
+  });
 };
 
 const expectEffectiveTheme = (theme: Scheme) => {
@@ -424,6 +485,54 @@ describe("appearance themes", () => {
     cy.get('[data-cy="preferences-panel"]').should("not.exist");
   });
 
+  it("contains pt-BR theme option labels on desktop, mobile and Dark theme", () => {
+    [
+      {
+        viewport: [1365, 768] as const,
+        scheme: "light" as const,
+        preference: "system" as const,
+      },
+      {
+        viewport: [375, 800] as const,
+        scheme: "dark" as const,
+        preference: "dark" as const,
+      },
+    ].forEach(({ viewport, scheme, preference }) => {
+      cy.viewport(viewport[0], viewport[1]);
+      visitWithScheme(scheme);
+      switchLocale("pt-BR");
+      setThemePreference(preference);
+
+      cy.get('[data-cy="theme-preference"]').should("be.visible");
+      expectThemeOptionLabelsContained();
+      expectNoHorizontalDocumentOverflow();
+      cy.get(`[data-cy="theme-${preference}"]`).should("be.checked");
+    });
+  });
+
+  it("keeps the theme radio cards contained across supported locales", () => {
+    (["en", "pt-PT", "pt-BR"] as const).forEach((locale) => {
+      cy.viewport(1365, 768);
+      visitWithScheme("light");
+      switchLocale(locale);
+
+      cy.get('[data-cy="theme-preference"]').should("be.visible");
+      expectThemeOptionLabelsContained();
+
+      THEME_OPTIONS.forEach(({ preference, input }) => {
+        cy.get(input).check();
+        cy.get('[data-cy="preferences-panel"]').should("be.visible");
+        cy.get(input).should("be.checked");
+        expectThemeOptionLabelsContained();
+        expectNoHorizontalDocumentOverflow();
+
+        if (preference === "system") {
+          expectEffectiveTheme("light");
+        }
+      });
+    });
+  });
+
   it("fits and remains operable on a 375px viewport", () => {
     cy.viewport(375, 800);
     visitWithScheme("dark", "/#/?income=60000");
@@ -436,11 +545,8 @@ describe("appearance themes", () => {
     });
     cy.get('[data-cy="locale-switcher"]').select("pt-BR");
     cy.get('[data-cy="theme-light"]').check();
-    cy.document().then((document) => {
-      expect(document.documentElement.scrollWidth).to.be.lte(
-        document.documentElement.clientWidth + 1,
-      );
-    });
+    expectThemeOptionLabelsContained();
+    expectNoHorizontalDocumentOverflow();
   });
 
   it("keeps dialogs, popovers, toasts and disclosures readable in Dark theme", () => {

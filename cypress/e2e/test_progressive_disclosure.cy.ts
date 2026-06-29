@@ -12,6 +12,30 @@ const openSocialSecurityDetails = () => {
   cy.get('[data-cy="view-social-security-calculation"]').click();
 };
 
+const LOCALE_STORAGE_KEY = "freelancer-calculator-pt:locale:v1";
+
+type Locale = "pt-PT" | "pt-BR";
+
+const visitWithLocale = (path: string, locale: Locale) => {
+  cy.visit(path, {
+    onBeforeLoad(win) {
+      win.localStorage.setItem(LOCALE_STORAGE_KEY, locale);
+    },
+  });
+};
+
+const setIncome = (value: string) => {
+  cy.get('[data-cy="income"]').invoke("val", value).trigger("input");
+};
+
+const expectNoHorizontalDocumentOverflow = () => {
+  cy.document().then((document) => {
+    expect(document.documentElement.scrollWidth).to.be.lte(
+      document.documentElement.clientWidth + 1,
+    );
+  });
+};
+
 describe("progressive disclosure simulator layout", () => {
   it("aligns the desktop dashboard columns and keeps result panels together", () => {
     cy.viewport(1536, 1024);
@@ -64,6 +88,90 @@ describe("progressive disclosure simulator layout", () => {
       "not.be.visible",
     );
     cy.get('[data-cy="ss-contribution-base-cap"]').should("not.be.visible");
+  });
+
+  it("keeps the landing hero centered and anchors the active simulator below the header", () => {
+    cy.viewport(1920, 900);
+    visitWithLocale("/#/", "pt-BR");
+
+    cy.get('[data-cy="page-header"]').then(($header) => {
+      const headerBottom = $header[0].getBoundingClientRect().bottom;
+
+      cy.get('[data-cy="product-heading"]').then(($heading) => {
+        const headingRect = $heading[0].getBoundingClientRect();
+        const headingCenter = (headingRect.top + headingRect.bottom) / 2;
+        const visualCenter = headerBottom + (900 - headerBottom) / 2;
+
+        expect(headingRect.top, "landing heading clears header").to.be.gte(
+          headerBottom,
+        );
+        expect(
+          Math.abs(headingCenter - visualCenter),
+          "landing heading remains close to visual center",
+        ).to.be.lte(140);
+      });
+    });
+
+    setIncome("100000");
+    cy.get('[data-cy="results-summary"]').should("be.visible");
+
+    cy.get('[data-cy="page-header"]').then(($header) => {
+      const headerBottom = $header[0].getBoundingClientRect().bottom;
+
+      cy.get('[data-cy="product-heading"]').then(($heading) => {
+        const headingTop = $heading[0].getBoundingClientRect().top;
+
+        expect(headingTop, "active heading top gap").to.be.gte(
+          headerBottom + 32,
+        );
+        expect(headingTop, "active heading is not pushed too low").to.be.lte(
+          headerBottom + 140,
+        );
+      });
+    });
+
+    cy.get('[data-cy="income-form-shell"]').then(($form) => {
+      const formBottom = $form[0].getBoundingClientRect().bottom;
+
+      cy.get('[data-cy="results-summary"]').then(($summary) => {
+        const dashboardGap =
+          $summary[0].getBoundingClientRect().top - formBottom;
+
+        expect(dashboardGap, "dashboard gap below form").to.be.gte(16);
+        expect(dashboardGap, "dashboard gap below form").to.be.lte(64);
+      });
+    });
+
+    expectNoHorizontalDocumentOverflow();
+  });
+
+  it("keeps the mobile hero usable before and after income entry", () => {
+    cy.viewport(375, 800);
+    visitWithLocale("/#/", "pt-PT");
+
+    cy.get('[data-cy="income"]').should("be.visible");
+    cy.get('[data-cy="page-header"]').then(($header) => {
+      const headerBottom = $header[0].getBoundingClientRect().bottom;
+
+      cy.get('[data-cy="product-heading"]').then(($heading) => {
+        expect($heading[0].getBoundingClientRect().top).to.be.gte(headerBottom);
+      });
+    });
+
+    setIncome("100000");
+    cy.get('[data-cy="results-summary"]').should("be.visible");
+
+    cy.get('[data-cy="page-header"]').then(($header) => {
+      const headerBottom = $header[0].getBoundingClientRect().bottom;
+
+      cy.get('[data-cy="product-heading"]').then(($heading) => {
+        expect($heading[0].getBoundingClientRect().top).to.be.gte(
+          headerBottom + 24,
+        );
+      });
+    });
+
+    expectNoHorizontalDocumentOverflow();
   });
 
   it("reveals IRS intermediate values without changing numeric results", () => {

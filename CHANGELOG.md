@@ -8,6 +8,12 @@ GitHub releases, support references and public production checkpoints.
 
 ## [Unreleased]
 
+### Fixed
+
+- Prevented Portuguese theme-option labels from overflowing inside the
+  preferences panel.
+- Stabilized the simulator hero spacing between the landing and active states.
+
 ### Changed
 
 - Reduced initial JavaScript by lazy-loading the income breakdown chart and
