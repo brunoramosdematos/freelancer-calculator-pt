@@ -93,6 +93,22 @@ review. Lint failures should be fixed with small source changes or by adjusting
 rules when a rule creates noise without protecting behavior. Typecheck failures
 should be handled with precise types and without changing fiscal formulas.
 
+## Cross-Platform Formatting
+
+The repository stores text files with LF line endings. `.gitattributes`
+enforces this policy across operating systems, including Windows checkouts that
+use Git's global `core.autocrlf=true` setting. `.editorconfig` and Prettier use
+the same LF policy.
+
+Run `npm run format:check` before opening a pull request. If formatting drift
+is reported, run `npm run format`, inspect the diff and commit only formatting
+changes that belong to the current task.
+
+After pulling the `.gitattributes` policy into an existing Windows working
+tree, local files may still be stale. Run `git add --renormalize .` to refresh
+the index, then run `npm run format` if the working tree still contains CRLF
+files. A clean checkout also applies the policy from the start.
+
 ## Future Gates
 
 Good future additions include mobile Lighthouse once it is stable in CI, deeper
