@@ -13,6 +13,7 @@
 - CI quality gates.
 - Accessibility and performance gates.
 - Production security gates.
+- Fiscal data coverage status and source-reference transparency.
 
 ## Near-Term
 
@@ -28,6 +29,7 @@ These candidates require research, source validation and tests before any
 implementation commitment:
 
 - new tax years;
+- expanded official-source references for future tax-data updates;
 - broader household scenarios;
 - spouse income support;
 - separated assessment;

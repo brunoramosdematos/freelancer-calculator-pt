@@ -35,6 +35,7 @@
           @change="changeCurrentTaxRankYear"
         />
       </div>
+      <TaxDataStatus :selected-tax-year="getCurrentTaxRankYear" />
 
       <fieldset data-cy="assessment-scenario">
         <legend class="text-sm font-medium text-foreground">
@@ -189,6 +190,7 @@ import AdjustCounter from "@/components/AdjustCounter.vue";
 import DependentAgeGroups from "@/components/DependentAgeGroups.vue";
 import DropDown from "@/components/DropDown.vue";
 import InfoButton from "@/components/InfoButton.vue";
+import TaxDataStatus from "@/components/TaxDataStatus.vue";
 
 const store = useTaxesStore();
 const { getCurrentTaxRankYear } = storeToRefs(store);

@@ -10,9 +10,9 @@ release notes.
 
 Acceptable sources, in preferred order:
 
-1. Autoridade Tributaria e Aduaneira.
-2. Seguranca Social.
-3. Diario da Republica or legislation.
+1. Autoridade Tributária e Aduaneira.
+2. Segurança Social.
+3. Diário da República or legislation.
 4. Official government portals.
 5. Reputable professional commentary as secondary context only.
 
@@ -32,6 +32,36 @@ Acceptable sources, in preferred order:
 - Release notes must mention affected tax years.
 - Tax-rule issues should use the tax-rule issue template.
 
+## Tax Data Provenance Metadata
+
+The app ships static, versioned fiscal-data provenance metadata in
+`src/taxData/provenance.ts`. This metadata powers the simulator status badge and
+the About-page tax-data coverage section. It must remain separate from Pinia
+state, URL parameters and saved simulations.
+
+When fiscal data changes:
+
+- Add or update a `TaxYearProvenance` entry for every supported tax year.
+- Derive the latest supported year from metadata; do not duplicate it in UI
+  code.
+- Update `reviewedAt` with an ISO date in `YYYY-MM-DD` format.
+- Keep `implementedInVersion` aligned with the release or public checkpoint
+  that introduced the data.
+- Link every year to official or internal governance sources through
+  `sourceIds`.
+- Add new `TaxDataSource` entries only for HTTPS official sources or internal
+  repository documentation.
+- Use conservative wording when exact legal references are not included in the
+  source entry.
+- Do not scrape or fetch official portals at runtime.
+
+Required validation:
+
+- `npm run vitest -- --run src/taxData/provenance.spec.ts`
+- `npm run vitest -- --run`
+- Cypress coverage for the status disclosure and About-page source references
+  when the UI changes.
+
 ## New Tax-Year Checklist
 
 For a new tax year such as 2027:
@@ -39,6 +69,7 @@ For a new tax year such as 2027:
 - Add tax ranks.
 - Add IAS.
 - Add Youth IRS data if applicable.
+- Add provenance metadata, official-source references and `reviewedAt`.
 - Add unit and E2E tests.
 - Confirm URL hydration.
 - Confirm old saved simulations still render.
