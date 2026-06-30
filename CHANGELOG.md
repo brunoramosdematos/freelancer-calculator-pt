@@ -8,6 +8,11 @@ GitHub releases, support references and public production checkpoints.
 
 ## [Unreleased]
 
+### Added
+
+- Added fiscal-data coverage and source-reference status near the tax-year
+  selector and About page.
+
 ### Fixed
 
 - Prevented Portuguese theme-option labels from overflowing inside the

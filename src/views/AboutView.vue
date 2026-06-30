@@ -23,6 +23,7 @@
       <p>
         {{ t("about.disclaimer") }}
       </p>
+      <TaxDataCoverageSection />
       <div class="flex flex-wrap gap-4">
         <router-link
           to="/"
@@ -46,6 +47,7 @@
 <script setup lang="ts">
 import { RouterLink } from "vue-router";
 import { useI18n } from "vue-i18n";
+import TaxDataCoverageSection from "@/components/TaxDataCoverageSection.vue";
 
 const { t } = useI18n({ useScope: "global" });
 </script>

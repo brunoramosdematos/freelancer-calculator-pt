@@ -316,6 +316,66 @@ const messages = {
     activeYear: "Ativo, ano {year}",
     ssFirstYear: "Isenção de SS nos primeiros 12 meses",
   },
+  taxData: {
+    status: {
+      title: "Dados fiscais",
+      summary: "{status} · revisado em {date}",
+      latestSupported: "ano mais recente suportado",
+      historicalSupported: "ano histórico suportado",
+      unsupported: "ano fiscal não suportado",
+      coverageCurrent:
+        "A cobertura dos dados fiscais está atualizada para os anos suportados.",
+      reviewRequired:
+        "Podem existir dados fiscais mais recentes depois de {year}. Revisão necessária.",
+      reviewedAt: "revisado em {date}",
+      latestYear: "Ano mais recente suportado",
+      selectedYear: "Ano fiscal selecionado",
+      supportedYears: "Anos fiscais suportados",
+      lastReviewed: "Última revisão",
+      estimateDisclaimer:
+        "Os cálculos continuam sendo estimativas e não substituem aconselhamento contábil, jurídico ou fiscal.",
+      sourceReferences: "Referências das fontes",
+      viewSources: "Ver fontes",
+      officialSources: "Fontes oficiais",
+      internalPolicy: "Política interna de atualização fiscal",
+      detailsLabel: "Ver cobertura e fontes dos dados fiscais para {year}",
+      supportMeaning:
+        "Suportado significa que este simulador inclui escalões de IRS, valores do IAS, metadados do IRS Jovem, premissas da Segurança Social e deduções relacionadas para os anos listados.",
+    },
+    about: {
+      title: "Cobertura dos dados fiscais",
+      description:
+        "O aplicativo distribui metadados fiscais estáticos e versionados. Ele não coleta dados dos portais oficiais em tempo de execução.",
+      supportedYears: "Anos fiscais suportados",
+      latestSupportedYear: "Ano fiscal mais recente suportado",
+      lastReviewed: "Última revisão",
+      sources: "Fontes",
+      limitations:
+        "Cobertura significa que o simulador inclui escalões de IRS, valores do IAS, metadados do IRS Jovem, premissas da Segurança Social e deduções relacionadas para os anos listados. O resultado continua sendo uma estimativa, e o usuário deve validar sua situação com fontes oficiais ou um profissional qualificado.",
+    },
+    sources: {
+      autoridadeTributaria: {
+        label: "Autoridade Tributária e Aduaneira",
+        publisher: "Portal das Finanças",
+      },
+      segurancaSocial: {
+        label: "Segurança Social",
+        publisher: "Segurança Social",
+      },
+      diarioRepublica: {
+        label: "Diário da República",
+        publisher: "Publicação oficial de legislação",
+      },
+      taxUpdatePolicy: {
+        label: "Política de atualização fiscal",
+        publisher: "Documentação interna do repositório",
+      },
+    },
+    notes: {
+      conservativeSourceReview:
+        "Os links das fontes apontam para portais oficiais e para a política de atualização fiscal do repositório; as referências legais exatas são revisadas durante atualizações dos dados fiscais.",
+    },
+  },
   simulations: {
     title: "Simulações salvas",
     empty: "Ainda não há simulações salvas.",

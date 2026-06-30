@@ -146,6 +146,8 @@ describe("automated accessibility coverage", () => {
     openDisclosure('[data-cy="irs-calculation-details-toggle"]');
     openDisclosure('[data-cy="social-security-calculation-details-toggle"]');
     openDisclosure('[data-cy="deductions-assumptions-details-toggle"]');
+    cy.get('[data-cy="tax-data-status-details-toggle"]').click();
+    cy.get('[data-cy="tax-data-status-details"]').should("be.visible");
 
     cy.get('[data-cy="simulation-settings"] button[aria-haspopup="dialog"]')
       .first()

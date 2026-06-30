@@ -312,6 +312,66 @@ const messages = {
     activeYear: "Active, year {year}",
     ssFirstYear: "First 12 months SS exemption",
   },
+  taxData: {
+    status: {
+      title: "Fiscal data",
+      summary: "{status} · reviewed {date}",
+      latestSupported: "latest supported",
+      historicalSupported: "historical supported",
+      unsupported: "unsupported tax year",
+      coverageCurrent:
+        "Fiscal data coverage is current for the supported years.",
+      reviewRequired:
+        "Newer fiscal data may be available after {year}. Review required.",
+      reviewedAt: "reviewed {date}",
+      latestYear: "Latest supported year",
+      selectedYear: "Selected tax year",
+      supportedYears: "Supported tax years",
+      lastReviewed: "Last reviewed",
+      estimateDisclaimer:
+        "Calculations remain estimates and do not replace accounting, legal, or tax advice.",
+      sourceReferences: "Source references",
+      viewSources: "View sources",
+      officialSources: "Official sources",
+      internalPolicy: "Internal tax update policy",
+      detailsLabel: "View fiscal data coverage and sources for {year}",
+      supportMeaning:
+        "Supported means this simulator ships IRS brackets, IAS values, Youth IRS metadata, Social Security assumptions, and related deductions for the listed years.",
+    },
+    about: {
+      title: "Tax data coverage",
+      description:
+        "The app ships static, versioned fiscal-data metadata. It does not scrape or fetch official portals at runtime.",
+      supportedYears: "Supported tax years",
+      latestSupportedYear: "Latest supported tax year",
+      lastReviewed: "Last reviewed",
+      sources: "Sources",
+      limitations:
+        "Coverage means the simulator includes IRS brackets, IAS values, Youth IRS metadata, Social Security assumptions, and related deductions for the listed years. The result is still an estimate, and users should validate their own situation with official sources or a qualified professional.",
+    },
+    sources: {
+      autoridadeTributaria: {
+        label: "Autoridade Tributária e Aduaneira",
+        publisher: "Portal das Finanças",
+      },
+      segurancaSocial: {
+        label: "Segurança Social",
+        publisher: "Segurança Social",
+      },
+      diarioRepublica: {
+        label: "Diário da República",
+        publisher: "Official legislation publication",
+      },
+      taxUpdatePolicy: {
+        label: "Tax update policy",
+        publisher: "Internal repository documentation",
+      },
+    },
+    notes: {
+      conservativeSourceReview:
+        "Source links point to official portals and the repository tax update policy; exact legal references are reviewed during tax-data updates.",
+    },
+  },
   simulations: {
     title: "Saved simulations",
     empty: "No saved simulations yet.",
