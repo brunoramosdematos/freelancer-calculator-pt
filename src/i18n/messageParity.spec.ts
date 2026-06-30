@@ -37,6 +37,15 @@ describe("locale message parity", () => {
     });
   });
 
+  it("keeps report export messages available in every locale", () => {
+    SUPPORTED_LOCALES.forEach((locale) => {
+      expect(messages[locale].report.actions.export).toBeTruthy();
+      expect(messages[locale].report.actions.print).toBeTruthy();
+      expect(messages[locale].report.rows.grossIncome).toBeTruthy();
+      expect(messages[locale].report.disclaimerText).toBeTruthy();
+    });
+  });
+
   it("keeps locale metadata, language names, and formatter locales complete", () => {
     SUPPORTED_LOCALES.forEach((locale) => {
       expect(metadataByLocale[locale].title).toBeTruthy();

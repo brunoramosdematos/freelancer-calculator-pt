@@ -10,6 +10,8 @@ GitHub releases, support references and public production checkpoints.
 
 ### Added
 
+- Added a printable income report preview that can be saved as PDF through the
+  browser print dialog.
 - Added fiscal-data coverage and source-reference status near the tax-year
   selector and About page.
 

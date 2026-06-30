@@ -14,7 +14,7 @@ const budgets = {
   totalCssRaw: 45_000,
   totalCssGzip: 12_000,
   indexHtmlRaw: 9_000,
-  maxJsChunks: 4,
+  maxJsChunks: 5,
 };
 
 const forbiddenBuiltCodePatterns = [

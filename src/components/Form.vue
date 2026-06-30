@@ -13,6 +13,20 @@
       @saved="simulationSaved"
     />
   </transition>
+  <transition
+    enter-active-class="duration-300 ease-out"
+    enter-from-class="transform opacity-0"
+    enter-to-class="opacity-100"
+    leave-active-class="duration-200 ease-in"
+    leave-from-class="opacity-100"
+    leave-to-class="transform opacity-0"
+  >
+    <AsyncReportPreviewDialog
+      v-if="showReportPreview"
+      :current-url="reportCurrentUrl"
+      @close="closeReportPreview"
+    />
+  </transition>
   <div
     class="flex text-center transition delay-5 duration-100 ease-in-out"
     data-cy="income-form-shell"
@@ -117,7 +131,10 @@
               <FrequencyButton />
             </div>
           </div>
-          <div v-if="hasIncome" class="inline-flex gap-5">
+          <div
+            v-if="hasIncome"
+            class="flex flex-wrap items-center justify-center gap-x-5 gap-y-0"
+          >
             <button
               data-cy="reset-simulation-button"
               class="text-sm hover:text-income hover:font-medium py-5 flex gap-2 items-center"
@@ -135,6 +152,15 @@
               <ShareIcon class="h-3" />
             </button>
             <button
+              ref="exportReportButtonRef"
+              data-cy="export-report-button"
+              class="text-sm hover:text-primary hover:font-medium py-5 flex gap-2 items-center"
+              @click="openReportPreview"
+            >
+              {{ t("report.actions.export") }}
+              <DocumentArrowDownIcon class="h-3" />
+            </button>
+            <button
               data-cy="save-simulation-button"
               class="text-sm hover:text-warning hover:font-medium py-5 flex gap-2 items-center"
               @click="showNewSimulationDialog = true"
@@ -150,7 +176,7 @@
   </div>
 </template>
 <script setup lang="ts">
-import { ref, computed } from "vue";
+import { defineAsyncComponent, nextTick, ref, computed } from "vue";
 import { useI18n } from "vue-i18n";
 import {
   CurrencyEuroIcon,
@@ -158,6 +184,7 @@ import {
   ArrowPathIcon,
   ShareIcon,
   BookmarkIcon,
+  DocumentArrowDownIcon,
 } from "@heroicons/vue/24/outline";
 import { storeToRefs } from "pinia";
 import { useTaxesStore } from "@/store";
@@ -169,6 +196,9 @@ import FrequencyButton from "@/components/FrequencyButton.vue";
 import SaveSimulationDialog from "@/components/SaveSimulationDialog.vue";
 import { FrequencyChoices } from "@/typings";
 
+const AsyncReportPreviewDialog = defineAsyncComponent(
+  () => import("@/components/report/ReportPreviewDialog.vue"),
+);
 const { breakpoint } = useBreakpoint();
 const { t } = useI18n({ useScope: "global" });
 
@@ -234,6 +264,9 @@ const changeAmount = computed(() => {
 const showToast = ref(false);
 const toastMessage = ref("");
 const showNewSimulationDialog = ref(false);
+const showReportPreview = ref(false);
+const reportCurrentUrl = ref("");
+const exportReportButtonRef = ref<HTMLButtonElement | null>(null);
 
 const closeToast = () => {
   showToast.value = false;
@@ -249,5 +282,20 @@ const simulationSaved = () => {
   showNewSimulationDialog.value = false;
   toastMessage.value = t("simulator.simulationSaved");
   showToast.value = true;
+};
+
+const openReportPreview = () => {
+  if (!hasIncome.value) {
+    return;
+  }
+
+  reportCurrentUrl.value = window.location.href;
+  showReportPreview.value = true;
+};
+
+const closeReportPreview = async () => {
+  showReportPreview.value = false;
+  await nextTick();
+  exportReportButtonRef.value?.focus();
 };
 </script>

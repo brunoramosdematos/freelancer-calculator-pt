@@ -168,6 +168,15 @@ describe("automated accessibility coverage", () => {
     cy.wait(350);
     checkA11y("save simulation dialog pt-PT dark");
     cy.get('button[aria-label="Fechar janela"]').click();
+
+    cy.get('[data-cy="export-report-button"]').click();
+    cy.get('[data-cy="report-preview-dialog"]').should("be.visible");
+    cy.get('[data-cy="printable-report"]').should("exist");
+    cy.get('[data-cy="report-title"]').should("be.visible");
+    // The report dialog is wrapped in a Vue opacity transition; run axe after it settles.
+    cy.wait(350);
+    checkA11y("report preview pt-PT dark");
+    cy.get('[data-cy="report-close-button"]').click();
   });
 
   it("checks System theme resolved to Dark in pt-BR", () => {
