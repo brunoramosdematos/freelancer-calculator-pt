@@ -28,7 +28,7 @@ Current limits:
 - total CSS raw size <= 45,000 bytes;
 - total CSS gzip size <= 12,000 bytes;
 - `index.html` raw size <= 9,000 bytes;
-- JavaScript chunk count <= 4;
+- JavaScript chunk count <= 5;
 - no source maps;
 - no Cypress, cypress-axe, axe-core, Vitest or Node runtime strings in built
   HTML, CSS or JavaScript.
@@ -73,6 +73,15 @@ Secondary routes are split with Vue Router dynamic imports:
 
 The built `index.html` contains no `modulepreload` links for the chart or route
 chunks, so they are not preloaded on the landing simulator route.
+
+The printable report preview is also lazy-loaded behind the active simulator's
+export action. The first measured report-export build added
+`assets/ReportPreviewDialog-DvR23iSH.js` as a lazy chunk at 15,074 bytes raw
+and 4,890 bytes gzip. Compared with the pre-feature baseline from this
+execution, initial JavaScript increased from 92,031 bytes gzip to 93,523 bytes
+gzip, CSS increased from 6,711 bytes gzip to 7,091 bytes gzip, and the JavaScript
+chunk count intentionally moved from 4 to 5 while staying within the total
+JavaScript budget.
 
 ## Lighthouse Smoke
 

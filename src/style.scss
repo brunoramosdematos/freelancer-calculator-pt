@@ -148,11 +148,17 @@
 }
 
 @media print {
+  @page {
+    size: A4 portrait;
+    margin: 14mm;
+  }
+
   html,
   body,
   #app {
     background: #ffffff !important;
     color: #171717 !important;
+    min-height: auto !important;
   }
 
   *,
@@ -163,7 +169,58 @@
     box-shadow: none !important;
   }
 
+  body * {
+    visibility: hidden !important;
+  }
+
+  .report-preview-dialog,
+  .report-preview-dialog__shell,
+  .report-preview-dialog__content {
+    position: static !important;
+    display: block !important;
+    width: auto !important;
+    max-width: none !important;
+    max-height: none !important;
+    min-height: 0 !important;
+    height: auto !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    overflow: visible !important;
+    transform: none !important;
+  }
+
+  .printable-report,
+  .printable-report * {
+    visibility: visible !important;
+  }
+
+  .printable-report {
+    position: absolute !important;
+    inset: 0 auto auto 0 !important;
+    width: 100% !important;
+    max-width: none !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    border: 0 !important;
+    border-radius: 0 !important;
+    color-scheme: light !important;
+    font-size: 10pt !important;
+    line-height: 1.35 !important;
+  }
+
+  .printable-report table {
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
+
+  .printable-report tr,
+  .print-avoid-break {
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
+
   [data-print-hidden="true"] {
     display: none !important;
+    visibility: hidden !important;
   }
 }
