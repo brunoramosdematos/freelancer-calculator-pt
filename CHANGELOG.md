@@ -17,6 +17,8 @@ GitHub releases, support references and public production checkpoints.
 
 ### Fixed
 
+- Aligned the active simulator action toolbar so reset, share, export report and
+  save remain visually stable across locales and viewport sizes.
 - Prevented Portuguese theme-option labels from overflowing inside the
   preferences panel.
 - Stabilized the simulator hero spacing between the landing and active states.

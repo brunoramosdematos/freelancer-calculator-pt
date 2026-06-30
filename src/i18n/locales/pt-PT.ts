@@ -41,6 +41,7 @@ const messages = {
     reset: "repor",
     share: "partilhar",
     save: "guardar",
+    simulationActionsLabel: "Ações da simulação",
     auto: "auto",
     close: "Fechar",
     closeModal: "Fechar janela",

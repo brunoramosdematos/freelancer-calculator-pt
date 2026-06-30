@@ -49,8 +49,8 @@
         <p class="md:mt-3 md:mb-5 text-sm md:text-xl text-muted font-light">
           {{ t("simulator.tagline") }}
         </p>
-        <div class="flex flex-col justify-around items-center md:flex-row">
-          <div class="flex items-center justify-center w-full">
+        <div class="flex flex-col items-center gap-3 md:gap-4">
+          <div class="flex w-full items-center justify-center">
             <div class="relative group w-7/12">
               <div class="relative">
                 <FormattedNumberInput
@@ -131,44 +131,14 @@
               <FrequencyButton />
             </div>
           </div>
-          <div
+          <SimulationActionToolbar
             v-if="hasIncome"
-            class="flex flex-wrap items-center justify-center gap-x-5 gap-y-0"
-          >
-            <button
-              data-cy="reset-simulation-button"
-              class="text-sm hover:text-income hover:font-medium py-5 flex gap-2 items-center"
-              @click="store.reset()"
-            >
-              {{ t("actions.reset") }}
-              <ArrowPathIcon class="h-3" />
-            </button>
-            <button
-              data-cy="share-simulation-button"
-              class="text-sm hover:text-social-security hover:font-medium py-5 flex gap-2 items-center"
-              @click="share"
-            >
-              {{ t("actions.share") }}
-              <ShareIcon class="h-3" />
-            </button>
-            <button
-              ref="exportReportButtonRef"
-              data-cy="export-report-button"
-              class="text-sm hover:text-primary hover:font-medium py-5 flex gap-2 items-center"
-              @click="openReportPreview"
-            >
-              {{ t("report.actions.export") }}
-              <DocumentArrowDownIcon class="h-3" />
-            </button>
-            <button
-              data-cy="save-simulation-button"
-              class="text-sm hover:text-warning hover:font-medium py-5 flex gap-2 items-center"
-              @click="showNewSimulationDialog = true"
-            >
-              {{ t("actions.save") }}
-              <BookmarkIcon class="h-3" />
-            </button>
-          </div>
+            ref="simulationActionToolbarRef"
+            @reset="store.reset()"
+            @share="share"
+            @export-report="openReportPreview"
+            @save="showNewSimulationDialog = true"
+          />
         </div>
       </div>
     </div>
@@ -178,14 +148,7 @@
 <script setup lang="ts">
 import { defineAsyncComponent, nextTick, ref, computed } from "vue";
 import { useI18n } from "vue-i18n";
-import {
-  CurrencyEuroIcon,
-  ChevronDownIcon,
-  ArrowPathIcon,
-  ShareIcon,
-  BookmarkIcon,
-  DocumentArrowDownIcon,
-} from "@heroicons/vue/24/outline";
+import { CurrencyEuroIcon, ChevronDownIcon } from "@heroicons/vue/24/outline";
 import { storeToRefs } from "pinia";
 import { useTaxesStore } from "@/store";
 import { useBreakpoint } from "@/composables/breakpoints";
@@ -194,6 +157,7 @@ import ToastDialog from "@/components/ToastDialog.vue";
 import FormattedNumberInput from "@/components/FormattedNumberInput.vue";
 import FrequencyButton from "@/components/FrequencyButton.vue";
 import SaveSimulationDialog from "@/components/SaveSimulationDialog.vue";
+import SimulationActionToolbar from "@/components/SimulationActionToolbar.vue";
 import { FrequencyChoices } from "@/typings";
 
 const AsyncReportPreviewDialog = defineAsyncComponent(
@@ -266,7 +230,9 @@ const toastMessage = ref("");
 const showNewSimulationDialog = ref(false);
 const showReportPreview = ref(false);
 const reportCurrentUrl = ref("");
-const exportReportButtonRef = ref<HTMLButtonElement | null>(null);
+const simulationActionToolbarRef = ref<InstanceType<
+  typeof SimulationActionToolbar
+> | null>(null);
 
 const closeToast = () => {
   showToast.value = false;
@@ -296,6 +262,6 @@ const openReportPreview = () => {
 const closeReportPreview = async () => {
   showReportPreview.value = false;
   await nextTick();
-  exportReportButtonRef.value?.focus();
+  simulationActionToolbarRef.value?.focusExportButton();
 };
 </script>
