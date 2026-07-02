@@ -1,7 +1,7 @@
 {
   "name": "freelancer-calculator-pt",
   "private": true,
-  "version": "0.5.0",
+  "version": "0.6.0",
   "description": "Open-source IRS, Social Security and net income calculator for freelancers in Portugal.",
   "type": "module",
   "author": "Bruno Ramos de Matos",

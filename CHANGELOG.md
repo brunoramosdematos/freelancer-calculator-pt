@@ -8,6 +8,10 @@ GitHub releases, support references and public production checkpoints.
 
 ## [Unreleased]
 
+No changes yet.
+
+## [0.6.0] - 2026-07-01
+
 ### Added
 
 - Added a printable income report preview that can be saved as PDF through the
@@ -30,6 +34,16 @@ GitHub releases, support references and public production checkpoints.
 - Reduced initial JavaScript by lazy-loading the income breakdown chart and
   secondary routes.
 - Raised the Lighthouse performance gate after measuring the optimized build.
+
+### Security
+
+- Production dependency audit remains clean.
+- Critical dependency audit remains clean.
+
+### Documentation
+
+- Updated performance, quality, tax-update and release documentation as needed
+  for the new release.
 
 ## [0.5.0] - 2026-06-27
 
@@ -80,6 +94,7 @@ First formal public release of Freelancer Calculator Portugal.
 - Added release process, versioning, tax update, branch protection and roadmap
   documentation.
 
-[unreleased]: https://github.com/brunoramosdematos/freelancer-calculator-pt/compare/v0.5.0...HEAD
+[unreleased]: https://github.com/brunoramosdematos/freelancer-calculator-pt/compare/v0.6.0...HEAD
+[0.6.0]: https://github.com/brunoramosdematos/freelancer-calculator-pt/compare/v0.5.0...v0.6.0
 [0.5.0]: https://github.com/brunoramosdematos/freelancer-calculator-pt/tree/v0.5.0
 [production]: https://freelancerpt.brunomatos.dev/
