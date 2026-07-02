@@ -49,7 +49,7 @@
 
       <div
         data-cy="calculation-details-container"
-        class="order-5 lg:order-none"
+        class="order-4 lg:order-none"
       >
         <CalculationDetails
           :open="calculationDetailsOpen"
@@ -57,6 +57,10 @@
           @update:open="calculationDetailsOpen = $event"
           @update:social-security-open="socialSecurityDetailsOpen = $event"
         />
+      </div>
+
+      <div class="order-6 lg:order-none">
+        <ScenarioComparison />
       </div>
     </div>
   </div>
@@ -69,6 +73,7 @@ import AdvancedTaxSettings from "@/components/AdvancedTaxSettings.vue";
 import CalculationDetails from "@/components/CalculationDetails.vue";
 import DisclosurePanel from "@/components/DisclosurePanel.vue";
 import ResultsSummary from "@/components/ResultsSummary.vue";
+import ScenarioComparison from "@/components/ScenarioComparison.vue";
 import SimulationSettings from "@/components/SimulationSettings.vue";
 
 const AsyncChart = defineAsyncComponent(() => import("@/components/Chart.vue"));

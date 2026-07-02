@@ -235,6 +235,62 @@ const messages = {
     netIncome: "Net income",
     socialSecurity: "Social Security",
   },
+  scenarioComparison: {
+    title: "Compare scenarios",
+    summary:
+      "See how tax assessment, Social Security and dependents affect net income.",
+    explanation:
+      "Add up to three alternatives. The active simulator stays unchanged while each scenario reuses the same tax calculation path.",
+    currentDescription: "Baseline from the current simulator values.",
+    screenOnlyNote:
+      "Scenario comparison is for on-screen analysis only in this version.",
+    presets: {
+      individual: {
+        label: "Compare individual",
+        description: "Use individual tax assessment for the same income.",
+      },
+      jointSingleIncome: {
+        label: "Compare joint - one income",
+        description: "Use joint household assessment with one income.",
+      },
+      socialSecurityMinus20: {
+        label: "Compare SS -20%",
+        description: "Apply a -20% Social Security base adjustment.",
+      },
+      noDependents: {
+        label: "Compare no dependents",
+        description: "Set dependent count and age groups to zero.",
+      },
+    },
+    table: {
+      scenario: "Scenario",
+      grossIncome: "Gross / year",
+      irs: "IRS / year",
+      socialSecurity: "Social Security / year",
+      netIncomeYear: "Net income / year",
+      netIncomeMonth: "Net income / month",
+      difference: "Difference",
+      current: "Current scenario",
+      best: "Best net income",
+    },
+    actions: {
+      add: "Add scenario",
+      remove: "Remove",
+      removeScenario: "Remove {scenario}",
+      clearAll: "Clear all",
+    },
+    statuses: {
+      alreadyCurrent: "Already current",
+      added: "Added",
+      limitReached: "Limit reached",
+      noAlternatives: "No alternatives added yet.",
+      alternativeCount:
+        "{count} alternative selected | {count} alternatives selected",
+      betterThanCurrent: "{amount} better than current",
+      worseThanCurrent: "{amount} worse than current",
+      sameAsCurrent: "Same as current",
+    },
+  },
   report: {
     actions: {
       export: "Export report",

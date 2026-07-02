@@ -46,6 +46,18 @@ describe("locale message parity", () => {
     });
   });
 
+  it("keeps scenario comparison messages available in every locale", () => {
+    SUPPORTED_LOCALES.forEach((locale) => {
+      expect(messages[locale].scenarioComparison.title).toBeTruthy();
+      expect(
+        messages[locale].scenarioComparison.presets.jointSingleIncome.label,
+      ).toBeTruthy();
+      expect(messages[locale].scenarioComparison.table.best).toBeTruthy();
+      expect(
+        messages[locale].scenarioComparison.statuses.betterThanCurrent,
+      ).toBeTruthy();
+    });
+  });
   it("keeps locale metadata, language names, and formatter locales complete", () => {
     SUPPORTED_LOCALES.forEach((locale) => {
       expect(metadataByLocale[locale].title).toBeTruthy();

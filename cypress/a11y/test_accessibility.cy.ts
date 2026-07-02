@@ -142,6 +142,11 @@ describe("automated accessibility coverage", () => {
     openDisclosure('[data-cy="dependent-age-groups-toggle"]');
     openDisclosure('[data-cy="advanced-tax-settings-toggle"]');
     openDisclosure('[data-cy="income-breakdown-chart-toggle"]');
+    openDisclosure('[data-cy="scenario-comparison-toggle"]');
+    cy.get(
+      '[data-cy="scenario-add-preset"][data-scenario-preset="individual"]',
+    ).click();
+    cy.get('[data-cy="scenario-comparison-row"]').should("be.visible");
     openDisclosure('[data-cy="calculation-details-toggle"]');
     openDisclosure('[data-cy="irs-calculation-details-toggle"]');
     openDisclosure('[data-cy="social-security-calculation-details-toggle"]');

@@ -239,6 +239,63 @@ const messages = {
     netIncome: "Renda líquida",
     socialSecurity: "Segurança Social",
   },
+  scenarioComparison: {
+    title: "Comparar cenários",
+    summary:
+      "Veja como a forma de tributação, a Segurança Social e os dependentes afetam a renda líquida.",
+    explanation:
+      "Adicione até três alternativas. A simulação ativa permanece inalterada enquanto cada cenário reutiliza o mesmo caminho de cálculo fiscal.",
+    currentDescription: "Baseada nos valores atuais do simulador.",
+    screenOnlyNote:
+      "A comparação de cenários é apenas para análise na tela nesta versão.",
+    presets: {
+      individual: {
+        label: "Comparar individual",
+        description: "Usa tributação individual para a mesma renda.",
+      },
+      jointSingleIncome: {
+        label: "Comparar conjunta — uma renda",
+        description: "Usa tributação conjunta do agregado com uma renda.",
+      },
+      socialSecurityMinus20: {
+        label: "Comparar SS -20%",
+        description: "Aplica um ajuste de -20% à base da Segurança Social.",
+      },
+      noDependents: {
+        label: "Comparar sem dependentes",
+        description:
+          "Redefine o número e as faixas etárias dos dependentes para zero.",
+      },
+    },
+    table: {
+      scenario: "Cenário",
+      grossIncome: "Bruta / ano",
+      irs: "IRS / ano",
+      socialSecurity: "Segurança Social / ano",
+      netIncomeYear: "Renda líquida / ano",
+      netIncomeMonth: "Renda líquida / mês",
+      difference: "Diferença",
+      current: "Cenário atual",
+      best: "Melhor renda líquida",
+    },
+    actions: {
+      add: "Adicionar cenário",
+      remove: "Remover",
+      removeScenario: "Remover {scenario}",
+      clearAll: "Limpar tudo",
+    },
+    statuses: {
+      alreadyCurrent: "Já é o cenário atual",
+      added: "Adicionado",
+      limitReached: "Limite atingido",
+      noAlternatives: "Ainda não há alternativas adicionadas.",
+      alternativeCount:
+        "{count} alternativa selecionada | {count} alternativas selecionadas",
+      betterThanCurrent: "{amount} melhor que o cenário atual",
+      worseThanCurrent: "{amount} pior que o cenário atual",
+      sameAsCurrent: "Igual ao cenário atual",
+    },
+  },
   report: {
     actions: {
       export: "Exportar relatório",
