@@ -8,7 +8,10 @@ GitHub releases, support references and public production checkpoints.
 
 ## [Unreleased]
 
-No changes yet.
+### Added
+
+- Added on-screen scenario comparison for assessment and Social Security
+  alternatives.
 
 ## [0.6.0] - 2026-07-01
 
