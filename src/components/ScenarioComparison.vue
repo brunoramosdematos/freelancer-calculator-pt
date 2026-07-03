@@ -119,12 +119,23 @@
                     <span class="mt-1 block text-xs font-normal text-muted">
                       {{ t(row.descriptionKey) }}
                     </span>
-                    <span
-                      v-if="row.isBest"
-                      class="mt-2 inline-flex rounded-full border border-income/30 bg-income-soft px-2 py-0.5 text-xs font-semibold text-foreground"
+                    <div
+                      class="mt-2 flex max-w-full flex-wrap items-center gap-1.5"
                     >
-                      {{ t("scenarioComparison.table.best") }}
-                    </span>
+                      <span
+                        v-for="chip in scenarioStatusChips(row)"
+                        :key="`table-${row.id}-${chip.kind}`"
+                        data-cy="scenario-status-chip"
+                        :aria-label="
+                          chip.ariaLabelKey ? t(chip.ariaLabelKey) : undefined
+                        "
+                        :class="chip.className"
+                      >
+                        <span :data-cy="chip.dataCy">
+                          {{ t(chip.labelKey) }}
+                        </span>
+                      </span>
+                    </div>
                   </th>
                   <td class="px-3 py-3 text-right tabular-nums">
                     {{ money(row.grossIncome.year) }}
@@ -182,20 +193,31 @@
             :data-scenario-id="row.id"
           >
             <div class="flex items-start justify-between gap-3">
-              <div class="min-w-0">
+              <div class="min-w-0 flex-1">
                 <h3 class="text-sm font-semibold text-foreground">
                   {{ t(row.labelKey) }}
                 </h3>
                 <p class="mt-1 text-xs leading-5 text-muted">
                   {{ t(row.descriptionKey) }}
                 </p>
+                <div
+                  class="mt-2 flex max-w-full flex-wrap items-center gap-1.5"
+                >
+                  <span
+                    v-for="chip in scenarioStatusChips(row)"
+                    :key="`card-${row.id}-${chip.kind}`"
+                    data-cy="scenario-status-chip"
+                    :aria-label="
+                      chip.ariaLabelKey ? t(chip.ariaLabelKey) : undefined
+                    "
+                    :class="chip.className"
+                  >
+                    <span :data-cy="chip.dataCy">
+                      {{ t(chip.labelKey) }}
+                    </span>
+                  </span>
+                </div>
               </div>
-              <span
-                v-if="row.isBest"
-                class="shrink-0 rounded-full border border-income/30 bg-income-soft px-2 py-0.5 text-xs font-semibold text-foreground"
-              >
-                {{ t("scenarioComparison.table.best") }}
-              </span>
             </div>
 
             <dl class="mt-3 grid grid-cols-2 gap-3 text-xs">
@@ -292,6 +314,52 @@ const alternatives = computed(() => comparison.value.alternatives);
 const hasReachedLimit = computed(
   () => selectedPresets.value.length >= MAX_COMPARISON_ALTERNATIVES,
 );
+
+type ScenarioStatusChip = {
+  kind: "current" | "alternative" | "best";
+  labelKey: string;
+  dataCy: string;
+  className: string;
+  ariaLabelKey?: string;
+};
+
+const statusChipBaseClass =
+  "inline-flex max-w-full items-center gap-1 rounded-full border px-2 py-0.5 text-[11px] font-semibold leading-tight whitespace-nowrap";
+
+const currentChipClass = `${statusChipBaseClass} border-default bg-surface text-foreground`;
+const alternativeChipClass = `${statusChipBaseClass} border-default bg-surface-muted text-muted`;
+const bestChipClass = `${statusChipBaseClass} border-income/30 bg-income-soft text-foreground`;
+
+const scenarioStatusChips = (row: ScenarioResult): ScenarioStatusChip[] => {
+  const roleChip: ScenarioStatusChip = row.isCurrent
+    ? {
+        kind: "current",
+        labelKey: "scenarioComparison.table.currentChip",
+        dataCy: "scenario-current-chip",
+        className: currentChipClass,
+      }
+    : {
+        kind: "alternative",
+        labelKey: "scenarioComparison.table.alternativeChip",
+        dataCy: "scenario-alternative-chip",
+        className: alternativeChipClass,
+      };
+
+  if (!row.isBest) {
+    return [roleChip];
+  }
+
+  return [
+    roleChip,
+    {
+      kind: "best",
+      labelKey: "scenarioComparison.table.bestChip",
+      ariaLabelKey: "scenarioComparison.table.bestChipAriaLabel",
+      dataCy: "scenario-best-chip",
+      className: bestChipClass,
+    },
+  ];
+};
 
 const presetOptions = computed(() =>
   SCENARIO_PRESETS.map((preset) => {

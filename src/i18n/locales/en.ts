@@ -271,6 +271,10 @@ const messages = {
       netIncomeMonth: "Net income / month",
       difference: "Difference",
       current: "Current scenario",
+      currentChip: "Current",
+      alternativeChip: "Alternative",
+      bestChip: "Best result",
+      bestChipAriaLabel: "Best result by annual net income",
       best: "Best net income",
     },
     actions: {

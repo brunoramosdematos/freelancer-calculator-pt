@@ -13,6 +13,11 @@ GitHub releases, support references and public production checkpoints.
 - Added on-screen scenario comparison for assessment and Social Security
   alternatives.
 
+### Fixed
+
+- Improved scenario comparison status labels so current, alternative and best
+  result indicators remain clear and well-aligned across locales.
+
 ## [0.6.0] - 2026-07-01
 
 ### Added
