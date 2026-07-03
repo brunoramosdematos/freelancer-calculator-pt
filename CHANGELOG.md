@@ -8,17 +8,35 @@ GitHub releases, support references and public production checkpoints.
 
 ## [Unreleased]
 
+No changes yet.
+
+## [0.7.0] - 2026-07-03
+
 ### Added
 
 - Added on-screen scenario comparison for assessment and Social Security
   alternatives.
+- Added comparison presets for individual assessment, joint single-income
+  assessment, Social Security -20% and no dependents.
+- Added scenario comparison result cards showing gross income, IRS, Social
+  Security, annual net income, monthly net income and difference versus the
+  current scenario.
 
-### Fixed
+### Changed
 
-- Improved scenario comparison result layout by replacing the dense result table
-  with responsive cards.
+- Replaced the dense scenario comparison results table with responsive cards.
 - Improved scenario comparison status labels so current, alternative and best
   result indicators remain clear and well-aligned across locales.
+
+### Security
+
+- Production dependency audit remains clean.
+- Critical dependency audit remains clean.
+
+### Documentation
+
+- Updated changelog and durable release notes for the scenario-comparison
+  release.
 
 ## [0.6.0] - 2026-07-01
 
@@ -104,7 +122,8 @@ First formal public release of Freelancer Calculator Portugal.
 - Added release process, versioning, tax update, branch protection and roadmap
   documentation.
 
-[unreleased]: https://github.com/brunoramosdematos/freelancer-calculator-pt/compare/v0.6.0...HEAD
+[unreleased]: https://github.com/brunoramosdematos/freelancer-calculator-pt/compare/v0.7.0...HEAD
+[0.7.0]: https://github.com/brunoramosdematos/freelancer-calculator-pt/compare/v0.6.0...v0.7.0
 [0.6.0]: https://github.com/brunoramosdematos/freelancer-calculator-pt/compare/v0.5.0...v0.6.0
 [0.5.0]: https://github.com/brunoramosdematos/freelancer-calculator-pt/tree/v0.5.0
 [production]: https://freelancerpt.brunomatos.dev/
