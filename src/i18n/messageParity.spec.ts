@@ -54,6 +54,16 @@ describe("locale message parity", () => {
       ).toBeTruthy();
       expect(messages[locale].scenarioComparison.table.best).toBeTruthy();
       expect(
+        messages[locale].scenarioComparison.card.annualNetIncome,
+      ).toBeTruthy();
+      expect(
+        messages[locale].scenarioComparison.card.monthlyNetIncome,
+      ).toBeTruthy();
+      expect(
+        messages[locale].scenarioComparison.card.supportingMetrics,
+      ).toBeTruthy();
+      expect(messages[locale].scenarioComparison.card.keyResult).toBeTruthy();
+      expect(
         messages[locale].scenarioComparison.table.currentChip,
       ).toBeTruthy();
       expect(

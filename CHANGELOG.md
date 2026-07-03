@@ -15,6 +15,8 @@ GitHub releases, support references and public production checkpoints.
 
 ### Fixed
 
+- Improved scenario comparison result layout by replacing the dense result table
+  with responsive cards.
 - Improved scenario comparison status labels so current, alternative and best
   result indicators remain clear and well-aligned across locales.
 
