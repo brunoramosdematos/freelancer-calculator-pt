@@ -282,6 +282,12 @@ const messages = {
       bestChipAriaLabel: "Melhor resultado por renda líquida anual",
       best: "Melhor renda líquida",
     },
+    card: {
+      annualNetIncome: "Renda líquida anual",
+      monthlyNetIncome: "Renda líquida mensal",
+      supportingMetrics: "Métricas de apoio",
+      keyResult: "Resultado principal",
+    },
     actions: {
       add: "Adicionar cenário",
       remove: "Remover",

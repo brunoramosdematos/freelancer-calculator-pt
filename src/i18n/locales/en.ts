@@ -277,6 +277,12 @@ const messages = {
       bestChipAriaLabel: "Best result by annual net income",
       best: "Best net income",
     },
+    card: {
+      annualNetIncome: "Annual net income",
+      monthlyNetIncome: "Monthly net income",
+      supportingMetrics: "Supporting metrics",
+      keyResult: "Key result",
+    },
     actions: {
       add: "Add scenario",
       remove: "Remove",

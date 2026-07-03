@@ -56,6 +56,57 @@ const visibleScenarioRows = () =>
     '[data-cy="scenario-current-row"]:visible, [data-cy="scenario-comparison-row"]:visible',
   );
 
+const visibleScenarioCards = () =>
+  cy.get('[data-cy="scenario-result-card"]:visible');
+
+const assertNoComparisonResultsOverflow = () => {
+  cy.get('[data-cy="scenario-results"]:visible').then(($results) => {
+    const element = $results[0];
+
+    expect(element.scrollWidth).to.be.lte(element.clientWidth + 1);
+  });
+};
+
+const assertEveryCardHasStatusChip = () => {
+  visibleScenarioCards().each(($card) => {
+    cy.wrap($card)
+      .find('[data-cy="scenario-status-chip"]:visible')
+      .should(($chips) => {
+        expect($chips.length).to.be.greaterThan(0);
+      });
+  });
+};
+
+const assertScenarioCardsStackVertically = () => {
+  visibleScenarioCards().then(($cards) => {
+    expect($cards.length).to.be.greaterThan(1);
+
+    const rects = [...$cards].map((card) =>
+      (card as HTMLElement).getBoundingClientRect(),
+    );
+
+    rects.slice(1).forEach((rect, index) => {
+      expect(rect.top).to.be.gte(rects[index].bottom - 1);
+      expect(rect.width).to.be.lte(rects[index].width + 1);
+    });
+  });
+};
+
+const assertScenarioCardsContainChips = () => {
+  visibleScenarioRows().each(($row) => {
+    const rowRect = ($row[0] as HTMLElement).getBoundingClientRect();
+
+    cy.wrap($row)
+      .find('[data-cy="scenario-status-chip"]:visible')
+      .each(($chip) => {
+        const chipRect = ($chip[0] as HTMLElement).getBoundingClientRect();
+
+        expect(chipRect.left).to.be.gte(rowRect.left - 1);
+        expect(chipRect.right).to.be.lte(rowRect.right + 1);
+      });
+  });
+};
+
 const assertNoHorizontalOverflow = () => {
   cy.document().then((doc) => {
     expect(doc.documentElement.scrollWidth).to.be.lte(
@@ -206,23 +257,44 @@ describe("scenario comparison", () => {
     cy.contains('[data-cy="scenario-comparison-panel"]', "No alternatives");
   });
 
-  it("keeps pt-BR dark desktop status chips compact and contained", () => {
+  it("renders pt-BR dark desktop result cards without table overflow", () => {
     cy.viewport(1365, 768);
     visitWithPreferences(
-      "/#/?income=60000&currentTaxRankYear=2024&numberOfDependents=2&dependentsAged3OrUnder=1&dependentsAged4To6=1",
+      "/#/?income=60000&currentTaxRankYear=2024&assessmentScenario=joint-single-income&numberOfDependents=2&dependentsAged3OrUnder=1&dependentsAged4To6=1",
       "pt-BR",
       "dark",
     );
     openComparison();
     addPreset("noDependents");
+    addPreset("individual");
 
     cy.document().its("documentElement.dataset.theme").should("eq", "dark");
     cy.contains('[data-cy="scenario-comparison"]', "Comparar cenários");
+    cy.get('[data-cy="scenario-results"]').find("table").should("not.exist");
+    visibleScenarioRows().should("have.length", 3);
+    visibleScenarioCards().should("have.length", 3);
+    cy.contains('[data-cy="scenario-results"]', "Resultado principal");
+    cy.contains('[data-cy="scenario-results"]', "Renda líquida anual");
+    cy.contains('[data-cy="scenario-results"]', "Renda líquida mensal");
+
+    visibleScenarioCards().each(($card) => {
+      cy.wrap($card)
+        .find('[data-cy="scenario-net-income-year"]')
+        .should("be.visible")
+        .invoke("text")
+        .should("match", /€/);
+      cy.wrap($card)
+        .find('[data-cy="scenario-diff-net-income"]')
+        .should("be.visible")
+        .invoke("text")
+        .should("match", /\S/);
+    });
+
     cy.get('[data-cy="scenario-current-chip"]:visible')
       .should("have.length", 1)
       .and("contain", "Atual");
     cy.get('[data-cy="scenario-alternative-chip"]:visible')
-      .should("have.length", 1)
+      .should("have.length", 2)
       .and("contain", "Alternativa");
     cy.get('[data-cy="scenario-best-chip"]:visible')
       .should("have.length", 1)
@@ -230,10 +302,13 @@ describe("scenario comparison", () => {
     cy.get(
       '[aria-label="Melhor resultado por renda líquida anual"]:visible',
     ).should("have.length", 1);
+    assertEveryCardHasStatusChip();
+    assertNoComparisonResultsOverflow();
     assertScenarioStatusChipsFit();
+    assertScenarioCardsContainChips();
   });
 
-  it("keeps pt-PT desktop status labels fitting without overflow", () => {
+  it("renders pt-PT desktop card labels without overflow", () => {
     cy.viewport(1365, 768);
     visitWithPreferences(
       "/#/?income=60000&currentTaxRankYear=2024",
@@ -244,6 +319,9 @@ describe("scenario comparison", () => {
     addPreset("jointSingleIncome");
 
     cy.contains('[data-cy="scenario-comparison-panel"]', "Rendimento líquido");
+    cy.contains('[data-cy="scenario-results"]', "Resultado principal");
+    cy.contains('[data-cy="scenario-results"]', "Rendimento líquido anual");
+    cy.contains('[data-cy="scenario-results"]', "Rendimento líquido mensal");
     cy.get('[data-cy="scenario-current-chip"]:visible').should(
       "contain",
       "Atual",
@@ -259,15 +337,19 @@ describe("scenario comparison", () => {
     cy.get(
       '[aria-label="Melhor resultado por rendimento líquido anual"]:visible',
     ).should("have.length", 1);
+    assertNoComparisonResultsOverflow();
     assertScenarioStatusChipsFit();
   });
 
-  it("keeps English desktop status labels clear", () => {
+  it("keeps English desktop card labels and status labels clear", () => {
     cy.viewport(1365, 768);
     visitWithPreferences("/#/?income=60000&currentTaxRankYear=2024");
     openComparison();
     addPreset("jointSingleIncome");
 
+    cy.contains('[data-cy="scenario-results"]', "Key result");
+    cy.contains('[data-cy="scenario-results"]', "Annual net income");
+    cy.contains('[data-cy="scenario-results"]', "Monthly net income");
     cy.get('[data-cy="scenario-current-chip"]:visible').should(
       "contain",
       "Current",
@@ -284,6 +366,7 @@ describe("scenario comparison", () => {
       "have.length",
       1,
     );
+    assertNoComparisonResultsOverflow();
     assertScenarioStatusChipsFit();
   });
 
@@ -302,7 +385,7 @@ describe("scenario comparison", () => {
     cy.contains('[data-cy="results-summary"]', "Renda líquida");
   });
 
-  it("keeps pt-BR mobile chips and remove actions visible without overflow", () => {
+  it("stacks pt-BR mobile cards with readable differences and visible remove actions", () => {
     cy.viewport(375, 800);
     visitWithPreferences(
       "/#/?income=60000&currentTaxRankYear=2024",
@@ -313,6 +396,7 @@ describe("scenario comparison", () => {
     addPreset("jointSingleIncome");
     addPreset("socialSecurityMinus20");
 
+    visibleScenarioCards().should("have.length", 3);
     cy.get('[data-cy="scenario-comparison-row"]:visible').should(
       "have.length",
       2,
@@ -326,11 +410,16 @@ describe("scenario comparison", () => {
       2,
     );
     cy.get('[data-cy="scenario-best-chip"]:visible').should("have.length", 1);
-    cy.contains(
-      '[data-cy="scenario-comparison-row"]:visible button',
-      "Remover",
-    ).should("be.visible");
+    cy.get('[data-cy="scenario-remove-button"]:visible')
+      .should("have.length", 2)
+      .and("contain", "Remover");
+    cy.get('[data-cy="scenario-diff-net-income"]:visible').each(($diff) => {
+      expect($diff.text().trim().length).to.be.greaterThan(0);
+    });
+    assertScenarioCardsStackVertically();
+    assertNoComparisonResultsOverflow();
     assertScenarioStatusChipsFit();
+    assertScenarioCardsContainChips();
   });
 
   it("marks an alternative as best when it has higher annual net income", () => {
