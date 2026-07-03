@@ -276,6 +276,10 @@ const messages = {
       netIncomeMonth: "Rendimento líquido / mês",
       difference: "Diferença",
       current: "Cenário atual",
+      currentChip: "Atual",
+      alternativeChip: "Alternativa",
+      bestChip: "Melhor resultado",
+      bestChipAriaLabel: "Melhor resultado por rendimento líquido anual",
       best: "Melhor rendimento líquido",
     },
     actions: {

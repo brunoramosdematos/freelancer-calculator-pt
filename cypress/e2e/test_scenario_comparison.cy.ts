@@ -56,6 +56,38 @@ const visibleScenarioRows = () =>
     '[data-cy="scenario-current-row"]:visible, [data-cy="scenario-comparison-row"]:visible',
   );
 
+const assertNoHorizontalOverflow = () => {
+  cy.document().then((doc) => {
+    expect(doc.documentElement.scrollWidth).to.be.lte(
+      doc.documentElement.clientWidth + 1,
+    );
+  });
+};
+
+const assertScenarioStatusChipsFit = (maxHeight = 24) => {
+  cy.get('[data-cy="scenario-status-chip"]:visible').then(($chips) => {
+    expect($chips.length).to.be.greaterThan(0);
+
+    $chips.each((_, chip) => {
+      const chipElement = chip as HTMLElement;
+      const chipRect = chipElement.getBoundingClientRect();
+      const labelElement = chipElement.firstElementChild as HTMLElement | null;
+
+      expect(chipRect.height).to.be.gte(16);
+      expect(chipRect.height).to.be.lte(maxHeight);
+      expect(labelElement).not.to.equal(null);
+
+      const labelRect = labelElement!.getBoundingClientRect();
+
+      expect(labelRect.left).to.be.gte(chipRect.left - 0.5);
+      expect(labelRect.right).to.be.lte(chipRect.right + 0.5);
+      expect(labelRect.top).to.be.gte(chipRect.top - 0.5);
+      expect(labelRect.bottom).to.be.lte(chipRect.bottom + 0.5);
+    });
+  });
+  assertNoHorizontalOverflow();
+};
+
 describe("scenario comparison", () => {
   it("does not render without income", () => {
     visitWithPreferences("/");
@@ -174,19 +206,85 @@ describe("scenario comparison", () => {
     cy.contains('[data-cy="scenario-comparison-panel"]', "No alternatives");
   });
 
-  it("covers localized labels and Dark theme readability", () => {
+  it("keeps pt-BR dark desktop status chips compact and contained", () => {
+    cy.viewport(1365, 768);
+    visitWithPreferences(
+      "/#/?income=60000&currentTaxRankYear=2024&numberOfDependents=2&dependentsAged3OrUnder=1&dependentsAged4To6=1",
+      "pt-BR",
+      "dark",
+    );
+    openComparison();
+    addPreset("noDependents");
+
+    cy.document().its("documentElement.dataset.theme").should("eq", "dark");
+    cy.contains('[data-cy="scenario-comparison"]', "Comparar cenários");
+    cy.get('[data-cy="scenario-current-chip"]:visible')
+      .should("have.length", 1)
+      .and("contain", "Atual");
+    cy.get('[data-cy="scenario-alternative-chip"]:visible')
+      .should("have.length", 1)
+      .and("contain", "Alternativa");
+    cy.get('[data-cy="scenario-best-chip"]:visible')
+      .should("have.length", 1)
+      .and("contain", "Melhor resultado");
+    cy.get(
+      '[aria-label="Melhor resultado por renda líquida anual"]:visible',
+    ).should("have.length", 1);
+    assertScenarioStatusChipsFit();
+  });
+
+  it("keeps pt-PT desktop status labels fitting without overflow", () => {
+    cy.viewport(1365, 768);
     visitWithPreferences(
       "/#/?income=60000&currentTaxRankYear=2024",
       "pt-PT",
-      "dark",
+      "light",
     );
     openComparison();
     addPreset("jointSingleIncome");
 
-    cy.document().its("documentElement.dataset.theme").should("eq", "dark");
-    cy.contains('[data-cy="scenario-comparison"]', "Comparar cenários");
-    cy.contains('[data-cy="scenario-comparison-panel"]', "rendimento líquido");
-    cy.contains('[data-cy="scenario-comparison-panel"]', "Melhor rendimento");
+    cy.contains('[data-cy="scenario-comparison-panel"]', "Rendimento líquido");
+    cy.get('[data-cy="scenario-current-chip"]:visible').should(
+      "contain",
+      "Atual",
+    );
+    cy.get('[data-cy="scenario-alternative-chip"]:visible').should(
+      "contain",
+      "Alternativa",
+    );
+    cy.get('[data-cy="scenario-best-chip"]:visible').should(
+      "contain",
+      "Melhor resultado",
+    );
+    cy.get(
+      '[aria-label="Melhor resultado por rendimento líquido anual"]:visible',
+    ).should("have.length", 1);
+    assertScenarioStatusChipsFit();
+  });
+
+  it("keeps English desktop status labels clear", () => {
+    cy.viewport(1365, 768);
+    visitWithPreferences("/#/?income=60000&currentTaxRankYear=2024");
+    openComparison();
+    addPreset("jointSingleIncome");
+
+    cy.get('[data-cy="scenario-current-chip"]:visible').should(
+      "contain",
+      "Current",
+    );
+    cy.get('[data-cy="scenario-alternative-chip"]:visible').should(
+      "contain",
+      "Alternative",
+    );
+    cy.get('[data-cy="scenario-best-chip"]:visible').should(
+      "contain",
+      "Best result",
+    );
+    cy.get('[aria-label="Best result by annual net income"]:visible').should(
+      "have.length",
+      1,
+    );
+    assertScenarioStatusChipsFit();
   });
 
   it("covers pt-BR labels in System theme resolved to Dark", () => {
@@ -204,7 +302,7 @@ describe("scenario comparison", () => {
     cy.contains('[data-cy="results-summary"]', "Renda líquida");
   });
 
-  it("is usable on mobile without horizontal overflow", () => {
+  it("keeps pt-BR mobile chips and remove actions visible without overflow", () => {
     cy.viewport(375, 800);
     visitWithPreferences(
       "/#/?income=60000&currentTaxRankYear=2024",
@@ -219,11 +317,44 @@ describe("scenario comparison", () => {
       "have.length",
       2,
     );
-    cy.document().then((doc) => {
-      expect(doc.documentElement.scrollWidth).to.be.lte(
-        doc.documentElement.clientWidth + 1,
-      );
-    });
+    cy.get('[data-cy="scenario-current-chip"]:visible').should(
+      "contain",
+      "Atual",
+    );
+    cy.get('[data-cy="scenario-alternative-chip"]:visible').should(
+      "have.length",
+      2,
+    );
+    cy.get('[data-cy="scenario-best-chip"]:visible').should("have.length", 1);
+    cy.contains(
+      '[data-cy="scenario-comparison-row"]:visible button',
+      "Remover",
+    ).should("be.visible");
+    assertScenarioStatusChipsFit();
+  });
+
+  it("marks an alternative as best when it has higher annual net income", () => {
+    visitWithPreferences("/#/?income=60000&currentTaxRankYear=2024");
+    openComparison();
+    addPreset("jointSingleIncome");
+
+    cy.get('[data-cy="scenario-best-chip"]:visible')
+      .should("have.length", 1)
+      .closest('[data-cy="scenario-comparison-row"]')
+      .should("have.attr", "data-scenario-id", "jointSingleIncome");
+  });
+
+  it("marks the current scenario as best when alternatives are lower", () => {
+    visitWithPreferences(
+      "/#/?income=60000&currentTaxRankYear=2024&numberOfDependents=2&dependentsAged3OrUnder=1&dependentsAged4To6=1",
+    );
+    openComparison();
+    addPreset("noDependents");
+
+    cy.get('[data-cy="scenario-best-chip"]:visible')
+      .should("have.length", 1)
+      .closest('[data-cy="scenario-current-row"]')
+      .should("have.attr", "data-scenario-id", "current");
   });
 
   it("does not include comparison state in saved simulations or report export", () => {

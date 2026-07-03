@@ -54,6 +54,16 @@ describe("locale message parity", () => {
       ).toBeTruthy();
       expect(messages[locale].scenarioComparison.table.best).toBeTruthy();
       expect(
+        messages[locale].scenarioComparison.table.currentChip,
+      ).toBeTruthy();
+      expect(
+        messages[locale].scenarioComparison.table.alternativeChip,
+      ).toBeTruthy();
+      expect(messages[locale].scenarioComparison.table.bestChip).toBeTruthy();
+      expect(
+        messages[locale].scenarioComparison.table.bestChipAriaLabel,
+      ).toBeTruthy();
+      expect(
         messages[locale].scenarioComparison.statuses.betterThanCurrent,
       ).toBeTruthy();
     });
