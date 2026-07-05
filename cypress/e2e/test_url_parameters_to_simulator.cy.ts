@@ -14,9 +14,14 @@ describe("simulator loads", () => {
 });
 
 describe("pass income through url parameters", () => {
-  it("successfully uses income from url", () => {
+  it("successfully uses income from url with the dynamic default tax year", () => {
     cy.visit("/#/?income=50000"); // change URL to match your dev URL
     cy.get('[data-cy="income"]').should("have.value", "50,000");
+    cy.get('[data-cy="tax-rank-years-dropdown"] input:first-of-type').should(
+      "have.value",
+      "2026",
+    );
+    cy.url().should("not.include", "currentTaxRankYear=");
   });
 
   it("doesn't update income if incorrect from url", () => {
@@ -141,7 +146,7 @@ describe("pass currentTaxRankYear through url parameters", () => {
     cy.visit("/#/?income=50000&currentTaxRankYear=2027"); // change URL to match your dev URL
     cy.get('[data-cy="tax-rank-years-dropdown"] input:first-of-type').should(
       "have.value",
-      "2025",
+      "2026",
     );
   });
 
@@ -149,7 +154,7 @@ describe("pass currentTaxRankYear through url parameters", () => {
     cy.visit("/#/?income=50000&currentTaxRankYear=dummyval"); // change URL to match your dev URL
     cy.get('[data-cy="tax-rank-years-dropdown"] input:first-of-type').should(
       "have.value",
-      "2025",
+      "2026",
     );
   });
 });

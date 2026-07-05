@@ -39,6 +39,14 @@ The app ships static, versioned fiscal-data provenance metadata in
 the About-page tax-data coverage section. It must remain separate from Pinia
 state, URL parameters and saved simulations.
 
+The default simulator tax year is derived dynamically from supported tax-data
+coverage. When the current calendar year is supported, it is selected by
+default. When a future calendar year is not supported yet, the app falls back
+to the latest supported year; when the current year precedes the supported
+range, it falls back to the earliest supported year. The tax-data status layer
+continues to communicate review needs. Tests must cover default selection
+whenever supported years change.
+
 When fiscal data changes:
 
 - Add or update a `TaxYearProvenance` entry for every supported tax year.
@@ -74,7 +82,7 @@ For a new tax year such as 2027:
 - Confirm URL hydration.
 - Confirm old saved simulations still render.
 - Update README and documentation scope.
-- Decide whether `DEFAULT_TAX_RANK_YEAR` changes.
+- Confirm the dynamic default tax-year selection tests cover the new year.
 - Update `CHANGELOG.md`.
 
 Do not change tax data without completing the relevant checklist.

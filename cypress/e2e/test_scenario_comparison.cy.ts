@@ -179,6 +179,25 @@ describe("scenario comparison", () => {
       .should("not.contain", "Same as current");
     cy.get('[data-cy="assessment-scenario-individual"]').should("be.checked");
   });
+  it("uses the dynamic default tax year in scenario comparison without URL mutation", () => {
+    visitWithPreferences("/#/?income=60000");
+
+    cy.get('[data-cy="tax-rank-years-dropdown"] input:first-of-type').should(
+      "have.value",
+      "2026",
+    );
+    openComparison();
+    cy.location("href").then((hrefBefore) => {
+      addPreset("jointSingleIncome");
+
+      cy.location("href").should("eq", hrefBefore);
+      cy.location("href").should("not.include", "currentTaxRankYear=");
+    });
+    cy.get('[data-cy="tax-rank-years-dropdown"] input:first-of-type').should(
+      "have.value",
+      "2026",
+    );
+  });
 
   it("compares joint current against individual and keeps the joint control selected", () => {
     visitWithPreferences(

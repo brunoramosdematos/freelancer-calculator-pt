@@ -3,6 +3,7 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 import { createPinia } from "pinia";
 import {
   DEFAULT_TAX_RANK_YEAR,
+  getDefaultTaxRankYear,
   SUPPORTED_TAX_RANK_YEARS,
   YEAR_BUSINESS_DAYS,
   useTaxesStore,
@@ -37,6 +38,37 @@ describe("Taxes Store", () => {
     taxesStore.ssFirstYear = false;
     taxesStore.benefitsOfYouthIrs = false;
     taxesStore.yearOfYouthIrs = 1;
+  });
+  it("initializes the selected tax year from the dynamic default", () => {
+    vi.useFakeTimers();
+    vi.setSystemTime(new Date(2026, 6, 5));
+
+    try {
+      const dynamicDefaultStore = useTaxesStore(createPinia());
+
+      expect(getDefaultTaxRankYear()).toBe(2026);
+      expect(dynamicDefaultStore.currentTaxRankYear).toBe(2026);
+    } finally {
+      vi.useRealTimers();
+    }
+  });
+
+  it("resets the selected tax year to the dynamic default", () => {
+    vi.useFakeTimers();
+    vi.setSystemTime(new Date(2026, 6, 5));
+
+    try {
+      const dynamicDefaultStore = useTaxesStore(createPinia());
+      dynamicDefaultStore.setIncome(50_000, false);
+      dynamicDefaultStore.setCurrentTaxRankYear(2024, false);
+
+      dynamicDefaultStore.reset();
+
+      expect(dynamicDefaultStore.currentTaxRankYear).toBe(2026);
+      expect(dynamicDefaultStore.income).toBeNull();
+    } finally {
+      vi.useRealTimers();
+    }
   });
 
   it("should calculate the correct gross income by year", () => {
@@ -448,7 +480,7 @@ describe("Taxes Store", () => {
     );
   });
 
-  it("keeps the existing default IRS result for individual assessment without dependents", () => {
+  it("keeps the explicit 2024 IRS result for individual assessment without dependents", () => {
     const expectedGrossIrs = 43_000 * 0.27154 + 2_000 * 0.45;
 
     expect(taxesStore.assessmentScenario).toBe(AssessmentScenario.Individual);
@@ -511,6 +543,40 @@ describe("Taxes Store", () => {
       expectedGrossIrs,
     );
     expect(taxesStore.irsPay.year).toBeCloseTo(7_108.78998);
+  });
+  it("keeps explicit-year fiscal regression values unchanged", () => {
+    taxesStore.setIncome(60_000);
+    taxesStore.setCurrentTaxRankYear(2024);
+    taxesStore.setAssessmentScenario(AssessmentScenario.Individual);
+    taxesStore.setNumberOfDependents(0);
+
+    expect(taxesStore.irsPay.year).toBeCloseTo(12_576.22);
+
+    taxesStore.setAssessmentScenario(AssessmentScenario.JointSingleIncome);
+
+    expect(taxesStore.irsPay.year).toBeCloseTo(8_608.78998);
+
+    taxesStore.setNumberOfDependents(2);
+    taxesStore.setDependentsAged3OrUnder(1);
+    taxesStore.setDependentsAged4To6(1);
+
+    expect(taxesStore.irsPay.year).toBeCloseTo(7_108.78998);
+
+    taxesStore.setCurrentTaxRankYear(2026);
+    taxesStore.setIncomeFrequency(FrequencyChoices.Month);
+    taxesStore.setDisplayFrequency(FrequencyChoices.Month);
+    taxesStore.setIncome(11_000);
+    taxesStore.setAssessmentScenario(AssessmentScenario.Individual);
+    taxesStore.setNumberOfDependents(0);
+
+    taxesStore.setSsDiscount(0);
+    expect(taxesStore.ssPay.month).toBeCloseTo(1_379.34984);
+
+    taxesStore.setSsDiscount(-0.2);
+    expect(taxesStore.ssPay.month).toBeCloseTo(1_318.24);
+
+    taxesStore.setSsDiscount(-0.25);
+    expect(taxesStore.ssPay.month).toBeCloseTo(1_235.85);
   });
 
   it("floors final IRS at zero after dependent deduction", () => {
@@ -701,6 +767,7 @@ describe("Taxes Store", () => {
     expect(taxesStore.numberOfDependents).toBe(0);
     expect(taxesStore.dependentsAged3OrUnder).toBe(0);
     expect(taxesStore.dependentsAged4To6).toBe(0);
+    expect(taxesStore.currentTaxRankYear).toBe(DEFAULT_TAX_RANK_YEAR);
     expect(taxesStore.firstYear).toBe(false);
     expect(taxesStore.secondYear).toBe(false);
   });
@@ -717,6 +784,23 @@ describe("Taxes Store", () => {
     expect(taxesStore.numberOfDependents).toBe(0);
     expect(taxesStore.dependentsAged3OrUnder).toBe(0);
     expect(taxesStore.dependentsAged4To6).toBe(0);
+  });
+  it("hydrates old saved simulations without tax year using the dynamic default", () => {
+    taxesStore.setCurrentTaxRankYear(2024);
+    taxesStore.setParametersFromURL({ income: "50000" });
+
+    expect(taxesStore.income).toBe(50_000);
+    expect(taxesStore.currentTaxRankYear).toBe(DEFAULT_TAX_RANK_YEAR);
+  });
+
+  it("preserves explicit tax years from saved simulation parameters", () => {
+    taxesStore.setParametersFromURL({
+      income: "50000",
+      currentTaxRankYear: "2025",
+    });
+
+    expect(taxesStore.income).toBe(50_000);
+    expect(taxesStore.currentTaxRankYear).toBe(2025);
   });
 
   it("hydrates Social Security adjustment passively without URL writes", () => {

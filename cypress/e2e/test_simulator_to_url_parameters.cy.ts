@@ -262,6 +262,11 @@ describe("pass assessment scenario and dependents to url parameters", () => {
     cy.get('[data-cy="income"]').should("have.value", "");
 
     cy.get('[data-cy="income"]').type("60000");
+    cy.get('[data-cy="tax-rank-years-dropdown"] input:first-of-type').should(
+      "have.value",
+      "2026",
+    );
+    cy.url().should("not.include", "currentTaxRankYear=");
     cy.get('[data-cy="assessment-scenario-individual"]').should("be.checked");
     cy.get('[data-cy="number-of-dependents"] input:first-of-type').should(
       "have.value",

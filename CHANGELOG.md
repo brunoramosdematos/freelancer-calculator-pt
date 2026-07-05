@@ -8,7 +8,9 @@ GitHub releases, support references and public production checkpoints.
 
 ## [Unreleased]
 
-No changes yet.
+### Changed
+
+- Made the default income tax year dynamic based on supported tax-data coverage.
 
 ## [0.7.0] - 2026-07-03
 
