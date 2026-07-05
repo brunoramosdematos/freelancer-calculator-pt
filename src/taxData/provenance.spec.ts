@@ -28,8 +28,8 @@ describe("tax data provenance", () => {
     expect(taxDataCoverage.latestSupportedTaxYear).toBe(2026);
   });
 
-  it("tracks the current default year without changing it", () => {
-    expect(DEFAULT_TAX_RANK_YEAR).toBe(2025);
+  it("tracks the current dynamic default year", () => {
+    expect(DEFAULT_TAX_RANK_YEAR).toBe(2026);
   });
 
   it("provides metadata for every supported store tax year", () => {

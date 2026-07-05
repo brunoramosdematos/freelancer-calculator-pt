@@ -9,13 +9,30 @@ import {
 import { generateUUID } from "@/utils.js";
 import { updateUrlQuery, clearUrlQuery } from "@/router";
 import { calculateDependentTaxDeduction } from "@/store/dependentDeduction";
+import { getRuntimeDefaultTaxYear } from "@/taxData/defaultTaxYear";
 
 export const YEAR_BUSINESS_DAYS = 248;
 //export const MONTH_BUSINESS_DAYS = 22; // No longer used by this simulator, only year business days are taken into account
 export const SUPPORTED_TAX_RANK_YEARS = [2023, 2024, 2025, 2026].sort(
   (a, b) => b - a,
 );
-export const DEFAULT_TAX_RANK_YEAR: (typeof SUPPORTED_TAX_RANK_YEARS)[number] = 2025;
+export const getDefaultTaxRankYear =
+  (): (typeof SUPPORTED_TAX_RANK_YEARS)[number] => {
+    const defaultTaxYear = getRuntimeDefaultTaxYear();
+
+    if (
+      !SUPPORTED_TAX_RANK_YEARS.includes(
+        defaultTaxYear as (typeof SUPPORTED_TAX_RANK_YEARS)[number],
+      )
+    ) {
+      throw new Error(
+        `Default tax year ${defaultTaxYear} is not available in tax ranks.`,
+      );
+    }
+
+    return defaultTaxYear as (typeof SUPPORTED_TAX_RANK_YEARS)[number];
+  };
+export const DEFAULT_TAX_RANK_YEAR = getDefaultTaxRankYear();
 const SIMULATIONS_LOCAL_STORE_KEY = "net_income_simulations";
 const ASSESSMENT_SCENARIOS = Object.values(AssessmentScenario);
 type UrlParameterParser<T> = (value: unknown) => T;
@@ -76,7 +93,7 @@ export const createDefaultSimulationInputs = (): SimulationInputState => ({
   ssDiscount: 0,
   expenses: 0,
   expensesAuto: true,
-  currentTaxRankYear: DEFAULT_TAX_RANK_YEAR,
+  currentTaxRankYear: getDefaultTaxRankYear(),
   ssFirstYear: false,
   firstYear: false,
   secondYear: false,

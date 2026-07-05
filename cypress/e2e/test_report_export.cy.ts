@@ -123,6 +123,27 @@ describe("printable report export", () => {
       "not accounting, legal, or tax advice",
     );
   });
+  it("renders the dynamic default tax year without mutating the URL", () => {
+    visitScenario("/#/?income=60000");
+    cy.location("href").as("initialUrl");
+    cy.get('[data-cy="tax-rank-years-dropdown"] input').should(
+      "have.value",
+      "2026",
+    );
+
+    openReport();
+
+    assertContainsNormalized('[data-cy="report-tax-year"]', "2026");
+    cy.get('[data-cy="report-close-button"]').click();
+    cy.get("@initialUrl").then((initialUrl) => {
+      cy.location("href").should("eq", initialUrl);
+    });
+    cy.location("href").should("not.include", "currentTaxRankYear=");
+    cy.get('[data-cy="tax-rank-years-dropdown"] input').should(
+      "have.value",
+      "2026",
+    );
+  });
 
   it("localizes report content and formatting in pt-PT", () => {
     visitScenario(REPORT_SCENARIO, { locale: "pt-PT" });

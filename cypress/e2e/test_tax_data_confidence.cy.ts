@@ -66,26 +66,26 @@ const expectNoHorizontalOverflow = () => {
 };
 
 describe("tax data confidence", () => {
-  it("shows status near the tax-year selector with selected and latest years in details", () => {
+  it("defaults to the current supported tax year and shows latest status", () => {
     cy.viewport(375, 800);
     visitWithLocale("en");
 
     cy.get('[data-cy="simulation-settings"]').within(() => {
       cy.get('[data-cy="tax-rank-years-dropdown"] input:first-of-type').should(
         "have.value",
-        "2025",
+        "2026",
       );
       cy.get('[data-cy="tax-data-status"]').should("be.visible");
       cy.get('[data-cy="tax-data-status-summary"]').should(
         "contain",
-        "historical supported",
+        "latest supported",
       );
     });
 
     openTaxDataDetails();
     cy.get('[data-cy="tax-data-status-details"]')
       .should("contain", "Selected tax year")
-      .and("contain", "2025")
+      .and("contain", "2026")
       .and("contain", "Latest supported year")
       .and("contain", "2026")
       .and("contain", "Supported tax years");
