@@ -12,6 +12,7 @@ import { calculateDependentTaxDeduction } from "@/store/dependentDeduction";
 import { getRuntimeDefaultTaxYear } from "@/taxData/defaultTaxYear";
 
 export const YEAR_BUSINESS_DAYS = 248;
+export const SPOUSE_SIMPLIFIED_SPECIFIC_DEDUCTION = 4104;
 //export const MONTH_BUSINESS_DAYS = 22; // No longer used by this simulator, only year business days are taken into account
 export const SUPPORTED_TAX_RANK_YEARS = [2023, 2024, 2025, 2026].sort(
   (a, b) => b - a,
@@ -79,6 +80,7 @@ interface SimulationInputState {
   benefitsOfYouthIrs: boolean;
   yearOfYouthIrs: number;
   assessmentScenario: AssessmentScenario;
+  spouseAnnualGrossIncome: number;
   numberOfDependents: number;
   dependentsAged3OrUnder: number;
   dependentsAged4To6: number;
@@ -101,6 +103,7 @@ export const createDefaultSimulationInputs = (): SimulationInputState => ({
   benefitsOfYouthIrs: false,
   yearOfYouthIrs: 1,
   assessmentScenario: AssessmentScenario.Individual,
+  spouseAnnualGrossIncome: 0,
   numberOfDependents: 0,
   dependentsAged3OrUnder: 0,
   dependentsAged4To6: 0,
@@ -316,6 +319,30 @@ const useTaxesStore = defineStore({
       }
       return result;
     },
+    isJointTwoIncomes: (state) => {
+      return state.assessmentScenario === AssessmentScenario.JointTwoIncomes;
+    },
+    activeSpouseAnnualGrossIncome(): number {
+      return this.isJointTwoIncomes
+        ? Math.max(this.spouseAnnualGrossIncome, 0)
+        : 0;
+    },
+    spouseGrossIncome(): GrossIncome {
+      const year = this.activeSpouseAnnualGrossIncome;
+
+      return {
+        year,
+        month: this.nrMonthsDisplay ? year / this.nrMonthsDisplay : 0,
+        day: year / (YEAR_BUSINESS_DAYS - this.nrDaysOff),
+      };
+    },
+    resultGrossIncome(): GrossIncome {
+      return {
+        year: this.grossIncome.year + this.spouseGrossIncome.year,
+        month: this.grossIncome.month + this.spouseGrossIncome.month,
+        day: this.grossIncome.day + this.spouseGrossIncome.day,
+      };
+    },
     ssRelevantIncomeBeforeAdjustment() {
       return this.grossIncome.month * 0.7;
     },
@@ -394,7 +421,7 @@ const useTaxesStore = defineStore({
       const expenses = this.maxExpenses - this.specificDeductions;
       return expenses > 0 ? expenses : 0;
     },
-    taxableIncome() {
+    freelancerTaxableIncome() {
       const grossIncome = this.grossIncome.year;
       const expensesMissing =
         this.expensesNeeded > this.expenses
@@ -406,6 +433,21 @@ const useTaxesStore = defineStore({
           (this.firstYear ? 0.375 : this.secondYear ? 0.5625 : 0.75) +
         expensesMissing
       );
+    },
+    spouseSpecificDeduction() {
+      return Math.min(
+        SPOUSE_SIMPLIFIED_SPECIFIC_DEDUCTION,
+        this.activeSpouseAnnualGrossIncome,
+      );
+    },
+    spouseTaxableIncome() {
+      return Math.max(
+        this.activeSpouseAnnualGrossIncome - this.spouseSpecificDeduction,
+        0,
+      );
+    },
+    taxableIncome() {
+      return this.freelancerTaxableIncome + this.spouseTaxableIncome;
     },
     youthIrsDiscount() {
       if (!this.benefitsOfYouthIrs) {
@@ -423,7 +465,8 @@ const useTaxesStore = defineStore({
       return Object.keys(this.youthIrs[this.currentTaxRankYear]).length;
     },
     assessmentDivisor() {
-      return this.assessmentScenario === AssessmentScenario.JointSingleIncome
+      return this.assessmentScenario === AssessmentScenario.JointSingleIncome ||
+        this.assessmentScenario === AssessmentScenario.JointTwoIncomes
         ? 2
         : 1;
     },
@@ -534,9 +577,9 @@ const useTaxesStore = defineStore({
     },
     netIncome() {
       const monthIncome =
-        this.grossIncome.month - this.irsPay.month - this.ssPay.month;
+        this.resultGrossIncome.month - this.irsPay.month - this.ssPay.month;
       const yearIncome =
-        this.grossIncome.year - this.irsPay.year - this.ssPay.year;
+        this.resultGrossIncome.year - this.irsPay.year - this.ssPay.year;
       return {
         year: yearIncome,
         month: monthIncome,
@@ -725,6 +768,19 @@ const useTaxesStore = defineStore({
         updateUrlQuery({ rnh: this.rnh });
       }
     },
+    setSpouseAnnualGrossIncome(value: number, syncUrl = true) {
+      this.spouseAnnualGrossIncome =
+        Number.isFinite(value) && value > 0 ? value : 0;
+
+      if (syncUrl) {
+        updateUrlQuery({
+          spouseAnnualGrossIncome:
+            this.isJointTwoIncomes && this.spouseAnnualGrossIncome > 0
+              ? this.spouseAnnualGrossIncome
+              : undefined,
+        });
+      }
+    },
     setAssessmentScenario(value: AssessmentScenario, syncUrl = true) {
       if (!ASSESSMENT_SCENARIOS.includes(value)) {
         return;
@@ -732,7 +788,13 @@ const useTaxesStore = defineStore({
 
       this.assessmentScenario = value;
       if (syncUrl) {
-        updateUrlQuery({ assessmentScenario: this.assessmentScenario });
+        updateUrlQuery({
+          assessmentScenario: this.assessmentScenario,
+          spouseAnnualGrossIncome:
+            this.isJointTwoIncomes && this.spouseAnnualGrossIncome > 0
+              ? this.spouseAnnualGrossIncome
+              : undefined,
+        });
       }
     },
     setNumberOfDependents(value: number, syncUrl = true) {
@@ -831,6 +893,12 @@ const useTaxesStore = defineStore({
         this.setAssessmentScenario,
         null,
         assessmentScenarioValidator,
+      );
+      this.setParameterFromUrl(
+        params["spouseAnnualGrossIncome"],
+        this.setSpouseAnnualGrossIncome,
+        parseFloat,
+        nonNegativeNumericValidator,
       );
       this.setParameterFromUrl(
         params["numberOfDependents"],

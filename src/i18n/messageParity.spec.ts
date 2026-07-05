@@ -42,6 +42,9 @@ describe("locale message parity", () => {
       expect(messages[locale].report.actions.export).toBeTruthy();
       expect(messages[locale].report.actions.print).toBeTruthy();
       expect(messages[locale].report.rows.grossIncome).toBeTruthy();
+      expect(messages[locale].report.rows.householdGrossIncome).toBeTruthy();
+      expect(messages[locale].report.rows.spouseAnnualGrossIncome).toBeTruthy();
+      expect(messages[locale].report.values.spouseIncomeModel).toBeTruthy();
       expect(messages[locale].report.disclaimerText).toBeTruthy();
     });
   });
@@ -51,6 +54,9 @@ describe("locale message parity", () => {
       expect(messages[locale].scenarioComparison.title).toBeTruthy();
       expect(
         messages[locale].scenarioComparison.presets.jointSingleIncome.label,
+      ).toBeTruthy();
+      expect(
+        messages[locale].scenarioComparison.presets.jointTwoIncomes.label,
       ).toBeTruthy();
       expect(messages[locale].scenarioComparison.table.best).toBeTruthy();
       expect(
@@ -76,6 +82,11 @@ describe("locale message parity", () => {
       expect(
         messages[locale].scenarioComparison.statuses.betterThanCurrent,
       ).toBeTruthy();
+      expect(
+        messages[locale].scenarioComparison.statuses.spouseIncomeRequired,
+      ).toBeTruthy();
+      expect(messages[locale].assessment.jointTwoIncomes.label).toBeTruthy();
+      expect(messages[locale].irsCalculation.spouseTaxableIncome).toBeTruthy();
     });
   });
   it("keeps locale metadata, language names, and formatter locales complete", () => {

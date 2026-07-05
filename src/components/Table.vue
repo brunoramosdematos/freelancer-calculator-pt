@@ -22,16 +22,16 @@
       <tbody class="divide-y divide-default">
         <tr data-cy="gross-income-row">
           <th scope="row" class="py-3 text-left font-medium text-foreground">
-            {{ t("table.grossIncome") }}
+            {{ grossIncomeLabel }}
           </th>
           <td class="py-3 text-right tabular-nums whitespace-nowrap">
-            {{ renderCellValue(grossIncome.year) }}
+            {{ renderCellValue(resultGrossIncome.year) }}
           </td>
           <td class="py-3 text-right tabular-nums whitespace-nowrap">
-            {{ renderCellValue(grossIncome.month) }}
+            {{ renderCellValue(resultGrossIncome.month) }}
           </td>
           <td class="py-3 text-right tabular-nums whitespace-nowrap">
-            {{ renderCellValue(grossIncome.day) }}
+            {{ renderCellValue(resultGrossIncome.day) }}
           </td>
         </tr>
         <tr data-cy="final-irs-row">
@@ -70,7 +70,7 @@
         </tr>
         <tr data-cy="net-income-row">
           <th scope="row" class="py-3 text-left font-semibold text-foreground">
-            {{ t("table.netIncome") }}
+            {{ netIncomeLabel }}
           </th>
           <td
             class="py-3 text-right font-semibold tabular-nums whitespace-nowrap text-income"
@@ -149,8 +149,14 @@ import DisclosurePanel from "@/components/DisclosurePanel.vue";
 const { breakpoint } = useBreakpoint();
 const { t } = useI18n({ useScope: "global" });
 const { formatCurrency } = useLocalizedFormatters();
-const { displayFrequency, grossIncome, netIncome, ssPay, irsPay } =
-  storeToRefs(useTaxesStore());
+const {
+  displayFrequency,
+  resultGrossIncome,
+  netIncome,
+  ssPay,
+  irsPay,
+  isJointTwoIncomes,
+} = storeToRefs(useTaxesStore());
 
 const frequencies = [
   FrequencyChoices.Year,
@@ -164,11 +170,22 @@ const renderCellValue = (value: number | null | undefined) => {
     : t("validation.noValue");
 };
 
+const grossIncomeLabel = computed(() =>
+  isJointTwoIncomes.value
+    ? t("table.householdGrossIncome")
+    : t("table.grossIncome"),
+);
+const netIncomeLabel = computed(() =>
+  isJointTwoIncomes.value
+    ? t("table.householdNetIncome")
+    : t("table.netIncome"),
+);
+
 const mobileRows = computed(() => [
   {
-    label: t("table.grossIncome"),
+    label: grossIncomeLabel.value,
     dataCy: "gross-income-row",
-    value: grossIncome.value[displayFrequency.value],
+    value: resultGrossIncome.value[displayFrequency.value],
     valueClass: "text-foreground",
   },
   {
@@ -184,7 +201,7 @@ const mobileRows = computed(() => [
     valueClass: "text-social-security",
   },
   {
-    label: t("table.netIncome"),
+    label: netIncomeLabel.value,
     dataCy: "net-income-row",
     value: netIncome.value[displayFrequency.value],
     valueClass: "font-semibold text-income",
@@ -192,9 +209,9 @@ const mobileRows = computed(() => [
 ]);
 
 const comparisonRows = computed(() => [
-  { label: t("table.grossIncome"), values: grossIncome.value },
+  { label: grossIncomeLabel.value, values: resultGrossIncome.value },
   { label: "IRS", values: irsPay.value },
   { label: t("table.socialSecurity"), values: ssPay.value },
-  { label: t("table.netIncome"), values: netIncome.value },
+  { label: netIncomeLabel.value, values: netIncome.value },
 ]);
 </script>

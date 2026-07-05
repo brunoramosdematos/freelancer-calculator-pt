@@ -8,6 +8,11 @@ GitHub releases, support references and public production checkpoints.
 
 ## [Unreleased]
 
+### Added
+
+- Added joint assessment with two incomes using a transparent simplified second
+  income model.
+
 ### Changed
 
 - Made the default income tax year dynamic based on supported tax-data coverage.

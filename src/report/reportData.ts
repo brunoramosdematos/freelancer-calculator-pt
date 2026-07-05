@@ -57,8 +57,20 @@ export type ReportData = {
       amount: number;
       stillNeeded: number;
     };
+    spouseIncome: {
+      annualGrossIncome: number;
+      specificDeduction: number;
+      taxableIncome: number;
+      model: "simplified-gross-employment-like";
+    } | null;
   };
   taxBreakdown: {
+    freelancerTaxableIncome: number;
+    spouseAnnualGrossIncome: number;
+    spouseSpecificDeduction: number;
+    spouseTaxableIncome: number;
+    householdTaxableIncome: number;
+    taxableIncomeForRates: number;
     irsBeforeDependentDeduction: number;
     dependentDeductionApplied: number;
     finalIrs: number;
@@ -144,7 +156,7 @@ export const createReportData = (
     productionUrl: REPORT_PRODUCTION_URL,
     currentUrl: sanitizeReportUrl(currentUrl),
     summary: {
-      grossIncome: copyFrequencyValues(store.grossIncome),
+      grossIncome: copyFrequencyValues(store.resultGrossIncome),
       netIncome: copyFrequencyValues(store.netIncome),
       totalTaxes: {
         year: irsPay.year + ssPay.year,
@@ -182,8 +194,22 @@ export const createReportData = (
         amount: store.expenses,
         stillNeeded: store.expensesNeeded,
       },
+      spouseIncome: store.isJointTwoIncomes
+        ? {
+            annualGrossIncome: store.activeSpouseAnnualGrossIncome,
+            specificDeduction: store.spouseSpecificDeduction,
+            taxableIncome: store.spouseTaxableIncome,
+            model: "simplified-gross-employment-like",
+          }
+        : null,
     },
     taxBreakdown: {
+      freelancerTaxableIncome: store.freelancerTaxableIncome,
+      spouseAnnualGrossIncome: store.activeSpouseAnnualGrossIncome,
+      spouseSpecificDeduction: store.spouseSpecificDeduction,
+      spouseTaxableIncome: store.spouseTaxableIncome,
+      householdTaxableIncome: store.taxableIncome,
+      taxableIncomeForRates: store.taxableIncomeForRates,
       irsBeforeDependentDeduction: store.grossIrsBeforeDependentDeduction,
       dependentDeductionApplied: store.dependentTaxDeductionApplied,
       finalIrs: store.irsPay.year,

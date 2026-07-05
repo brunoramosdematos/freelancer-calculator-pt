@@ -28,9 +28,10 @@ governance is documented in [docs/RELEASE_PROCESS.md](docs/RELEASE_PROCESS.md),
 ## Scope
 
 The simulator currently supports tax years 2023, 2024, 2025 and 2026. It models
-two assessment scenarios: individual assessment with no spouse or partner in the
-simulation, and joint assessment for a married/de-facto household where the
-freelancer is the only taxable income earner. It also supports dependent counts
+three assessment scenarios: individual assessment with no spouse or partner in
+the simulation, joint assessment for a married/de-facto household where the
+freelancer is the only taxable income earner, and joint assessment with a
+simplified annual gross spouse/partner income. It also supports dependent counts
 and the age buckets needed for the implemented dependent deduction.
 
 Calculations are estimates and do not replace accounting, legal or tax advice.

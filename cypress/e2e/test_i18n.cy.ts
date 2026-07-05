@@ -91,6 +91,36 @@ describe("internationalization", () => {
     closePreferences();
   });
 
+  it("localizes joint-two-income labels in all supported locales", () => {
+    visitWithNavigatorLanguages(["en-US"], "/#/?income=50000");
+
+    cy.contains('[data-cy="simulation-settings"]', "Joint — two incomes");
+    cy.get('[data-cy="joint-two-incomes-assessment-option"]').check({
+      force: true,
+    });
+    cy.contains(
+      '[data-cy="simulation-settings"]',
+      "Spouse / partner annual gross income",
+    );
+
+    switchLocale("pt-PT");
+    cy.contains(
+      '[data-cy="simulation-settings"]',
+      "Conjunta — dois rendimentos",
+    );
+    cy.contains(
+      '[data-cy="simulation-settings"]',
+      "Rendimento bruto anual do cônjuge / unido de facto",
+    );
+
+    switchLocale("pt-BR");
+    cy.contains('[data-cy="simulation-settings"]', "Conjunta — duas rendas");
+    cy.contains(
+      '[data-cy="simulation-settings"]',
+      "Renda bruta anual do cônjuge / união de facto",
+    );
+  });
+
   it("uses pt-PT from browser detection without changing the URL", () => {
     visitWithNavigatorLanguages(["pt-PT"], "/#/?income=50000");
     cy.location("href").as("initialUrl");

@@ -4,6 +4,7 @@
 
 - Portuguese freelancer tax calculator.
 - Joint single-income assessment.
+- Joint two-income assessment with a simplified spouse/partner income model.
 - Dependent age buckets.
 - Saved simulations.
 - Internationalization for English, Portuguese (Portugal) and Portuguese
@@ -31,7 +32,6 @@ implementation commitment:
 - new tax years;
 - expanded official-source references for future tax-data updates;
 - broader household scenarios;
-- spouse income support;
 - separated assessment;
 - more deductions;
 - better VAT handling;

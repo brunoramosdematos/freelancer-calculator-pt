@@ -153,7 +153,12 @@ describe("scenario comparison", () => {
     cy.get('[data-cy="scenario-comparison-panel"]').should("not.be.visible");
     openComparison();
     cy.contains('[data-cy="scenario-comparison-panel"]', "Add up to three");
-    cy.get('[data-cy="scenario-add-preset"]').should("have.length", 4);
+    cy.get('[data-cy="scenario-add-preset"]').should("have.length", 5);
+    cy.get('[data-scenario-preset="jointTwoIncomes"]').should("be.disabled");
+    cy.contains(
+      '[data-scenario-preset="jointTwoIncomes"]',
+      "Add spouse / partner income first.",
+    );
     cy.get('[data-scenario-preset="individual"]').should("be.disabled");
     cy.contains('[data-scenario-preset="individual"]', "Already current");
   });
@@ -213,6 +218,36 @@ describe("scenario comparison", () => {
     cy.get('[data-cy="assessment-scenario-joint-single-income"]').should(
       "be.checked",
     );
+  });
+
+  it("compares joint two incomes after spouse income is entered and preserves active state", () => {
+    visitWithPreferences("/#/?income=60000&currentTaxRankYear=2024");
+    cy.get('[data-cy="joint-two-incomes-assessment-option"]').check({
+      force: true,
+    });
+    cy.get('[data-cy="spouse-annual-income"]').type("20000");
+    cy.get('[data-cy="assessment-scenario-individual"]').check({
+      force: true,
+    });
+    openComparison();
+
+    cy.get('[data-scenario-preset="jointTwoIncomes"]').should(
+      "not.be.disabled",
+    );
+    cy.location("href").then((hrefBefore) => {
+      addPreset("jointTwoIncomes");
+      addPreset("socialSecurityMinus20");
+
+      cy.location("href").should("eq", hrefBefore);
+    });
+
+    cy.get('[data-scenario-id="jointTwoIncomes"]:visible')
+      .should("contain", "two incomes")
+      .and("contain", "Household gross / year")
+      .find('[data-cy="scenario-gross-income-year"]')
+      .should("contain", "€80,000.00");
+    cy.get('[data-cy="assessment-scenario-individual"]').should("be.checked");
+    cy.get('[data-cy="spouse-annual-income"]').should("not.exist");
   });
 
   it("compares SS -20% without changing the active Social Security adjustment", () => {

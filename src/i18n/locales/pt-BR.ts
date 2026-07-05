@@ -106,6 +106,14 @@ const messages = {
       description: "Tributação do agregado com uma renda de EUR 0.",
       help: "Usa o quociente conjugal para os escalões de IRS.",
     },
+    jointTwoIncomes: {
+      label: "Conjunta — duas rendas",
+      description:
+        "Tributação do agregado com renda do cônjuge / união de facto.",
+      incomeLabel: "Renda bruta anual do cônjuge / união de facto",
+      incomePlaceholder: "Renda bruta anual",
+      help: "Modelo desta primeira versão: renda bruta anual tipo trabalho/pensão, dedução específica simplificada até EUR 4.104, sem Segurança Social, retenção na fonte ou detalhe de categoria do cônjuge / união de facto.",
+    },
   },
   dependents: {
     total: {
@@ -231,12 +239,18 @@ const messages = {
     shownPer: "Apresentado por {frequency}.",
     grossIncome: "Renda bruta",
     netIncome: "Renda líquida",
+    householdGrossIncome: "Renda bruta do agregado",
+    householdNetIncome: "Renda líquida do agregado",
+    householdIncludesSpouse:
+      "Os resultados incluem a renda anual do cônjuge / união de facto informada neste cenário. A Segurança Social continua a se aplicar apenas à renda do freelancer.",
     totalTaxes: "Total de impostos",
   },
   table: {
     title: "Título",
     grossIncome: "Renda bruta",
     netIncome: "Renda líquida",
+    householdGrossIncome: "Renda bruta do agregado",
+    householdNetIncome: "Renda líquida do agregado",
     socialSecurity: "Segurança Social",
   },
   scenarioComparison: {
@@ -257,6 +271,11 @@ const messages = {
         label: "Comparar conjunta — uma renda",
         description: "Usa tributação conjunta do agregado com uma renda.",
       },
+      jointTwoIncomes: {
+        label: "Comparar conjunta — duas rendas",
+        description:
+          "Usa tributação conjunta do agregado com renda do cônjuge / união de facto.",
+      },
       socialSecurityMinus20: {
         label: "Comparar SS -20%",
         description: "Aplica um ajuste de -20% à base da Segurança Social.",
@@ -270,6 +289,7 @@ const messages = {
     table: {
       scenario: "Cenário",
       grossIncome: "Bruta / ano",
+      householdGrossIncome: "Bruta do agregado / ano",
       irs: "IRS / ano",
       socialSecurity: "Segurança Social / ano",
       netIncomeYear: "Renda líquida / ano",
@@ -285,6 +305,8 @@ const messages = {
     card: {
       annualNetIncome: "Renda líquida anual",
       monthlyNetIncome: "Renda líquida mensal",
+      annualHouseholdNetIncome: "Renda líquida anual do agregado",
+      monthlyHouseholdNetIncome: "Renda líquida mensal do agregado",
       supportingMetrics: "Métricas de apoio",
       keyResult: "Resultado principal",
     },
@@ -298,6 +320,8 @@ const messages = {
       alreadyCurrent: "Já é o cenário atual",
       added: "Adicionado",
       limitReached: "Limite atingido",
+      spouseIncomeRequired:
+        "Adicione primeiro a renda do cônjuge / união de facto.",
       noAlternatives: "Ainda não há alternativas adicionadas.",
       alternativeCount:
         "{count} alternativa selecionada | {count} alternativas selecionadas",
@@ -336,6 +360,8 @@ const messages = {
     rows: {
       grossIncome: "Renda bruta anual",
       netIncome: "Renda líquida anual",
+      householdGrossIncome: "Renda bruta anual do agregado",
+      householdNetIncome: "Renda líquida anual do agregado",
       totalTaxes: "Total anual de impostos",
       irs: "IRS anual",
       socialSecurity: "Segurança Social anual",
@@ -344,6 +370,15 @@ const messages = {
       paidMonths: "Meses pagos por ano",
       unpaidDays: "Dias de férias não pagos",
       taxAssessment: "Tributação",
+      spouseAnnualGrossIncome: "Renda bruta anual do cônjuge / união de facto",
+      spouseIncomeModel: "Modelo da segunda renda",
+      jointTwoIncomeLimitation: "Limitação da segunda renda",
+      freelancerTaxableIncome: "Base coletável do freelancer",
+      spouseSpecificDeduction:
+        "Dedução simplificada do cônjuge / união de facto",
+      spouseTaxableIncome: "Base coletável do cônjuge / união de facto",
+      householdTaxableIncome: "Renda coletável do agregado",
+      taxableIncomeForRates: "Renda coletável usada para taxas de IRS",
       incomeFrequency: "Frequência da renda",
       displayFrequency: "Frequência apresentada selecionada",
       dependents: "Número de dependentes",
@@ -368,6 +403,10 @@ const messages = {
       dependentAgeGroups:
         "{aged3OrUnder} com 3 anos ou menos · {aged4To6} com 4–6 anos · {aged7OrOver} com 7+ anos",
       expensesSummary: "{mode} · {amount} · ainda necessário {stillNeeded}",
+      spouseIncomeModel:
+        "Renda bruta anual tipo trabalho/pensão com dedução específica simplificada até EUR 4.104.",
+      jointTwoIncomeLimitation:
+        "O modelo do cônjuge / união de facto exclui retenção na fonte, Segurança Social e detalhe de categoria de renda.",
     },
   },
   chart: {
@@ -375,6 +414,7 @@ const messages = {
     summary: "Divisão visual entre renda líquida, IRS e Segurança Social",
     loading: "Carregando o gráfico da distribuição da renda...",
     grossIncome: "renda bruta",
+    householdGrossIncome: "renda bruta do agregado",
     grossIncomeLabel: "Renda bruta",
     netIncome: "Renda líquida",
     socialSecurity: "Segurança Social",
@@ -395,7 +435,13 @@ const messages = {
     specificDeductions: "Deduções específicas",
     expenses: "Despesas",
     youthIrsDiscount: "Desconto do IRS Jovem",
+    freelancerTaxableIncome: "Base coletável do freelancer",
+    spouseAnnualGrossIncome: "Renda bruta anual do cônjuge / união de facto",
+    spouseSpecificDeduction: "Dedução simplificada do cônjuge / união de facto",
+    spouseTaxableIncome: "Base coletável do cônjuge / união de facto",
     householdTaxableIncome: "Renda coletável do agregado",
+    socialSecurityScope: "Escopo da Segurança Social",
+    socialSecurityFreelancerOnly: "Apenas renda do freelancer",
     taxableIncomeForRates: "Renda coletável usada para taxas de IRS",
     dividedBy2: "(dividido por 2)",
     averageRatePortion: "Parcela à taxa média",
@@ -516,11 +562,11 @@ const messages = {
   about: {
     title: "Calculadora para Freelancers em Portugal",
     intro:
-      "Esta calculadora de código aberto estima a renda líquida, o IRS português e a Segurança Social de Portugal para trabalhadores independentes usando o modelo simplificado da Categoria B implementado no simulador. Ela oferece suporte à tributação individual, tributação conjunta com uma única renda, deduções por dependentes e simulações salvas no localStorage do navegador.",
+      "Esta calculadora de código aberto estima a renda líquida, o IRS português e a Segurança Social de Portugal para trabalhadores independentes usando o modelo simplificado da Categoria B implementado no simulador. Ela oferece suporte à tributação individual, tributação conjunta com uma renda, tributação conjunta com duas rendas, deduções por dependentes e simulações salvas no localStorage do navegador.",
     maintained:
       "O projeto é mantido por Bruno Ramos de Matos como derivado do trabalho de código aberto original de Francisco Macedo:",
     disclaimer:
-      "Os cálculos são estimativas indicativas, não aconselhamento contábil, jurídico ou fiscal. Eles não cobrem todas as regras fiscais portuguesas, como guarda compartilhada, deduções por deficiência, regras de mínimo de existência, deduções adicionais à coleta ou a taxa adicional de solidariedade. Valide sua situação com a Autoridade Tributária e Aduaneira ou um profissional qualificado.",
+      "Os cálculos são estimativas indicativas, não aconselhamento contábil, jurídico ou fiscal. Eles não cobrem todas as regras fiscais portuguesas, como categorias de renda do cônjuge, retenção na fonte do cônjuge, guarda compartilhada, deduções por deficiência, regras de mínimo de existência, deduções adicionais à coleta ou a taxa adicional de solidariedade. Valide sua situação com a Autoridade Tributária e Aduaneira ou um profissional qualificado.",
   },
   footer: {
     headline:

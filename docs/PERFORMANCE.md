@@ -21,7 +21,7 @@ Current limits:
 
 - initial JavaScript raw size <= 420,000 bytes;
 - initial JavaScript gzip size <= 140,000 bytes;
-- total JavaScript raw size <= 570,000 bytes;
+- total JavaScript raw size <= 590,000 bytes;
 - total JavaScript gzip size <= 190,000 bytes;
 - largest JavaScript asset raw size <= 550,000 bytes;
 - largest JavaScript asset gzip size <= 185,000 bytes;

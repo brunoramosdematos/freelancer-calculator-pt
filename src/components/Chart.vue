@@ -11,10 +11,10 @@
       <p
         class="text-center text-lg font-semibold text-foreground whitespace-nowrap tabular-nums"
       >
-        {{ formatCurrency(grossIncome[displayFrequency]) }}
+        {{ formatCurrency(resultGrossIncome[displayFrequency]) }}
       </p>
       <small class="block text-center text-xs text-subtle">
-        {{ t("chart.grossIncome") }}
+        {{ grossIncomeLabel }}
       </small>
     </div>
   </div>
@@ -37,8 +37,14 @@ import ChartDataLabels from "chartjs-plugin-datalabels";
 import { useLocalizedFormatters } from "@/composables/useLocalizedFormatters";
 import { useTheme } from "@/composables/useTheme";
 
-const { grossIncome, netIncome, irsPay, ssPay, displayFrequency } =
-  storeToRefs(useTaxesStore());
+const {
+  resultGrossIncome,
+  netIncome,
+  irsPay,
+  ssPay,
+  displayFrequency,
+  isJointTwoIncomes,
+} = storeToRefs(useTaxesStore());
 const { t, locale } = useI18n({ useScope: "global" });
 const { formatCurrency, formatPercentage } = useLocalizedFormatters();
 const { resolvedTheme } = useTheme();
@@ -57,6 +63,12 @@ const getThemeRgb = (name: string, fallback: string) => {
   const value = getComputedStyle(root).getPropertyValue(name).trim();
   return value ? `rgb(${value})` : fallback;
 };
+
+const grossIncomeLabel = computed(() =>
+  isJointTwoIncomes.value
+    ? t("chart.householdGrossIncome")
+    : t("chart.grossIncome"),
+);
 
 const chartPalette = computed(() => {
   const isDark = resolvedTheme.value === "dark";
@@ -110,7 +122,9 @@ const chartOptions = computed<ChartOptions<"doughnut">>(() => {
           return (
             ctx.chart.data.labels[ctx.dataIndex] +
             "\n" +
-            formatPercentage(val / grossIncome.value[displayFrequency.value])
+            formatPercentage(
+              val / resultGrossIncome.value[displayFrequency.value],
+            )
           );
         },
         color: chartPalette.value.label,

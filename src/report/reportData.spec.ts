@@ -146,6 +146,36 @@ describe("report data builder", () => {
     ).toBe("https://example.test/#/?income=60000");
   });
 
+  it("includes spouse income only for joint-two-income reports", () => {
+    const store = useTaxesStore();
+
+    store.setIncome(60_000, false);
+    store.setCurrentTaxRankYear(2024, false);
+    store.setSpouseAnnualGrossIncome(20_000, false);
+
+    let report = createReportData(store);
+
+    expect(report?.assumptions.spouseIncome).toBeNull();
+    expect(report?.summary.grossIncome.year).toBe(60_000);
+
+    store.setAssessmentScenario(AssessmentScenario.JointTwoIncomes, false);
+    report = createReportData(store);
+
+    expect(report?.summary.grossIncome.year).toBe(80_000);
+    expect(report?.assumptions.spouseIncome).toEqual({
+      annualGrossIncome: 20_000,
+      specificDeduction: 4_104,
+      taxableIncome: 15_896,
+      model: "simplified-gross-employment-like",
+    });
+    expect(report?.taxBreakdown.freelancerTaxableIncome).toBe(45_000);
+    expect(report?.taxBreakdown.spouseAnnualGrossIncome).toBe(20_000);
+    expect(report?.taxBreakdown.spouseSpecificDeduction).toBe(4_104);
+    expect(report?.taxBreakdown.spouseTaxableIncome).toBe(15_896);
+    expect(report?.taxBreakdown.householdTaxableIncome).toBe(60_896);
+    expect(report?.taxBreakdown.taxableIncomeForRates).toBe(30_448);
+  });
+
   it("preserves display and income frequency as raw enum values", () => {
     const store = useTaxesStore();
 

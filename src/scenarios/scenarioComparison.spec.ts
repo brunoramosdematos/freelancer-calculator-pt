@@ -19,6 +19,7 @@ const createConfiguredStore = () => {
   store.setCurrentTaxRankYear(2024, false);
   store.setSsDiscount(0, false);
   store.setAssessmentScenario(AssessmentScenario.Individual, false);
+  store.setSpouseAnnualGrossIncome(0, false);
   store.setNumberOfDependents(0, false);
   store.setSsFirstYear(false, false);
   store.setFirstYear(false, false);
@@ -43,6 +44,7 @@ describe("scenario comparison", () => {
     expect(snapshot).toMatchObject({
       income: 60_000,
       assessmentScenario: AssessmentScenario.Individual,
+      spouseAnnualGrossIncome: 0,
       numberOfDependents: 2,
       dependentsAged3OrUnder: 1,
       dependentsAged4To6: 1,
@@ -93,8 +95,26 @@ describe("scenario comparison", () => {
     });
   });
 
+  it("joint-two-income preset changes only the assessment scenario and preserves spouse income", () => {
+    const store = createConfiguredStore();
+    store.setSpouseAnnualGrossIncome(20_000, false);
+    const snapshot = captureScenarioInputSnapshot(store);
+
+    const result = applyScenarioOverrides(
+      snapshot,
+      getScenarioPreset("jointTwoIncomes").overrides,
+    );
+
+    expect(result).toEqual({
+      ...snapshot,
+      assessmentScenario: AssessmentScenario.JointTwoIncomes,
+    });
+    expect(result.spouseAnnualGrossIncome).toBe(20_000);
+  });
+
   it("SS -20% preset changes only the Social Security adjustment", () => {
     const store = createConfiguredStore();
+    store.setSpouseAnnualGrossIncome(20_000, false);
     const snapshot = captureScenarioInputSnapshot(store);
 
     const result = applyScenarioOverrides(
@@ -113,6 +133,7 @@ describe("scenario comparison", () => {
 
   it("no-dependents preset sets dependent count and age groups to zero", () => {
     const store = createConfiguredStore();
+    store.setSpouseAnnualGrossIncome(20_000, false);
     store.setNumberOfDependents(3, false);
     store.setDependentsAged3OrUnder(1, false);
     store.setDependentsAged4To6(1, false);
@@ -126,6 +147,7 @@ describe("scenario comparison", () => {
     expect(result.numberOfDependents).toBe(0);
     expect(result.dependentsAged3OrUnder).toBe(0);
     expect(result.dependentsAged4To6).toBe(0);
+    expect(result.spouseAnnualGrossIncome).toBe(20_000);
   });
 
   it("does not change the current store after computing alternatives", () => {
@@ -134,11 +156,31 @@ describe("scenario comparison", () => {
 
     createScenarioComparison(captureScenarioInputSnapshot(store), [
       "jointSingleIncome",
+      "jointTwoIncomes",
       "socialSecurityMinus20",
       "noDependents",
     ]);
 
     expect(store.$state).toMatchObject(before);
+  });
+
+  it("computes joint-two-income alternatives with household gross income", () => {
+    const store = createConfiguredStore();
+    store.setSpouseAnnualGrossIncome(20_000, false);
+
+    const comparison = createScenarioComparison(
+      captureScenarioInputSnapshot(store),
+      ["jointTwoIncomes"],
+    );
+    const jointTwo = comparison.alternatives[0];
+
+    expect(jointTwo.input.spouseAnnualGrossIncome).toBe(20_000);
+    expect(jointTwo.input.assessmentScenario).toBe(
+      AssessmentScenario.JointTwoIncomes,
+    );
+    expect(jointTwo.grossIncome.year).toBe(80_000);
+    expect(jointTwo.irsPay.year).toBeCloseTo(13_894.05528);
+    expect(store.assessmentScenario).toBe(AssessmentScenario.Individual);
   });
 
   it("calculates diffs versus the current scenario", () => {

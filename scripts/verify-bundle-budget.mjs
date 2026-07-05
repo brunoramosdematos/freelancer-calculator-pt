@@ -7,7 +7,7 @@ const distDir = "dist";
 const budgets = {
   initialJsRaw: 420_000,
   initialJsGzip: 140_000,
-  totalJsRaw: 570_000,
+  totalJsRaw: 590_000,
   totalJsGzip: 190_000,
   largestJsRaw: 550_000,
   largestJsGzip: 185_000,

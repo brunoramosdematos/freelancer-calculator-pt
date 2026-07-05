@@ -6,7 +6,7 @@ const LOCALE_STORAGE_KEY = "freelancer-calculator-pt:locale:v1";
 const SIMULATIONS_STORAGE_KEY = "net_income_simulations";
 const PREFERS_DARK_QUERY = "(prefers-color-scheme: dark)";
 const POPULATED_SCENARIO =
-  "/#/?income=60000&currentTaxRankYear=2024&assessmentScenario=joint-single-income&numberOfDependents=2&dependentsAged3OrUnder=1&dependentsAged4To6=1";
+  "/#/?income=60000&currentTaxRankYear=2024&assessmentScenario=joint-two-incomes&spouseAnnualGrossIncome=20000&numberOfDependents=2&dependentsAged3OrUnder=1&dependentsAged4To6=1";
 
 type Scheme = "light" | "dark";
 type ThemePreference = "system" | "light" | "dark";

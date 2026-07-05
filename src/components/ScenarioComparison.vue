@@ -126,7 +126,7 @@
                 <dl class="mt-2 grid gap-3 sm:grid-cols-2">
                   <div class="sm:col-span-2">
                     <dt class="text-xs text-subtle">
-                      {{ t("scenarioComparison.card.annualNetIncome") }}
+                      {{ scenarioAnnualNetIncomeLabel(row) }}
                     </dt>
                     <dd
                       class="mt-1 text-2xl font-semibold tabular-nums text-foreground"
@@ -137,7 +137,7 @@
                   </div>
                   <div>
                     <dt class="text-xs text-subtle">
-                      {{ t("scenarioComparison.card.monthlyNetIncome") }}
+                      {{ scenarioMonthlyNetIncomeLabel(row) }}
                     </dt>
                     <dd
                       class="mt-1 text-sm font-semibold tabular-nums text-foreground"
@@ -168,7 +168,7 @@
                 <dl class="mt-2 space-y-2 text-xs">
                   <div class="flex items-baseline justify-between gap-3">
                     <dt class="text-subtle">
-                      {{ t("scenarioComparison.table.grossIncome") }}
+                      {{ scenarioGrossIncomeLabel(row) }}
                     </dt>
                     <dd
                       class="text-right font-medium tabular-nums text-foreground"
@@ -239,6 +239,7 @@ import {
   ScenarioResult,
 } from "@/scenarios/scenarioComparison";
 import { useTaxesStore } from "@/store";
+import { AssessmentScenario } from "@/typings";
 
 const store = useTaxesStore();
 const { t } = useI18n({ useScope: "global" });
@@ -316,14 +317,23 @@ const presetOptions = computed(() =>
       preset.overrides,
     );
     const alreadySelected = selectedPresets.value.includes(preset.id);
-    const disabled = alreadyCurrent || alreadySelected || hasReachedLimit.value;
+    const needsSpouseIncome =
+      preset.id === "jointTwoIncomes" &&
+      currentSnapshot.value.spouseAnnualGrossIncome <= 0;
+    const disabled =
+      alreadyCurrent ||
+      alreadySelected ||
+      hasReachedLimit.value ||
+      needsSpouseIncome;
     const statusKey = alreadyCurrent
       ? "scenarioComparison.statuses.alreadyCurrent"
       : alreadySelected
         ? "scenarioComparison.statuses.added"
         : hasReachedLimit.value
           ? "scenarioComparison.statuses.limitReached"
-          : "";
+          : needsSpouseIncome
+            ? "scenarioComparison.statuses.spouseIncomeRequired"
+            : "";
 
     return {
       ...preset,
@@ -361,6 +371,24 @@ const clearAll = () => {
 };
 
 const money = (value: number) => formatCurrency(value, 2);
+
+const scenarioUsesHouseholdIncome = (row: ScenarioResult) =>
+  row.input.assessmentScenario === AssessmentScenario.JointTwoIncomes;
+
+const scenarioGrossIncomeLabel = (row: ScenarioResult) =>
+  scenarioUsesHouseholdIncome(row)
+    ? t("scenarioComparison.table.householdGrossIncome")
+    : t("scenarioComparison.table.grossIncome");
+
+const scenarioAnnualNetIncomeLabel = (row: ScenarioResult) =>
+  scenarioUsesHouseholdIncome(row)
+    ? t("scenarioComparison.card.annualHouseholdNetIncome")
+    : t("scenarioComparison.card.annualNetIncome");
+
+const scenarioMonthlyNetIncomeLabel = (row: ScenarioResult) =>
+  scenarioUsesHouseholdIncome(row)
+    ? t("scenarioComparison.card.monthlyHouseholdNetIncome")
+    : t("scenarioComparison.card.monthlyNetIncome");
 
 const diffLabel = (row: ScenarioResult) => {
   const amount = money(Math.abs(row.diff.netIncomeYear));

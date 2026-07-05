@@ -25,16 +25,37 @@ const router = createRouter({
   linkActiveClass: "hover:text-foreground decoration-current",
   linkExactActiveClass: "underline underline-offset-8",
 });
+let pendingInternalQueryUpdate = false;
+
+export const consumeInternalQueryUpdate = () => {
+  if (!pendingInternalQueryUpdate) {
+    return false;
+  }
+
+  pendingInternalQueryUpdate = false;
+  return true;
+};
+
+const markInternalQueryUpdate = () => {
+  pendingInternalQueryUpdate = true;
+};
+
+const clearInternalQueryUpdate = () => {
+  pendingInternalQueryUpdate = false;
+};
+
 export const updateUrlQuery = (paramValuePair: object) => {
   const queryParams = { ...router.currentRoute.value.query };
   for (const [param, value] of Object.entries(paramValuePair)) {
     queryParams[param] = value;
   }
-  router.push({ query: queryParams });
+  markInternalQueryUpdate();
+  router.push({ query: queryParams }).finally(clearInternalQueryUpdate);
 };
 
 export const clearUrlQuery = () => {
-  router.push({ query: undefined });
+  markInternalQueryUpdate();
+  router.push({ query: undefined }).finally(clearInternalQueryUpdate);
 };
 
 export default router;

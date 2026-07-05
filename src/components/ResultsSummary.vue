@@ -38,7 +38,7 @@
     <div class="mt-5 grid grid-cols-1 gap-3 lg:grid-cols-3">
       <div class="rounded-lg border border-default p-4">
         <p class="text-xs font-semibold uppercase tracking-wide text-subtle">
-          {{ t("results.grossIncome") }}
+          {{ grossIncomeLabel }}
         </p>
         <p class="mt-2 text-2xl font-semibold text-foreground tabular-nums">
           {{ grossIncomeDisplay }}
@@ -47,7 +47,7 @@
       </div>
       <div class="rounded-lg border border-income-soft p-4">
         <p class="text-xs font-semibold uppercase tracking-wide text-income">
-          {{ t("results.netIncome") }}
+          {{ netIncomeLabel }}
         </p>
         <p class="mt-2 text-2xl font-semibold text-income tabular-nums">
           {{ netIncomeDisplay }}
@@ -79,6 +79,15 @@
     </div>
 
     <p
+      v-if="isJointTwoIncomes"
+      class="mt-4 rounded-md border border-primary/20 bg-primary-soft px-3 py-2 text-xs text-muted"
+      role="status"
+      data-cy="household-results-note"
+    >
+      {{ t("results.householdIncludesSpouse") }}
+    </p>
+
+    <p
       v-if="specialSocialSecurityStatus"
       class="mt-4 rounded-md border border-warning-soft bg-warning-soft px-3 py-2 text-xs text-warning"
       role="status"
@@ -106,8 +115,9 @@ const store = useTaxesStore();
 const { t } = useI18n({ useScope: "global" });
 const {
   displayFrequency,
-  grossIncome,
+  resultGrossIncome,
   netIncomeFrequency,
+  isJointTwoIncomes,
   ssFrequency,
   irsFrequency,
 } = storeToRefs(store);
@@ -121,8 +131,18 @@ const formatSignedPercentage = (value: number) => {
   return formatPercentage(value, 0, { signDisplay: "exceptZero" });
 };
 
+const grossIncomeLabel = computed(() =>
+  isJointTwoIncomes.value
+    ? t("results.householdGrossIncome")
+    : t("results.grossIncome"),
+);
+const netIncomeLabel = computed(() =>
+  isJointTwoIncomes.value
+    ? t("results.householdNetIncome")
+    : t("results.netIncome"),
+);
 const grossIncomeDisplay = computed(() =>
-  formatCurrency(grossIncome.value[displayFrequency.value]),
+  formatCurrency(resultGrossIncome.value[displayFrequency.value]),
 );
 const netIncomeDisplay = computed(() =>
   formatCurrency(netIncomeFrequency.value),
