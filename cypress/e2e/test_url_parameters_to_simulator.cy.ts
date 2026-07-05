@@ -194,6 +194,19 @@ describe("pass assessment scenario and dependents through url parameters", () =>
     cy.get('[data-cy="final-irs-row"]').should("contain", "€7,108.79");
   });
 
+  it("hydrates joint-two-income assessment and spouse income from url", () => {
+    cy.visit(
+      "/#/?income=60000&currentTaxRankYear=2024&assessmentScenario=joint-two-incomes&spouseAnnualGrossIncome=20000",
+    );
+
+    cy.get('[data-cy="joint-two-incomes-assessment-option"]').should(
+      "be.checked",
+    );
+    cy.get('[data-cy="spouse-annual-income"]').should("have.value", "20,000");
+    cy.get('[data-cy="household-results-note"]').should("be.visible");
+    cy.get('[data-cy="final-irs-row"]').should("contain", "€13,894.06");
+  });
+
   it("retains individual when assessment scenario from url is invalid", () => {
     cy.visit(
       "/#/?income=60000&currentTaxRankYear=2024&assessmentScenario=invalid",
@@ -254,6 +267,8 @@ describe("pass assessment scenario and dependents through url parameters", () =>
     cy.url().should("not.include", "numberOfDependents=");
     cy.url().should("not.include", "dependentsAged3OrUnder=");
     cy.url().should("not.include", "dependentsAged4To6=");
+    cy.url().should("not.include", "spouseAnnualGrossIncome=");
+    cy.get('[data-cy="spouse-annual-income"]').should("not.exist");
   });
 });
 

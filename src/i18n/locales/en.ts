@@ -105,6 +105,13 @@ const messages = {
       description: "Household assessment with one EUR 0 income.",
       help: "Uses the marital quotient for IRS bands.",
     },
+    jointTwoIncomes: {
+      label: "Joint — two incomes",
+      description: "Household assessment with spouse / partner income.",
+      incomeLabel: "Spouse / partner annual gross income",
+      incomePlaceholder: "Annual gross income",
+      help: "First version model: annual gross employment/pension-like income, simplified specific deduction up to EUR 4,104, no spouse Social Security, withholding, or income-category detail.",
+    },
   },
   dependents: {
     total: {
@@ -227,12 +234,18 @@ const messages = {
     shownPer: "Shown per {frequency}.",
     grossIncome: "Gross income",
     netIncome: "Net income",
+    householdGrossIncome: "Household gross income",
+    householdNetIncome: "Household net income",
+    householdIncludesSpouse:
+      "Results include the spouse / partner annual income entered in this scenario. Social Security still applies only to the freelancer income.",
     totalTaxes: "Total taxes",
   },
   table: {
     title: "Title",
     grossIncome: "Gross income",
     netIncome: "Net income",
+    householdGrossIncome: "Household gross income",
+    householdNetIncome: "Household net income",
     socialSecurity: "Social Security",
   },
   scenarioComparison: {
@@ -253,6 +266,11 @@ const messages = {
         label: "Compare joint - one income",
         description: "Use joint household assessment with one income.",
       },
+      jointTwoIncomes: {
+        label: "Compare joint — two incomes",
+        description:
+          "Use joint household assessment with the spouse / partner income.",
+      },
       socialSecurityMinus20: {
         label: "Compare SS -20%",
         description: "Apply a -20% Social Security base adjustment.",
@@ -265,6 +283,7 @@ const messages = {
     table: {
       scenario: "Scenario",
       grossIncome: "Gross / year",
+      householdGrossIncome: "Household gross / year",
       irs: "IRS / year",
       socialSecurity: "Social Security / year",
       netIncomeYear: "Net income / year",
@@ -280,6 +299,8 @@ const messages = {
     card: {
       annualNetIncome: "Annual net income",
       monthlyNetIncome: "Monthly net income",
+      annualHouseholdNetIncome: "Annual household net income",
+      monthlyHouseholdNetIncome: "Monthly household net income",
       supportingMetrics: "Supporting metrics",
       keyResult: "Key result",
     },
@@ -293,6 +314,7 @@ const messages = {
       alreadyCurrent: "Already current",
       added: "Added",
       limitReached: "Limit reached",
+      spouseIncomeRequired: "Add spouse / partner income first.",
       noAlternatives: "No alternatives added yet.",
       alternativeCount:
         "{count} alternative selected | {count} alternatives selected",
@@ -331,6 +353,8 @@ const messages = {
     rows: {
       grossIncome: "Annual gross income",
       netIncome: "Annual net income",
+      householdGrossIncome: "Annual household gross income",
+      householdNetIncome: "Annual household net income",
       totalTaxes: "Annual total taxes",
       irs: "Annual IRS",
       socialSecurity: "Annual Social Security",
@@ -339,6 +363,14 @@ const messages = {
       paidMonths: "Paid months per year",
       unpaidDays: "Unpaid days off",
       taxAssessment: "Tax assessment",
+      spouseAnnualGrossIncome: "Spouse / partner annual gross income",
+      spouseIncomeModel: "Second-income model",
+      jointTwoIncomeLimitation: "Second-income limitation",
+      freelancerTaxableIncome: "Freelancer taxable base",
+      spouseSpecificDeduction: "Spouse / partner simplified deduction",
+      spouseTaxableIncome: "Spouse / partner taxable base",
+      householdTaxableIncome: "Household taxable income",
+      taxableIncomeForRates: "Taxable income used for IRS rates",
       incomeFrequency: "Income frequency",
       displayFrequency: "Selected display frequency",
       dependents: "Number of dependents",
@@ -363,6 +395,10 @@ const messages = {
       dependentAgeGroups:
         "{aged3OrUnder} aged 3 or under · {aged4To6} aged 4–6 · {aged7OrOver} aged 7+",
       expensesSummary: "{mode} · {amount} · still needed {stillNeeded}",
+      spouseIncomeModel:
+        "Annual gross employment/pension-like income with a simplified specific deduction up to EUR 4,104.",
+      jointTwoIncomeLimitation:
+        "The spouse / partner model excludes withholding tax, Social Security and income-category detail.",
     },
   },
   chart: {
@@ -370,6 +406,7 @@ const messages = {
     summary: "Visual split of net income, IRS and Social Security",
     loading: "Loading income breakdown chart...",
     grossIncome: "gross income",
+    householdGrossIncome: "household gross income",
     grossIncomeLabel: "Gross income",
     netIncome: "Net income",
     socialSecurity: "Social Security",
@@ -390,7 +427,13 @@ const messages = {
     specificDeductions: "Specific deductions",
     expenses: "Expenses",
     youthIrsDiscount: "Youth IRS discount",
+    freelancerTaxableIncome: "Freelancer taxable base",
+    spouseAnnualGrossIncome: "Spouse / partner annual gross income",
+    spouseSpecificDeduction: "Spouse / partner simplified deduction",
+    spouseTaxableIncome: "Spouse / partner taxable base",
     householdTaxableIncome: "Household taxable income",
+    socialSecurityScope: "Social Security scope",
+    socialSecurityFreelancerOnly: "Only freelancer income",
     taxableIncomeForRates: "Taxable income used for IRS rates",
     dividedBy2: "(divided by 2)",
     averageRatePortion: "Average-rate portion",
@@ -511,11 +554,11 @@ const messages = {
   about: {
     title: "Freelancer Calculator Portugal",
     intro:
-      "This open-source calculator estimates net income, Portuguese IRS and Social Security for freelancers using the simplified Category B model implemented in the simulator. It supports individual assessment, a joint single-income scenario, dependent deductions and saved simulations stored in your browser localStorage.",
+      "This open-source calculator estimates net income, Portuguese IRS and Social Security for freelancers using the simplified Category B model implemented in the simulator. It supports individual assessment, joint assessment with one income, joint assessment with two incomes, dependent deductions and saved simulations stored in your browser localStorage.",
     maintained:
       "The project is maintained by Bruno Ramos de Matos as a derivative of the original open-source work by Francisco Macedo:",
     disclaimer:
-      "The calculations are indicative estimates, not accounting, legal or tax advice. They do not cover every Portuguese tax rule, such as shared custody, disability deductions, minimum-existence rules, additional collection deductions or the solidarity surcharge. Validate your own situation with Autoridade Tributaria e Aduaneira or a qualified professional.",
+      "The calculations are indicative estimates, not accounting, legal or tax advice. They do not cover every Portuguese tax rule, such as spouse income categories, spouse withholding, shared custody, disability deductions, minimum-existence rules, additional collection deductions or the solidarity surcharge. Validate your own situation with Autoridade Tributaria e Aduaneira or a qualified professional.",
   },
   footer: {
     headline:

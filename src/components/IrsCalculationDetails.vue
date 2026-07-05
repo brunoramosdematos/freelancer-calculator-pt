@@ -41,6 +41,54 @@
         </dd>
       </div>
       <div
+        v-if="isJointTwoIncomes"
+        class="grid grid-cols-[minmax(0,1fr)_auto] gap-4 py-3"
+        data-cy="freelancer-taxable-income-row"
+      >
+        <dt class="text-muted">
+          {{ t("irsCalculation.freelancerTaxableIncome") }}
+        </dt>
+        <dd class="font-medium text-foreground tabular-nums">
+          {{ renderCellValue(freelancerTaxableIncome) }}
+        </dd>
+      </div>
+      <div
+        v-if="isJointTwoIncomes"
+        class="grid grid-cols-[minmax(0,1fr)_auto] gap-4 py-3"
+        data-cy="spouse-annual-gross-income-row"
+      >
+        <dt class="text-muted">
+          {{ t("irsCalculation.spouseAnnualGrossIncome") }}
+        </dt>
+        <dd class="font-medium text-foreground tabular-nums">
+          {{ renderCellValue(activeSpouseAnnualGrossIncome) }}
+        </dd>
+      </div>
+      <div
+        v-if="isJointTwoIncomes"
+        class="grid grid-cols-[minmax(0,1fr)_auto] gap-4 py-3"
+        data-cy="spouse-specific-deduction-row"
+      >
+        <dt class="text-muted">
+          {{ t("irsCalculation.spouseSpecificDeduction") }}
+        </dt>
+        <dd class="font-medium text-foreground tabular-nums">
+          {{ renderCellValue(spouseSpecificDeduction) }}
+        </dd>
+      </div>
+      <div
+        v-if="isJointTwoIncomes"
+        class="grid grid-cols-[minmax(0,1fr)_auto] gap-4 py-3"
+        data-cy="spouse-taxable-income-row"
+      >
+        <dt class="text-muted">
+          {{ t("irsCalculation.spouseTaxableIncome") }}
+        </dt>
+        <dd class="font-medium text-foreground tabular-nums">
+          {{ renderCellValue(spouseTaxableIncome) }}
+        </dd>
+      </div>
+      <div
         class="grid grid-cols-[minmax(0,1fr)_auto] gap-4 py-3"
         data-cy="household-taxable-income-row"
       >
@@ -110,6 +158,18 @@
         </dd>
       </div>
       <div
+        v-if="isJointTwoIncomes"
+        class="grid grid-cols-[minmax(0,1fr)_auto] gap-4 py-3"
+        data-cy="social-security-freelancer-only-row"
+      >
+        <dt class="text-muted">
+          {{ t("irsCalculation.socialSecurityScope") }}
+        </dt>
+        <dd class="text-right font-medium text-foreground">
+          {{ t("irsCalculation.socialSecurityFreelancerOnly") }}
+        </dd>
+      </div>
+      <div
         class="grid grid-cols-[minmax(0,1fr)_auto] gap-4 py-3"
         data-cy="gross-irs-before-dependent-deduction-row"
       >
@@ -158,6 +218,11 @@ import TaxRanksDialog from "@/components/TaxRanksDialog.vue";
 const {
   taxableIncome,
   taxableIncomeForRates,
+  freelancerTaxableIncome,
+  activeSpouseAnnualGrossIncome,
+  spouseSpecificDeduction,
+  spouseTaxableIncome,
+  isJointTwoIncomes,
   assessmentDivisor,
   specificDeductions,
   expenses,

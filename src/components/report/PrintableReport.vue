@@ -212,12 +212,26 @@ const yesNo = (value: boolean) =>
   value ? t("report.values.yes") : t("report.values.no");
 const frequencyLabel = (frequency: string) => t(`frequency.${frequency}`);
 
-const assessmentLabel = computed(() =>
-  props.report.assumptions.assessmentScenario ===
-  AssessmentScenario.JointSingleIncome
-    ? t("assessment.jointSingleIncome.label")
-    : t("assessment.individual.label"),
+const isJointTwoIncomes = computed(
+  () =>
+    props.report.assumptions.assessmentScenario ===
+    AssessmentScenario.JointTwoIncomes,
 );
+
+const assessmentLabel = computed(() => {
+  if (
+    props.report.assumptions.assessmentScenario ===
+    AssessmentScenario.JointSingleIncome
+  ) {
+    return t("assessment.jointSingleIncome.label");
+  }
+
+  if (isJointTwoIncomes.value) {
+    return t("assessment.jointTwoIncomes.label");
+  }
+
+  return t("assessment.individual.label");
+});
 
 const activityYearLabel = computed(() => {
   if (props.report.assumptions.firstFiscalYear) {
@@ -261,12 +275,16 @@ const summaryRows = computed<ReportRow[]>(() => [
     value: frequencyLabel(props.report.summary.displayFrequency),
   },
   {
-    label: t("report.rows.grossIncome"),
+    label: isJointTwoIncomes.value
+      ? t("report.rows.householdGrossIncome")
+      : t("report.rows.grossIncome"),
     value: money(props.report.summary.grossIncome.year),
     dataCy: "report-gross-income",
   },
   {
-    label: t("report.rows.netIncome"),
+    label: isJointTwoIncomes.value
+      ? t("report.rows.householdNetIncome")
+      : t("report.rows.netIncome"),
     value: money(props.report.summary.netIncome.year),
     dataCy: "report-net-income",
     valueClass: "font-semibold",
@@ -300,6 +318,23 @@ const assumptionRows = computed<ReportRow[]>(() => [
     value: assessmentLabel.value,
     dataCy: "report-tax-assessment",
   },
+  ...(props.report.assumptions.spouseIncome
+    ? [
+        {
+          label: t("report.rows.spouseAnnualGrossIncome"),
+          value: money(props.report.assumptions.spouseIncome.annualGrossIncome),
+          dataCy: "report-spouse-annual-income",
+        },
+        {
+          label: t("report.rows.spouseIncomeModel"),
+          value: t("report.values.spouseIncomeModel"),
+        },
+        {
+          label: t("report.rows.jointTwoIncomeLimitation"),
+          value: t("report.values.jointTwoIncomeLimitation"),
+        },
+      ]
+    : []),
   {
     label: t("report.rows.incomeFrequency"),
     value: frequencyLabel(props.report.assumptions.incomeFrequency),
@@ -358,6 +393,30 @@ const assumptionRows = computed<ReportRow[]>(() => [
 ]);
 
 const taxBreakdownRows = computed<ReportRow[]>(() => [
+  ...(isJointTwoIncomes.value
+    ? [
+        {
+          label: t("report.rows.freelancerTaxableIncome"),
+          value: money(props.report.taxBreakdown.freelancerTaxableIncome),
+        },
+        {
+          label: t("report.rows.spouseSpecificDeduction"),
+          value: money(props.report.taxBreakdown.spouseSpecificDeduction),
+        },
+        {
+          label: t("report.rows.spouseTaxableIncome"),
+          value: money(props.report.taxBreakdown.spouseTaxableIncome),
+        },
+        {
+          label: t("report.rows.householdTaxableIncome"),
+          value: money(props.report.taxBreakdown.householdTaxableIncome),
+        },
+        {
+          label: t("report.rows.taxableIncomeForRates"),
+          value: money(props.report.taxBreakdown.taxableIncomeForRates),
+        },
+      ]
+    : []),
   {
     label: t("report.rows.irsBeforeDependentDeduction"),
     value: money(props.report.taxBreakdown.irsBeforeDependentDeduction),
@@ -378,7 +437,9 @@ const taxBreakdownRows = computed<ReportRow[]>(() => [
     valueClass: "font-semibold",
   },
   {
-    label: t("report.rows.netIncome"),
+    label: isJointTwoIncomes.value
+      ? t("report.rows.householdNetIncome")
+      : t("report.rows.netIncome"),
     value: money(props.report.taxBreakdown.netIncome),
     valueClass: "font-semibold",
   },

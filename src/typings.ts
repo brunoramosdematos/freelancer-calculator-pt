@@ -7,6 +7,7 @@ export enum FrequencyChoices {
 export enum AssessmentScenario {
   Individual = "individual",
   JointSingleIncome = "joint-single-income",
+  JointTwoIncomes = "joint-two-incomes",
 }
 
 export interface GrossIncome {

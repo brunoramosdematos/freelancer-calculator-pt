@@ -266,7 +266,9 @@ describe("progressive disclosure simulator layout", () => {
 
   it("keeps the mobile dashboard order without horizontal scroll", () => {
     cy.viewport(375, 800);
-    cy.visit("/#/?income=50000");
+    cy.visit(
+      "/#/?income=50000&assessmentScenario=joint-two-incomes&spouseAnnualGrossIncome=20000",
+    );
 
     const selectors = [
       '[data-cy="results-summary"]',
@@ -289,6 +291,9 @@ describe("progressive disclosure simulator layout", () => {
 
       expect(positions).to.deep.equal(sortedPositions);
     });
+    cy.get('[data-cy="spouse-annual-income"]')
+      .should("be.visible")
+      .and("have.value", "20,000");
     cy.get('[data-cy="mobile-frequency-comparison-toggle"]').should(
       "be.visible",
     );

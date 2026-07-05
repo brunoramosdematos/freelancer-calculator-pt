@@ -58,6 +58,30 @@ describe("pass income to url parameters", () => {
     cy.get('[data-cy="simulations-menu"]').should("not.exist");
   });
 
+  it("saves and restores joint-two-income simulations", () => {
+    const simulationName = "Two-income household simulation";
+
+    cy.visit("/#/");
+    cy.get('[data-cy="income"]').type("60000");
+    cy.get('[data-cy="joint-two-incomes-assessment-option"]').check({
+      force: true,
+    });
+    cy.get('[data-cy="spouse-annual-income"]').type("20000");
+    cy.get('[data-cy="save-simulation-button"]').click();
+    cy.get('[data-cy="simulation-name"]').type(simulationName);
+    cy.get('[data-cy="save-new-simulation-button"]').click();
+    cy.get('[data-cy="simulations-menu"]').click();
+    cy.contains("p", simulationName);
+    cy.get('[data-cy="open-simulation"]').click();
+
+    cy.url().should("include", "assessmentScenario=joint-two-incomes");
+    cy.url().should("include", "spouseAnnualGrossIncome=20000");
+    cy.get('[data-cy="joint-two-incomes-assessment-option"]').should(
+      "be.checked",
+    );
+    cy.get('[data-cy="spouse-annual-income"]').should("have.value", "20,000");
+  });
+
   it("restores an explicitly saved historical tax year", () => {
     const simulationName = "Historical 2025 simulation";
 
@@ -108,5 +132,7 @@ describe("pass income to url parameters", () => {
       "2026",
     );
     cy.url().should("not.include", "currentTaxRankYear=");
+    cy.url().should("not.include", "spouseAnnualGrossIncome=");
+    cy.get('[data-cy="spouse-annual-income"]').should("not.exist");
   });
 });

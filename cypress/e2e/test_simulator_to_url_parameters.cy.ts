@@ -181,12 +181,55 @@ describe("pass assessment scenario and dependents to url parameters", () => {
       "€22,500.00",
     );
     cy.get('[data-cy="final-irs-row"]').should("contain", "€8,608.79");
+    cy.get('[data-cy="spouse-annual-income"]').should("not.exist");
+
+    cy.get('[data-cy="joint-two-incomes-assessment-option"]').check({
+      force: true,
+    });
+
+    cy.url().should("include", "assessmentScenario=joint-two-incomes");
+    cy.get('[data-cy="spouse-annual-income"]')
+      .should("be.visible")
+      .invoke("val", "")
+      .type("20000");
+    cy.url().should("include", "spouseAnnualGrossIncome=20000");
+    cy.get('[data-cy="spouse-income-help"]').should(
+      "contain",
+      "simplified specific deduction",
+    );
+    cy.get('[data-cy="household-results-note"]').should(
+      "contain",
+      "spouse / partner annual income",
+    );
+    cy.get('[data-cy="spouse-annual-gross-income-row"]').should(
+      "contain",
+      "€20,000.00",
+    );
+    cy.get('[data-cy="spouse-taxable-income-row"]').should(
+      "contain",
+      "€15,896.00",
+    );
+    cy.get('[data-cy="household-taxable-income-row"]').should(
+      "contain",
+      "€60,896.00",
+    );
+    cy.get('[data-cy="taxable-income-for-rates-row"]').should(
+      "contain",
+      "€30,448.00",
+    );
+    cy.get('[data-cy="social-security-freelancer-only-row"]').should(
+      "contain",
+      "Only freelancer income",
+    );
+    cy.get('[data-cy="final-irs-row"]').should("contain", "€13,894.06");
 
     cy.get('[data-cy="assessment-scenario-individual"]').check({
       force: true,
     });
 
     cy.url().should("include", "assessmentScenario=individual");
+    cy.url().should("not.include", "spouseAnnualGrossIncome=");
+    cy.get('[data-cy="spouse-annual-income"]').should("not.exist");
     cy.get('[data-cy="assessment-scenario-individual"]').should("be.checked");
     cy.get('[data-cy="final-irs-row"]').should("contain", "€12,576.22");
   });
@@ -251,6 +294,10 @@ describe("pass assessment scenario and dependents to url parameters", () => {
     cy.get('[data-cy="assessment-scenario-joint-single-income"]').check({
       force: true,
     });
+    cy.get('[data-cy="joint-two-incomes-assessment-option"]').check({
+      force: true,
+    });
+    cy.get('[data-cy="spouse-annual-income"]').invoke("val", "").type("20000");
     cy.get('[data-cy="number-of-dependents"] input:first-of-type')
       .invoke("val", "")
       .type("2");
@@ -259,6 +306,7 @@ describe("pass assessment scenario and dependents to url parameters", () => {
 
     cy.url().should("not.include", "assessmentScenario=");
     cy.url().should("not.include", "numberOfDependents=");
+    cy.url().should("not.include", "spouseAnnualGrossIncome=");
     cy.get('[data-cy="income"]').should("have.value", "");
 
     cy.get('[data-cy="income"]').type("60000");

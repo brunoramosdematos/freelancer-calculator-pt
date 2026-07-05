@@ -116,6 +116,40 @@
               {{ t("assessment.jointSingleIncome.description") }}
             </span>
           </label>
+          <label
+            class="cursor-pointer rounded-lg border px-3 py-2 transition focus-within:ring-2 focus-within:ring-focus"
+            :class="
+              store.assessmentScenario === AssessmentScenario.JointTwoIncomes
+                ? 'border-primary bg-primary-soft'
+                : 'border-default hover:border-strong'
+            "
+          >
+            <input
+              type="radio"
+              name="assessment-scenario"
+              class="sr-only"
+              :checked="
+                store.assessmentScenario === AssessmentScenario.JointTwoIncomes
+              "
+              data-cy="joint-two-incomes-assessment-option"
+              @change="
+                store.setAssessmentScenario(AssessmentScenario.JointTwoIncomes)
+              "
+            />
+            <span class="block text-sm font-semibold">
+              {{ t("assessment.jointTwoIncomes.label") }}
+            </span>
+            <span
+              class="block text-xs"
+              :class="
+                store.assessmentScenario === AssessmentScenario.JointTwoIncomes
+                  ? 'text-muted'
+                  : 'text-subtle'
+              "
+            >
+              {{ t("assessment.jointTwoIncomes.description") }}
+            </span>
+          </label>
         </div>
         <p
           v-if="
@@ -125,6 +159,34 @@
         >
           {{ t("assessment.jointSingleIncome.help") }}
         </p>
+        <div
+          v-else-if="
+            store.assessmentScenario === AssessmentScenario.JointTwoIncomes
+          "
+          class="mt-3 space-y-2 border-l-2 border-primary pl-3"
+        >
+          <label
+            for="spouse-annual-gross-income-input"
+            class="block text-sm font-medium text-foreground"
+          >
+            {{ t("assessment.jointTwoIncomes.incomeLabel") }}
+          </label>
+          <FormattedNumberInput
+            id="spouse-annual-gross-income-input"
+            :value="store.spouseAnnualGrossIncome"
+            :placeholder="t('assessment.jointTwoIncomes.incomePlaceholder')"
+            aria-describedby="spouse-income-help"
+            data-cy="spouse-annual-income"
+            @update:value="store.setSpouseAnnualGrossIncome"
+          />
+          <p
+            id="spouse-income-help"
+            class="text-xs leading-5 text-subtle"
+            data-cy="spouse-income-help"
+          >
+            {{ t("assessment.jointTwoIncomes.help") }}
+          </p>
+        </div>
       </fieldset>
 
       <DependentAgeGroups />
@@ -189,6 +251,7 @@ import {
 import AdjustCounter from "@/components/AdjustCounter.vue";
 import DependentAgeGroups from "@/components/DependentAgeGroups.vue";
 import DropDown from "@/components/DropDown.vue";
+import FormattedNumberInput from "@/components/FormattedNumberInput.vue";
 import InfoButton from "@/components/InfoButton.vue";
 import TaxDataStatus from "@/components/TaxDataStatus.vue";
 

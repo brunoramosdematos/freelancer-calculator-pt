@@ -30,6 +30,7 @@ describe("Taxes Store", () => {
     taxesStore.setCurrentTaxRankYear(2024);
     taxesStore.setSsDiscount(0);
     taxesStore.setAssessmentScenario(AssessmentScenario.Individual);
+    taxesStore.setSpouseAnnualGrossIncome(0, false);
     taxesStore.setNumberOfDependents(0);
 
     taxesStore.firstYear = false;
@@ -497,6 +498,10 @@ describe("Taxes Store", () => {
     taxesStore.setAssessmentScenario(AssessmentScenario.JointSingleIncome);
 
     expect(taxesStore.assessmentDivisor).toBe(2);
+
+    taxesStore.setAssessmentScenario(AssessmentScenario.JointTwoIncomes);
+
+    expect(taxesStore.assessmentDivisor).toBe(2);
   });
 
   it("uses full taxable income for individual rates and half for joint-single-income", () => {
@@ -529,6 +534,85 @@ describe("Taxes Store", () => {
     expect(taxesStore.irsPay.year).toBeCloseTo(expectedGrossIrs);
   });
 
+  it("defaults, preserves, and resets spouse annual gross income", () => {
+    const localStore = useTaxesStore(createPinia());
+
+    expect(localStore.spouseAnnualGrossIncome).toBe(0);
+
+    localStore.setSpouseAnnualGrossIncome(20_000, false);
+    localStore.setAssessmentScenario(AssessmentScenario.JointTwoIncomes, false);
+    localStore.setAssessmentScenario(AssessmentScenario.Individual, false);
+
+    expect(localStore.spouseAnnualGrossIncome).toBe(20_000);
+    expect(localStore.activeSpouseAnnualGrossIncome).toBe(0);
+
+    localStore.resetSimulationInputs();
+
+    expect(localStore.spouseAnnualGrossIncome).toBe(0);
+  });
+
+  it("calculates joint-two-incomes with a simplified second-income taxable base", () => {
+    const freelancerSocialSecurity = taxesStore.ssPay.year;
+
+    taxesStore.setAssessmentScenario(AssessmentScenario.JointTwoIncomes);
+    taxesStore.setSpouseAnnualGrossIncome(20_000, false);
+
+    // Independent check: freelancer taxable base 60,000 * 75% = 45,000;
+    // spouse gross 20,000 - simplified deduction 4,104 = 15,896;
+    // household taxable 60,896 / 2 = 30,448;
+    // IRS = (27,146 * 21.334% + 3,302 * 35%) * 2.
+    expect(taxesStore.freelancerTaxableIncome).toBe(45_000);
+    expect(taxesStore.spouseSpecificDeduction).toBe(4_104);
+    expect(taxesStore.spouseTaxableIncome).toBe(15_896);
+    expect(taxesStore.taxableIncome).toBe(60_896);
+    expect(taxesStore.taxableIncomeForRates).toBe(30_448);
+    expect(taxesStore.grossIrsBeforeDependentDeduction).toBeCloseTo(
+      13_894.05528,
+    );
+    expect(taxesStore.irsPay.year).toBeCloseTo(13_894.05528);
+    expect(taxesStore.ssPay.year).toBe(freelancerSocialSecurity);
+    expect(taxesStore.resultGrossIncome.year).toBe(80_000);
+    expect(taxesStore.netIncome.year).toBeCloseTo(
+      80_000 - 13_894.05528 - freelancerSocialSecurity,
+    );
+
+    taxesStore.setNumberOfDependents(2);
+    taxesStore.setDependentsAged3OrUnder(1);
+    taxesStore.setDependentsAged4To6(1);
+
+    expect(taxesStore.dependentTaxDeduction).toBe(1_500);
+    expect(taxesStore.irsPay.year).toBeCloseTo(12_394.05528);
+  });
+
+  it("keeps joint-two-incomes with zero spouse income equivalent to joint-single-income", () => {
+    taxesStore.setAssessmentScenario(AssessmentScenario.JointSingleIncome);
+    const jointSingleIncomeIrs = taxesStore.irsPay.year;
+
+    taxesStore.setAssessmentScenario(AssessmentScenario.JointTwoIncomes);
+    taxesStore.setSpouseAnnualGrossIncome(0, false);
+
+    expect(taxesStore.activeSpouseAnnualGrossIncome).toBe(0);
+    expect(taxesStore.spouseTaxableIncome).toBe(0);
+    expect(taxesStore.taxableIncomeForRates).toBe(22_500);
+    expect(taxesStore.irsPay.year).toBeCloseTo(jointSingleIncomeIrs);
+  });
+
+  it("keeps a second exact joint-two-income IRS regression value", () => {
+    taxesStore.setAssessmentScenario(AssessmentScenario.JointTwoIncomes);
+    taxesStore.setSpouseAnnualGrossIncome(40_000, false);
+
+    // Independent check: spouse taxable base 40,000 - 4,104 = 35,896;
+    // household taxable 80,896 / 2 = 40,448;
+    // IRS = (39,791 * 25.835% + 657 * 43.5%) * 2.
+    expect(taxesStore.spouseTaxableIncome).toBe(35_896);
+    expect(taxesStore.taxableIncome).toBe(80_896);
+    expect(taxesStore.taxableIncomeForRates).toBe(40_448);
+    expect(taxesStore.grossIrsBeforeDependentDeduction).toBeCloseTo(
+      21_131.5997,
+    );
+    expect(taxesStore.irsPay.year).toBeCloseTo(21_131.5997);
+  });
+
   it("applies the dependent deduction once after the quotient calculation", () => {
     taxesStore.setAssessmentScenario(AssessmentScenario.JointSingleIncome);
     taxesStore.setNumberOfDependents(2);
@@ -548,6 +632,7 @@ describe("Taxes Store", () => {
     taxesStore.setIncome(60_000);
     taxesStore.setCurrentTaxRankYear(2024);
     taxesStore.setAssessmentScenario(AssessmentScenario.Individual);
+    taxesStore.setSpouseAnnualGrossIncome(0, false);
     taxesStore.setNumberOfDependents(0);
 
     expect(taxesStore.irsPay.year).toBeCloseTo(12_576.22);
@@ -567,6 +652,7 @@ describe("Taxes Store", () => {
     taxesStore.setDisplayFrequency(FrequencyChoices.Month);
     taxesStore.setIncome(11_000);
     taxesStore.setAssessmentScenario(AssessmentScenario.Individual);
+    taxesStore.setSpouseAnnualGrossIncome(0, false);
     taxesStore.setNumberOfDependents(0);
 
     taxesStore.setSsDiscount(0);
@@ -649,6 +735,7 @@ describe("Taxes Store", () => {
     expect(taxesStore.dependentsAged3OrUnder).toBe(1);
     expect(taxesStore.dependentsAged4To6).toBe(0);
     expect(taxesStore.dependentsAged7OrOver).toBe(0);
+    expect(taxesStore.spouseAnnualGrossIncome).toBe(0);
   });
 
   describe("dashboard visibility state", () => {
@@ -754,8 +841,25 @@ describe("Taxes Store", () => {
     expect(taxesStore.dependentsAged4To6).toBe(0);
   });
 
+  it("hydrates valid joint-two-income URL parameters", () => {
+    taxesStore.setParametersFromURL({
+      income: "60000",
+      currentTaxRankYear: "2024",
+      assessmentScenario: "joint-two-incomes",
+      spouseAnnualGrossIncome: "20000",
+    });
+
+    expect(taxesStore.assessmentScenario).toBe(
+      AssessmentScenario.JointTwoIncomes,
+    );
+    expect(taxesStore.spouseAnnualGrossIncome).toBe(20_000);
+    expect(taxesStore.activeSpouseAnnualGrossIncome).toBe(20_000);
+    expect(taxesStore.spouseTaxableIncome).toBe(15_896);
+  });
+
   it("hydrates old simulations with new tax state defaults", () => {
-    taxesStore.setAssessmentScenario(AssessmentScenario.JointSingleIncome);
+    taxesStore.setAssessmentScenario(AssessmentScenario.JointTwoIncomes);
+    taxesStore.setSpouseAnnualGrossIncome(20_000, false);
     taxesStore.setNumberOfDependents(3);
     taxesStore.setDependentsAged3OrUnder(1);
     taxesStore.setDependentsAged4To6(1);
@@ -770,10 +874,12 @@ describe("Taxes Store", () => {
     expect(taxesStore.currentTaxRankYear).toBe(DEFAULT_TAX_RANK_YEAR);
     expect(taxesStore.firstYear).toBe(false);
     expect(taxesStore.secondYear).toBe(false);
+    expect(taxesStore.spouseAnnualGrossIncome).toBe(0);
   });
 
-  it("hydrates an old income-only simulation after joint-single-income without leaking dependent state", () => {
-    taxesStore.setAssessmentScenario(AssessmentScenario.JointSingleIncome);
+  it("hydrates an old income-only simulation after joint-two-incomes without leaking new tax state", () => {
+    taxesStore.setAssessmentScenario(AssessmentScenario.JointTwoIncomes);
+    taxesStore.setSpouseAnnualGrossIncome(20_000, false);
     taxesStore.setNumberOfDependents(2);
     taxesStore.setDependentsAged3OrUnder(1);
     taxesStore.setDependentsAged4To6(1);
@@ -784,6 +890,7 @@ describe("Taxes Store", () => {
     expect(taxesStore.numberOfDependents).toBe(0);
     expect(taxesStore.dependentsAged3OrUnder).toBe(0);
     expect(taxesStore.dependentsAged4To6).toBe(0);
+    expect(taxesStore.spouseAnnualGrossIncome).toBe(0);
   });
   it("hydrates old saved simulations without tax year using the dynamic default", () => {
     taxesStore.setCurrentTaxRankYear(2024);
@@ -991,7 +1098,8 @@ describe("Taxes Store", () => {
   });
 
   it("resets assessment scenario and dependent state", () => {
-    taxesStore.setAssessmentScenario(AssessmentScenario.JointSingleIncome);
+    taxesStore.setAssessmentScenario(AssessmentScenario.JointTwoIncomes);
+    taxesStore.setSpouseAnnualGrossIncome(20_000, false);
     taxesStore.setNumberOfDependents(3);
     taxesStore.setDependentsAged3OrUnder(1);
     taxesStore.setDependentsAged4To6(1);
@@ -1003,6 +1111,7 @@ describe("Taxes Store", () => {
     expect(taxesStore.dependentsAged3OrUnder).toBe(0);
     expect(taxesStore.dependentsAged4To6).toBe(0);
     expect(taxesStore.dependentsAged7OrOver).toBe(0);
+    expect(taxesStore.spouseAnnualGrossIncome).toBe(0);
   });
 
   it("should calculate the total taxes for the selected display frequency", () => {

@@ -106,6 +106,14 @@ const messages = {
       description: "Tributação do agregado com um rendimento de EUR 0.",
       help: "Usa o quociente conjugal para os escalões de IRS.",
     },
+    jointTwoIncomes: {
+      label: "Conjunta — dois rendimentos",
+      description:
+        "Tributação do agregado com rendimento do cônjuge / unido de facto.",
+      incomeLabel: "Rendimento bruto anual do cônjuge / unido de facto",
+      incomePlaceholder: "Rendimento bruto anual",
+      help: "Modelo desta primeira versão: rendimento bruto anual tipo trabalho/pensão, dedução específica simplificada até EUR 4.104, sem Segurança Social, retenção na fonte ou detalhe de categoria do cônjuge / unido de facto.",
+    },
   },
   dependents: {
     total: {
@@ -231,12 +239,18 @@ const messages = {
     shownPer: "Apresentado por {frequency}.",
     grossIncome: "Rendimento bruto",
     netIncome: "Rendimento líquido",
+    householdGrossIncome: "Rendimento bruto do agregado",
+    householdNetIncome: "Rendimento líquido do agregado",
+    householdIncludesSpouse:
+      "Os resultados incluem o rendimento anual do cônjuge / unido de facto introduzido neste cenário. A Segurança Social continua a aplicar-se apenas ao rendimento do freelancer.",
     totalTaxes: "Total de impostos",
   },
   table: {
     title: "Título",
     grossIncome: "Rendimento bruto",
     netIncome: "Rendimento líquido",
+    householdGrossIncome: "Rendimento bruto do agregado",
+    householdNetIncome: "Rendimento líquido do agregado",
     socialSecurity: "Segurança Social",
   },
   scenarioComparison: {
@@ -257,6 +271,11 @@ const messages = {
         label: "Comparar conjunta — um rendimento",
         description: "Usa tributação conjunta do agregado com um rendimento.",
       },
+      jointTwoIncomes: {
+        label: "Comparar conjunta — dois rendimentos",
+        description:
+          "Usa tributação conjunta do agregado com rendimento do cônjuge / unido de facto.",
+      },
       socialSecurityMinus20: {
         label: "Comparar SS -20%",
         description: "Aplica um ajuste de -20% à base da Segurança Social.",
@@ -270,6 +289,7 @@ const messages = {
     table: {
       scenario: "Cenário",
       grossIncome: "Bruto / ano",
+      householdGrossIncome: "Bruto do agregado / ano",
       irs: "IRS / ano",
       socialSecurity: "Segurança Social / ano",
       netIncomeYear: "Rendimento líquido / ano",
@@ -285,6 +305,8 @@ const messages = {
     card: {
       annualNetIncome: "Rendimento líquido anual",
       monthlyNetIncome: "Rendimento líquido mensal",
+      annualHouseholdNetIncome: "Rendimento líquido anual do agregado",
+      monthlyHouseholdNetIncome: "Rendimento líquido mensal do agregado",
       supportingMetrics: "Métricas de apoio",
       keyResult: "Resultado principal",
     },
@@ -298,6 +320,8 @@ const messages = {
       alreadyCurrent: "Já é o cenário atual",
       added: "Adicionado",
       limitReached: "Limite atingido",
+      spouseIncomeRequired:
+        "Adicione primeiro o rendimento do cônjuge / unido de facto.",
       noAlternatives: "Ainda não há alternativas adicionadas.",
       alternativeCount:
         "{count} alternativa selecionada | {count} alternativas selecionadas",
@@ -336,6 +360,8 @@ const messages = {
     rows: {
       grossIncome: "Rendimento bruto anual",
       netIncome: "Rendimento líquido anual",
+      householdGrossIncome: "Rendimento bruto anual do agregado",
+      householdNetIncome: "Rendimento líquido anual do agregado",
       totalTaxes: "Total anual de impostos",
       irs: "IRS anual",
       socialSecurity: "Segurança Social anual",
@@ -344,6 +370,16 @@ const messages = {
       paidMonths: "Meses pagos por ano",
       unpaidDays: "Dias de férias não pagos",
       taxAssessment: "Tributação",
+      spouseAnnualGrossIncome:
+        "Rendimento bruto anual do cônjuge / unido de facto",
+      spouseIncomeModel: "Modelo do segundo rendimento",
+      jointTwoIncomeLimitation: "Limitação do segundo rendimento",
+      freelancerTaxableIncome: "Base coletável do freelancer",
+      spouseSpecificDeduction:
+        "Dedução simplificada do cônjuge / unido de facto",
+      spouseTaxableIncome: "Base coletável do cônjuge / unido de facto",
+      householdTaxableIncome: "Rendimento coletável do agregado",
+      taxableIncomeForRates: "Rendimento coletável usado para taxas de IRS",
       incomeFrequency: "Frequência do rendimento",
       displayFrequency: "Frequência apresentada selecionada",
       dependents: "Número de dependentes",
@@ -368,6 +404,10 @@ const messages = {
       dependentAgeGroups:
         "{aged3OrUnder} com 3 anos ou menos · {aged4To6} com 4–6 anos · {aged7OrOver} com 7+ anos",
       expensesSummary: "{mode} · {amount} · ainda necessário {stillNeeded}",
+      spouseIncomeModel:
+        "Rendimento bruto anual tipo trabalho/pensão com dedução específica simplificada até EUR 4.104.",
+      jointTwoIncomeLimitation:
+        "O modelo do cônjuge / unido de facto exclui retenção na fonte, Segurança Social e detalhe de categoria de rendimento.",
     },
   },
   chart: {
@@ -375,6 +415,7 @@ const messages = {
     summary: "Divisão visual entre rendimento líquido, IRS e Segurança Social",
     loading: "A carregar o gráfico da distribuição do rendimento...",
     grossIncome: "rendimento bruto",
+    householdGrossIncome: "rendimento bruto do agregado",
     grossIncomeLabel: "Rendimento bruto",
     netIncome: "Rendimento líquido",
     socialSecurity: "Segurança Social",
@@ -395,7 +436,14 @@ const messages = {
     specificDeductions: "Deduções específicas",
     expenses: "Despesas",
     youthIrsDiscount: "Desconto do IRS Jovem",
+    freelancerTaxableIncome: "Base coletável do freelancer",
+    spouseAnnualGrossIncome:
+      "Rendimento bruto anual do cônjuge / unido de facto",
+    spouseSpecificDeduction: "Dedução simplificada do cônjuge / unido de facto",
+    spouseTaxableIncome: "Base coletável do cônjuge / unido de facto",
     householdTaxableIncome: "Rendimento coletável do agregado",
+    socialSecurityScope: "Âmbito da Segurança Social",
+    socialSecurityFreelancerOnly: "Apenas rendimento do freelancer",
     taxableIncomeForRates: "Rendimento coletável usado para taxas de IRS",
     dividedBy2: "(dividido por 2)",
     averageRatePortion: "Parcela à taxa média",
@@ -516,11 +564,11 @@ const messages = {
   about: {
     title: "Calculadora para Freelancers em Portugal",
     intro:
-      "Esta calculadora open source estima o rendimento líquido, o IRS português e a Segurança Social de trabalhadores independentes usando o modelo simplificado da Categoria B implementado no simulador. Suporta tributação individual, tributação conjunta com um único rendimento, deduções por dependentes e simulações guardadas no localStorage do navegador.",
+      "Esta calculadora open source estima o rendimento líquido, o IRS português e a Segurança Social de trabalhadores independentes usando o modelo simplificado da Categoria B implementado no simulador. Suporta tributação individual, tributação conjunta com um rendimento, tributação conjunta com dois rendimentos, deduções por dependentes e simulações guardadas no localStorage do navegador.",
     maintained:
       "O projeto é mantido por Bruno Ramos de Matos como derivado do trabalho open source original de Francisco Macedo:",
     disclaimer:
-      "Os cálculos são estimativas indicativas, não aconselhamento contabilístico, jurídico ou fiscal. Não cobrem todas as regras fiscais portuguesas, como guarda partilhada, deduções por deficiência, regras de mínimo de existência, deduções adicionais à coleta ou a taxa adicional de solidariedade. Valide a sua situação com a Autoridade Tributária e Aduaneira ou um profissional qualificado.",
+      "Os cálculos são estimativas indicativas, não aconselhamento contabilístico, jurídico ou fiscal. Não cobrem todas as regras fiscais portuguesas, como categorias de rendimento do cônjuge, retenção na fonte do cônjuge, guarda partilhada, deduções por deficiência, regras de mínimo de existência, deduções adicionais à coleta ou a taxa adicional de solidariedade. Valide a sua situação com a Autoridade Tributária e Aduaneira ou um profissional qualificado.",
   },
   footer: {
     headline:

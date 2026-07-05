@@ -24,6 +24,8 @@ Acceptable sources, in preferred order:
   corrections require it.
 - Changing the default tax year requires compatibility review.
 - Saved simulations and shared URLs must remain deterministic.
+- New household or spouse/partner income models must document their simplified
+  scope in UI copy, report export and tests.
 - Tax-rank changes require explicit before and after tests.
 - IAS changes require Social Security regression tests.
 - Dependent deduction changes require age-bucket tests.

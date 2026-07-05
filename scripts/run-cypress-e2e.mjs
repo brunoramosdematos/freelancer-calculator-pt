@@ -4,6 +4,7 @@ import { join } from "node:path";
 
 const DEFAULT_PORT = 8261;
 const HOST = "127.0.0.1";
+const STARTUP_SETTLE_DELAY_MS = 10_000;
 
 const parseMode = (rawMode) => {
   const mode = rawMode ?? "run";
@@ -44,12 +45,29 @@ const getRunExitCode = (result) => {
     return 1;
   }
 
-  if (typeof result?.totalFailed === "number") {
+  if (typeof result?.totalTests === "number") {
+    const runFailures = Array.isArray(result.runs)
+      ? result.runs.reduce(
+          (total, run) => total + (run.stats?.failures ?? 0),
+          0,
+        )
+      : 0;
+    const unresolvedTests =
+      (result.totalTests ?? 0) -
+      (result.totalPassed ?? 0) -
+      (result.totalPending ?? 0) -
+      (result.totalSkipped ?? 0);
+    const totalFailed = Math.max(
+      result.totalFailed ?? 0,
+      runFailures,
+      unresolvedTests,
+    );
+
     console.info(
       `Cypress completed: ${result.totalPassed ?? 0}/${result.totalTests ?? 0} tests passed.`,
     );
 
-    return result.totalFailed === 0 ? 0 : 1;
+    return totalFailed === 0 ? 0 : 1;
   }
 
   console.error("Cypress returned an unexpected result object.");
@@ -259,6 +277,8 @@ const openCypress = async (baseUrl) => {
   return 0;
 };
 
+let requestedExitCode = 0;
+
 try {
   const mode = parseMode(process.argv[2]);
   const port = parsePort(process.env.CYPRESS_PORT);
@@ -267,10 +287,10 @@ try {
   installSignalHandlers();
   await startServer(port);
   await waitForServer(baseUrl);
-  await wait(5_000);
+  await wait(STARTUP_SETTLE_DELAY_MS);
 
   try {
-    process.exitCode =
+    requestedExitCode =
       mode === "open"
         ? await openCypress(baseUrl)
         : mode === "a11y"
@@ -283,11 +303,13 @@ try {
   } catch (error) {
     console.error("Cypress failed before completing the requested mode.");
     console.error(error);
-    process.exitCode = 1;
+    requestedExitCode = 1;
   } finally {
     await closeServer();
   }
 } catch (error) {
   console.error(error);
-  process.exitCode = 1;
+  requestedExitCode = 1;
 }
+
+process.exit(requestedExitCode);

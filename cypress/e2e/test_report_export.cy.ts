@@ -102,6 +102,14 @@ describe("printable report export", () => {
       '[data-cy="printable-report"]',
       "Annual net income",
     );
+    assertContainsNormalized(
+      '[data-cy="printable-report"]',
+      "Annual gross income",
+    );
+    cy.get('[data-cy="printable-report"]').should(
+      "not.contain",
+      "Spouse / partner annual gross income",
+    );
     assertContainsNormalized('[data-cy="printable-report"]', "IRS");
     assertContainsNormalized('[data-cy="printable-report"]', "Social Security");
     assertContainsNormalized('[data-cy="report-tax-year"]', "2024");
@@ -123,6 +131,35 @@ describe("printable report export", () => {
       "not accounting, legal, or tax advice",
     );
   });
+  it("renders joint-two-income report rows and limitation copy", () => {
+    visitScenario(
+      "/#/?income=60000&currentTaxRankYear=2024&assessmentScenario=joint-two-incomes&spouseAnnualGrossIncome=20000",
+    );
+    openReport();
+
+    assertContainsNormalized(
+      '[data-cy="printable-report"]',
+      "Annual household gross income",
+    );
+    assertContainsNormalized('[data-cy="report-gross-income"]', "€80,000.00");
+    assertContainsNormalized(
+      '[data-cy="report-tax-assessment"]',
+      "Joint — two incomes",
+    );
+    assertContainsNormalized(
+      '[data-cy="report-spouse-annual-income"]',
+      "€20,000.00",
+    );
+    assertContainsNormalized(
+      '[data-cy="printable-report"]',
+      "simplified specific deduction up to EUR 4,104",
+    );
+    assertContainsNormalized(
+      '[data-cy="printable-report"]',
+      "excludes withholding tax, Social Security and income-category detail",
+    );
+  });
+
   it("renders the dynamic default tax year without mutating the URL", () => {
     visitScenario("/#/?income=60000");
     cy.location("href").as("initialUrl");

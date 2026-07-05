@@ -5,6 +5,7 @@ import { AssessmentScenario, FrequencyChoices, GrossIncome } from "@/typings";
 export type ScenarioPreset =
   | "individual"
   | "jointSingleIncome"
+  | "jointTwoIncomes"
   | "socialSecurityMinus20"
   | "noDependents";
 
@@ -28,6 +29,7 @@ export interface ScenarioInputSnapshot {
   benefitsOfYouthIrs: boolean;
   yearOfYouthIrs: number;
   assessmentScenario: AssessmentScenario;
+  spouseAnnualGrossIncome: number;
   numberOfDependents: number;
   dependentsAged3OrUnder: number;
   dependentsAged4To6: number;
@@ -92,6 +94,14 @@ export const SCENARIO_PRESETS: ScenarioPresetDefinition[] = [
     },
   },
   {
+    id: "jointTwoIncomes",
+    labelKey: "scenarioComparison.presets.jointTwoIncomes.label",
+    descriptionKey: "scenarioComparison.presets.jointTwoIncomes.description",
+    overrides: {
+      assessmentScenario: AssessmentScenario.JointTwoIncomes,
+    },
+  },
+  {
     id: "socialSecurityMinus20",
     labelKey: "scenarioComparison.presets.socialSecurityMinus20.label",
     descriptionKey:
@@ -148,6 +158,7 @@ export const captureScenarioInputSnapshot = (
   benefitsOfYouthIrs: store.benefitsOfYouthIrs,
   yearOfYouthIrs: store.yearOfYouthIrs,
   assessmentScenario: store.assessmentScenario,
+  spouseAnnualGrossIncome: store.spouseAnnualGrossIncome,
   numberOfDependents: store.numberOfDependents,
   dependentsAged3OrUnder: store.dependentsAged3OrUnder,
   dependentsAged4To6: store.dependentsAged4To6,
@@ -211,7 +222,7 @@ const computeScenarioResult = (
     source: definition.source,
     preset: definition.preset,
     input: captureScenarioInputSnapshot(scenarioStore),
-    grossIncome: copyFrequencyValues(scenarioStore.grossIncome),
+    grossIncome: copyFrequencyValues(scenarioStore.resultGrossIncome),
     irsPay: copyFrequencyValues(scenarioStore.irsPay),
     ssPay: copyFrequencyValues(scenarioStore.ssPay),
     netIncome,
