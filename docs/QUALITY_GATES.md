@@ -41,8 +41,11 @@ The runner enforces Node 24 at startup and prints the active Node executable,
 Node version, V8 version, platform, npm CLI path and the first PATH entries.
 Child steps are launched through the current Node executable and npm CLI
 (`process.execPath` plus `npm_execpath`, or the npm CLI bundled beside the
-current Node runtime). This prevents a Windows shell from accidentally using a
-global Node 26 installation while the parent gate is running under Node 24.
+current Node runtime). Audit gates call `npm audit` directly through that resolved
+npm CLI instead of re-entering `npm run audit:*`, so nested audit commands cannot
+fall back to another npm installation from PATH. This prevents a Windows shell from
+accidentally using a global Node 26 installation while the parent gate is running
+under Node 24.
 
 Each step prints a numbered boundary such as `=== [3/13] format:check ===`,
 the exact command, duration, exit code and signal. On failure the runner stops
@@ -55,9 +58,14 @@ observed intermittently while the same component gate passes in isolation.
 Lighthouse is retried once on Windows because local browser performance scores
 can fluctuate by a point at the threshold. Cypress gates are also retried once on
 Windows after a non-zero exit because the local Electron browser runner can fail
-intermittently even when the same specs pass on rerun. Cypress has a four-minute
-per-attempt timeout; when that timeout is hit, the runner terminates the child
-process tree before retrying or failing. Persistent command failures, assertion
+intermittently even when the same specs pass on rerun. Cypress E2E has a ten-minute per-attempt timeout because Windows runs it
+as separate spec runs; Cypress axe keeps a four-minute timeout. When either timeout
+is hit, the runner terminates the child process tree before retrying or failing. The Cypress wrapper runs headless checks
+with `numTestsKeptInMemory=0` and `experimentalMemoryManagement=true` to reduce
+Electron renderer memory pressure during long local suites. On Windows, E2E specs
+are also run as separate Cypress spec runs so one long Electron session does not
+carry renderer state across the full suite. A failed Windows spec run is retried
+once before the E2E command fails. Persistent command failures, assertion
 failures and lint/type/test failures still stop the gate.
 
 For targeted debugging, a single component can be run through the same

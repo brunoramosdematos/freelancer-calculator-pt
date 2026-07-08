@@ -3,10 +3,14 @@ import { existsSync } from "node:fs";
 import { dirname, join } from "node:path";
 
 const FOUR_MINUTES = 4 * 60 * 1000;
+const TEN_MINUTES = 10 * 60 * 1000;
 
 const CHECK_STEPS = [
-  { name: "audit:prod", args: ["run", "audit:prod"] },
-  { name: "audit:critical", args: ["run", "audit:critical"] },
+  {
+    name: "audit:prod",
+    args: ["audit", "--omit=dev", "--audit-level=moderate"],
+  },
+  { name: "audit:critical", args: ["audit", "--audit-level=critical"] },
   { name: "format:check", args: ["run", "format:check"] },
   { name: "lint", args: ["run", "lint"] },
   { name: "typecheck", args: ["run", "typecheck"] },
@@ -29,7 +33,7 @@ const RELEASE_EXTRA_STEPS = [
     name: "cy:e2e:run",
     args: ["run", "cy:e2e:run"],
     retryOnWindowsFailure: true,
-    timeoutMs: FOUR_MINUTES,
+    timeoutMs: TEN_MINUTES,
   },
   {
     name: "cy:a11y",

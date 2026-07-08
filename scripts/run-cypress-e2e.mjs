@@ -1,10 +1,13 @@
 import { spawn } from "node:child_process";
+import { readdir } from "node:fs/promises";
 import http from "node:http";
 import { join } from "node:path";
 
 const DEFAULT_PORT = 8261;
 const HOST = "127.0.0.1";
 const STARTUP_SETTLE_DELAY_MS = 10_000;
+const WINDOWS_SPEC_ATTEMPTS = 2;
+const WINDOWS_SPEC_TIMEOUT_MS = 2 * 60 * 1000;
 
 const parseMode = (rawMode) => {
   const mode = rawMode ?? "run";
@@ -172,6 +175,36 @@ const waitForServer = async (baseUrl) => {
   throw new Error(`Timed out waiting for Cypress server at ${baseUrl}.`);
 };
 
+const terminateChildProcessTree = async (child, label) => {
+  if (!child?.pid) {
+    return;
+  }
+
+  if (process.platform !== "win32") {
+    child.kill("SIGTERM");
+    return;
+  }
+
+  await new Promise((resolve) => {
+    const killer = spawn("taskkill", ["/pid", String(child.pid), "/T", "/F"], {
+      stdio: "inherit",
+      windowsHide: true,
+    });
+
+    killer.once("error", (error) => {
+      console.warn(`${label} process-tree cleanup warning: ${error.message}`);
+      try {
+        child.kill();
+      } catch (killError) {
+        console.warn(`${label} cleanup warning: ${killError.message}`);
+      }
+      resolve();
+    });
+
+    killer.once("close", () => resolve());
+  });
+};
+
 const stopChildProcess = async (child, label) => {
   if (!child || child.killed) {
     return;
@@ -234,17 +267,41 @@ const getCypress = async () => {
   return cypressModule;
 };
 
+const listE2ESpecs = async () => {
+  const specsDirectory = join(process.cwd(), "cypress", "e2e");
+  const entries = await readdir(specsDirectory, { withFileTypes: true });
+  const specs = entries
+    .filter((entry) => entry.isFile() && /\.cy\.[jt]sx?$/.test(entry.name))
+    .map((entry) => join("cypress", "e2e", entry.name))
+    .sort((left, right) => left.localeCompare(right));
+
+  if (specs.length === 0) {
+    throw new Error("No Cypress E2E specs found in cypress/e2e.");
+  }
+
+  return specs;
+};
+const getCypressRunConfig = (baseUrl, specPattern) => {
+  const config = [
+    `baseUrl=${baseUrl}`,
+    "numTestsKeptInMemory=0",
+    "experimentalMemoryManagement=true",
+  ];
+
+  if (specPattern) {
+    config.push(`specPattern=${specPattern}`);
+  }
+
+  return config;
+};
+
 const runCypress = async (
   baseUrl,
   { label = "E2E", spec, specPattern } = {},
 ) => {
   const cypress = await getCypress();
   console.info(`Starting Cypress ${label} run against ${baseUrl}.`);
-  const config = [`baseUrl=${baseUrl}`];
-
-  if (specPattern) {
-    config.push(`specPattern=${specPattern}`);
-  }
+  const config = getCypressRunConfig(baseUrl, specPattern);
 
   const runOptions = await cypress.cli.parseRunArguments([
     "cypress",
@@ -263,6 +320,114 @@ const runCypress = async (
   return getRunExitCode(result);
 };
 
+const runCypressCli = async (
+  baseUrl,
+  {
+    label = "E2E",
+    spec,
+    specPattern,
+    timeoutMs = WINDOWS_SPEC_TIMEOUT_MS,
+  } = {},
+) =>
+  new Promise((resolve) => {
+    const config = getCypressRunConfig(baseUrl, specPattern);
+    const args = [
+      join("node_modules", "cypress", "bin", "cypress"),
+      "run",
+      "--e2e",
+      "--project",
+      process.cwd(),
+      "--config",
+      config.join(","),
+      ...(spec ? ["--spec", spec] : []),
+      "--posix-exit-codes",
+    ];
+    let timedOut = false;
+
+    console.info(`Starting Cypress ${label} run against ${baseUrl}.`);
+
+    const child = spawn(process.execPath, args, {
+      cwd: process.cwd(),
+      env: {
+        ...process.env,
+        CI: "true",
+      },
+      shell: false,
+      stdio: "inherit",
+      windowsHide: true,
+    });
+
+    const timeoutId = setTimeout(() => {
+      timedOut = true;
+      console.error(
+        `Cypress ${label} exceeded ${Math.round(timeoutMs / 1000)}s; terminating process tree.`,
+      );
+      void terminateChildProcessTree(child, `Cypress ${label}`);
+    }, timeoutMs);
+
+    child.once("error", (error) => {
+      clearTimeout(timeoutId);
+      console.error(`Cypress ${label} failed to start.`);
+      console.error(error);
+      resolve(1);
+    });
+
+    child.once("close", (code, signal) => {
+      clearTimeout(timeoutId);
+      console.info(`Cypress ${label} run finished.`);
+
+      if (code === 0 && signal === null && !timedOut) {
+        resolve(0);
+        return;
+      }
+
+      resolve(1);
+    });
+  });
+const runCypressPerSpec = async (baseUrl) => {
+  const specs = await listE2ESpecs();
+  let failedSpecs = 0;
+  console.info(
+    `Running Cypress E2E as ${specs.length} separate spec run(s) on Windows to reduce Electron renderer pressure.`,
+  );
+
+  for (const [index, spec] of specs.entries()) {
+    let exitCode = 1;
+
+    for (let attempt = 1; attempt <= WINDOWS_SPEC_ATTEMPTS; attempt += 1) {
+      if (attempt > 1) {
+        console.warn(
+          `Retrying Cypress E2E spec ${index + 1}/${specs.length} after a failed Windows browser run.`,
+        );
+      }
+
+      exitCode = await runCypressCli(baseUrl, {
+        label:
+          attempt === 1
+            ? `E2E ${index + 1}/${specs.length}`
+            : `E2E ${index + 1}/${specs.length} attempt ${attempt}/${WINDOWS_SPEC_ATTEMPTS}`,
+        spec,
+      });
+
+      if (exitCode === 0) {
+        break;
+      }
+    }
+
+    if (exitCode !== 0) {
+      failedSpecs += 1;
+    }
+  }
+
+  if (failedSpecs > 0) {
+    console.error(
+      `Cypress E2E failed in ${failedSpecs}/${specs.length} separate spec run(s).`,
+    );
+    return 1;
+  }
+
+  return 0;
+};
 const openCypress = async (baseUrl) => {
   const cypress = await getCypress();
 
@@ -299,7 +464,9 @@ try {
               spec: "cypress/a11y/test_accessibility.cy.ts",
               specPattern: "cypress/a11y/**/*.cy.ts",
             })
-          : await runCypress(baseUrl);
+          : mode === "run" && process.platform === "win32"
+            ? await runCypressPerSpec(baseUrl)
+            : await runCypress(baseUrl);
   } catch (error) {
     console.error("Cypress failed before completing the requested mode.");
     console.error(error);
