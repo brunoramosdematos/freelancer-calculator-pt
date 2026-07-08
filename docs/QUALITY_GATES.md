@@ -24,11 +24,56 @@ This project uses local and CI gates to keep releases reproducible.
   versioned release notes, changelog structure, CODEOWNERS, issue templates,
   workflow jobs and required package scripts.
 - `npm run check` runs production audit, critical audit, formatting, lint,
-  typecheck, Vitest, build and production verification.
+  typecheck, Vitest, build and production verification through the Node-based
+  gate runner.
 - `npm run check:e2e` runs `check` plus Cypress.
-- `npm run check:release` runs `check`, bundle budget verification, Lighthouse,
-  Cypress E2E, Cypress axe accessibility checks and release-readiness
-  verification.
+- `npm run check:release` runs `check`, bundle budget verification,
+  Lighthouse, Cypress E2E, Cypress axe accessibility checks and
+  release-readiness verification through the Node-based gate runner.
+
+## Gate Runner
+
+`npm run check` and `npm run check:release` are orchestrated by
+`scripts/run-gates.mjs`. The runner avoids fragile shell chains and nested npm
+processes so local Windows release checks behave the same way as Linux CI.
+
+The runner enforces Node 24 at startup and prints the active Node executable,
+Node version, V8 version, platform, npm CLI path and the first PATH entries.
+Child steps are launched through the current Node executable and npm CLI
+(`process.execPath` plus `npm_execpath`, or the npm CLI bundled beside the
+current Node runtime). Audit gates call `npm audit` directly through that resolved
+npm CLI instead of re-entering `npm run audit:*`, so nested audit commands cannot
+fall back to another npm installation from PATH. This prevents a Windows shell from
+accidentally using a global Node 26 installation while the parent gate is running
+under Node 24.
+
+Each step prints a numbered boundary such as `=== [3/13] format:check ===`,
+the exact command, duration, exit code and signal. On failure the runner stops
+immediately and reports the failing step and command. Component commands remain
+available and can still be run individually when investigating a specific gate.
+
+On Windows, a child process that exits with the native access-violation code
+`3221225477` / `-1073741819` is retried once, because these crashes have been
+observed intermittently while the same component gate passes in isolation.
+Lighthouse is retried once on Windows because local browser performance scores
+can fluctuate by a point at the threshold. Cypress gates are also retried once on
+Windows after a non-zero exit because the local Electron browser runner can fail
+intermittently even when the same specs pass on rerun. Cypress E2E has a ten-minute per-attempt timeout because Windows runs it
+as separate spec runs; Cypress axe keeps a four-minute timeout. When either timeout
+is hit, the runner terminates the child process tree before retrying or failing. The Cypress wrapper runs headless checks
+with `numTestsKeptInMemory=0` and `experimentalMemoryManagement=true` to reduce
+Electron renderer memory pressure during long local suites. On Windows, E2E specs
+are also run as separate Cypress spec runs so one long Electron session does not
+carry renderer state across the full suite. A failed Windows spec run is retried
+once before the E2E command fails. Persistent command failures, assertion
+failures and lint/type/test failures still stop the gate.
+
+For targeted debugging, a single component can be run through the same
+orchestrator:
+
+```bash
+node scripts/run-gates.mjs component lint
+```
 
 ## Vue Type Checking
 

@@ -13,6 +13,11 @@ GitHub releases, support references and public production checkpoints.
 - Added joint assessment with two incomes using a transparent simplified second
   income model.
 
+### Fixed
+
+- Stabilized local release checks on Windows by replacing shell-chained npm
+  gates with a Node-based gate runner.
+
 ### Changed
 
 - Made the default income tax year dynamic based on supported tax-data coverage.

@@ -37,9 +37,9 @@
     "lint:fix": "eslint . --ext .js,.cjs,.mjs,.ts,.vue --fix",
     "format": "prettier . --write",
     "format:check": "prettier . --check",
-    "check": "npm run audit:prod && npm run audit:critical && npm run format:check && npm run lint && npm run typecheck && npm run vitest -- --run && npm run build && npm run verify:production-build",
+    "check": "node scripts/run-gates.mjs check",
     "check:e2e": "npm run check && npm run cy:e2e:run",
-    "check:release": "npm run check && npm run verify:bundle-budget && npm run lighthouse:ci && npm run cy:e2e:run && npm run cy:a11y && npm run verify:release-readiness"
+    "check:release": "node scripts/run-gates.mjs release"
   },
   "dependencies": {
     "@heroicons/vue": "^2.1.1",
