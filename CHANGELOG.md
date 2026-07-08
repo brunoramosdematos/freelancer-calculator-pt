@@ -8,19 +8,36 @@ GitHub releases, support references and public production checkpoints.
 
 ## [Unreleased]
 
+No changes yet.
+
+## [0.8.0] - 2026-07-08
+
 ### Added
 
 - Added joint assessment with two incomes using a transparent simplified second
   income model.
-
-### Fixed
-
-- Stabilized local release checks on Windows by replacing shell-chained npm
-  gates with a Node-based gate runner.
+- Added spouse / partner annual gross income input for joint two-income
+  scenarios.
+- Added calculation details, report export and scenario comparison support for
+  the joint two-income scenario.
 
 ### Changed
 
-- Made the default income tax year dynamic based on supported tax-data coverage.
+- Made the default income tax year dynamic based on supported tax-data
+  coverage.
+- Updated production metadata to mention joint two-income assessment.
+- Stabilized local release checks on Windows with a Node-based gate runner.
+
+### Security
+
+- Production dependency audit remains clean.
+- Critical dependency audit remains clean.
+
+### Documentation
+
+- Updated README, roadmap, tax-update and quality-gate documentation for joint
+  two-income assessment, dynamic default-year behavior and release-gate
+  stabilization.
 
 ## [0.7.0] - 2026-07-03
 
@@ -134,7 +151,8 @@ First formal public release of Freelancer Calculator Portugal.
 - Added release process, versioning, tax update, branch protection and roadmap
   documentation.
 
-[unreleased]: https://github.com/brunoramosdematos/freelancer-calculator-pt/compare/v0.7.0...HEAD
+[unreleased]: https://github.com/brunoramosdematos/freelancer-calculator-pt/compare/v0.8.0...HEAD
+[0.8.0]: https://github.com/brunoramosdematos/freelancer-calculator-pt/compare/v0.7.0...v0.8.0
 [0.7.0]: https://github.com/brunoramosdematos/freelancer-calculator-pt/compare/v0.6.0...v0.7.0
 [0.6.0]: https://github.com/brunoramosdematos/freelancer-calculator-pt/compare/v0.5.0...v0.6.0
 [0.5.0]: https://github.com/brunoramosdematos/freelancer-calculator-pt/tree/v0.5.0
