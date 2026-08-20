@@ -8,6 +8,8 @@ Production URL: https://freelancerpt.brunomatos.dev/
 
 Repository: https://github.com/brunoramosdematos/freelancer-calculator-pt
 
+![Freelancer Calculator Portugal project preview](public/social-preview.png)
+
 The UI supports English, Português (Portugal), Português (Brasil), and the
 System, Light, and Dark appearance preferences. Localization architecture and
 glossary guidance are documented in [docs/I18N.md](docs/I18N.md), appearance
